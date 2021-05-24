@@ -6,6 +6,11 @@ const staticMiddleware = require('./static-middleware');
 const app = express();
 
 app.use(staticMiddleware);
+const jsonMiddleWare = express.json();
+
+app.use(jsonMiddleWare);
+
+app.use(staticMiddleware);
 
 app.use(errorMiddleware);
 
