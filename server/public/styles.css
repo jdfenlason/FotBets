@@ -1,0 +1,10 @@
+.header-container {
+  display: flex;
+  align-items: center;
+  font-family: "Abhaya Libre", serif;
+  font-weight: 700;
+  font-size: 1.5em;
+  background-color: #1b1b1b;
+  color: #f8f8f8;
+  padding-left: 2rem;
+}
