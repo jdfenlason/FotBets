@@ -8,3 +8,73 @@
   color: #f8f8f8;
   padding-left: 2rem;
 }
+
+.outer-card {
+  margin: 0.5rem;
+  background-color: #1b1b1b;
+  display: flex;
+  justify-content: center;
+  border-radius: 0.5rem;
+  box-shadow: 0 5px #1b1b1b;
+  font-family: 'Abhaya Libre', serif;
+  font-weight: 700;
+}
+
+.team-container {
+  text-align: center;
+  flex-basis: calc(100% / 3);
+  margin-top: 1rem;
+}
+
+.center {
+  justify-content: center;
+}
+
+h6 {
+  margin: 1rem;
+}
+
+a {
+  cursor: pointer;
+  text-decoration: none;
+  color: #f8f8f8;
+}
+
+.team-logo {
+  margin-top: 1rem;
+  height: 75px;
+  object-fit: contain;
+}
+
+.kick-off-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.league-logo {
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+.inner-card {
+  display: flex;
+  justify-content: space-between;
+  width: 75%;
+}
+
+body {
+  background-color: #5e5e5e;
+  color: #f8f8f8;
+}
+
+.no-game {
+  font-family: "Abhaya Libre", serif;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
