@@ -66,21 +66,6 @@ a {
   font-family: "Abhaya Libre", serif;
 }
 
-.league-logo {
-  display: inline-block;
-  object-fit: contain;
-  height: 1.5rem;
-  margin-left: 1rem;
-}
-
-.league-name {
-  margin-left: 1rem;
-  margin-top: 1rem;
-  align-items: center;
-  display: flex;
-  font-family: "Abahya Libre", serif;
-}
-
 .inner-card {
   display: flex;
   justify-content: space-between;
