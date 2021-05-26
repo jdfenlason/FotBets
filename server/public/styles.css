@@ -6,7 +6,7 @@
   font-size: 1.5em;
   background-color: #1b1b1b;
   color: #f8f8f8;
-  padding-left: 2rem;
+  padding-left: 1rem;
 }
 
 .outer-card {
@@ -34,6 +34,10 @@ h6 {
   margin: 1rem;
 }
 
+.header {
+  width: 100%;
+}
+
 a {
   cursor: pointer;
   text-decoration: none;
@@ -53,9 +57,28 @@ a {
   align-items: center;
 }
 
+.kick-off-time {
+  margin: 0;
+}
+
+.fixture-date-heading {
+  text-align: center;
+  font-family: "Abhaya Libre", serif;
+}
+
 .league-logo {
+  display: inline-block;
+  object-fit: contain;
+  height: 1.5rem;
+  margin-left: 1rem;
+}
+
+.league-name {
   margin-left: 1rem;
   margin-top: 1rem;
+  align-items: center;
+  display: flex;
+  font-family: "Abahya Libre", serif;
 }
 
 .inner-card {

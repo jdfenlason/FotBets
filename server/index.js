@@ -1,10 +1,10 @@
+const dateFns = require('date-fns');
 require('dotenv/config');
 const express = require('express');
 const errorMiddleware = require('./error-middleware');
 const staticMiddleware = require('./static-middleware');
 const axios = require('axios');
 const pg = require('pg');
-
 const app = express();
 
 app.use(staticMiddleware);
@@ -19,15 +19,23 @@ const db = new pg.Pool({
   }
 });
 
-app.get('/api/week-games', (req, res) => {
+app.get('/api/week-games/:date', (req, res) => {
   const sql = `
-select "matches" ->> 'date' as date
-from "week-games"
+   select "matches"
+      from "week-games"
 `;
   db.query(sql)
-    .then(result =>
-      res.json(result.rows)
-    ).catch(err => console.error(err));
+    .then(result => {
+      const dbresult = result.rows[0];
+      const todayGames = dbresult.matches;
+      const time = new Date();
+      const formatDate = dateFns.format(time, 'yyyy-MM-dd');
+      const filter = todayGames.filter(fixture => {
+        return fixture.fixture.date.slice(0, 10) === formatDate;
+      });
+      res.json(filter);
+    })
+    .catch(err => console.error(err));
 });
 
 app.get('/api/week-games', (req, res) => {
@@ -39,10 +47,23 @@ app.get('/api/week-games', (req, res) => {
     .then(result => {
       if (!result.rows[0]) {
         getApiData();
-
       } else {
         res.json(result.rows[0]);
+      }
+    }).catch(err => console.error(err));
+});
 
+app.get('/api/week-games', (req, res) => {
+  const sql = `
+      select "matches"
+      from "week-games"
+      `;
+  db.query(sql)
+    .then(result => {
+      if (!result.rows[0]) {
+        getApiData();
+      } else {
+        res.json(result.rows[0]);
       }
     }).catch(err => console.error(err));
 });

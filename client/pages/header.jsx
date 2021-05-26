@@ -16,7 +16,6 @@ export default class Header extends React.Component {
         <div className="column-full">
           <div className="header-container">
             <h2>FotBets</h2>
-
           </div>
         </div>
       </div>
