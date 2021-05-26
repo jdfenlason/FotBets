@@ -7,15 +7,13 @@ export default class FixtureList extends React.Component {
     super(props);
     this.state = {
       fixturesList: []
-      // isGameToday: true;
     };
   }
 
   componentDidMount() {
-    axios.request('/api/week-games/:dates').then(response => {
-      this.setState({ fixturesList: response.data.matches });
-    }
-    ).catch(err => {
+    axios.request('/api/week-games/:date').then(response => {
+      this.setState({ fixturesList: response.data });
+    }).catch(err => {
       console.error(err);
     });
   }
@@ -45,14 +43,6 @@ export default class FixtureList extends React.Component {
         <>
         <div className = "fixture-date-heading">
        <h1>Today&apos;s Fixtures</h1>
-        </div>
-      <div className="league-name column-half">
-        <h3>
-          {this.state.fixturesList[0].league.name}
-          </h3>
-        <span>
-          <img className ="league-logo" src={this.state.fixturesList[0].league.logo} alt="" />
-          </span>
         </div>
         {this.state.fixturesList.map(fixture => (
           <a key={fixture.fixture.id}>
