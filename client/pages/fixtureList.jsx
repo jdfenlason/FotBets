@@ -1,6 +1,6 @@
 import React from 'react';
 import { fromUnixTime, format } from 'date-fns';
-import axios from 'axios';
+
 export default class FixtureList extends React.Component {
   constructor(props) {
     super(props);
@@ -10,18 +10,10 @@ export default class FixtureList extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get('https://api-football-v1.p.rapidapi.com/v3/fixtures?id=695220', {
-        method: 'GET',
-        headers: {
-          'x-rapidapi-key':
-            '7b4364dcafmsh1c0748d91f17a0fp1158c3jsn481601d49ec0',
-          'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
-        }
-      })
-      .then(game => {
-        this.setState({ fixturesList: game.data.response });
-      })
+    fetch('/api/weekGames/')
+      .then(game =>
+        this.setState({ fixturesList: game.data.response })
+      )
       .catch(err => {
         console.error(err);
       });

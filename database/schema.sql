@@ -6,12 +6,13 @@ drop schema "public" cascade;
 
 create schema "public";
 
-create table "public"."weekGames" (
+create table "week-games" (
     "gamesId" serial,
-     "matches"    json
+    "first-day" text not null,
+     "matches"    json 
 );
 
-create table "public"."users" (
+create table "users" (
   "userId"           serial,
   "username"         text    not null,
   "hashedPassword"   text    not null,
