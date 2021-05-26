@@ -21,15 +21,28 @@ const db = new pg.Pool({
 
 app.get('/api/week-games', (req, res) => {
   const sql = `
-      select "first-day"
+select "matches" ->> 'date' as date
+from "week-games"
+`;
+  db.query(sql)
+    .then(result =>
+      res.json(result.rows)
+    ).catch(err => console.error(err));
+});
+
+app.get('/api/week-games', (req, res) => {
+  const sql = `
+      select "matches"
       from "week-games"
       `;
   db.query(sql)
     .then(result => {
-      if (!result.rows) {
-        res.json(result.rows);
-      } else {
+      if (!result.rows[0]) {
         getApiData();
+
+      } else {
+        res.json(result.rows[0]);
+
       }
     }).catch(err => console.error(err));
 });
@@ -38,9 +51,9 @@ function getApiData() {
   const init = {
     method: 'GET',
     url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures',
-    params: { league: '253', season: '2021', round: 'Regular Season - 9' },
+    params: { league: '253', season: '2021', round: 'Regular Season - 10' },
     headers: {
-      'x-rapidapi-key': '7b4364dcafmsh1c0748d91f17a0fp1158c3jsn481601d49ec0',
+      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
       'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
     }
   };
@@ -54,7 +67,9 @@ function getApiData() {
       const wednesday = 'Wednesday';
       const params = [JsonData, wednesday];
       db.query(sql, params).then(result => {
-      }).catch(err => console.error(err));
+
+      })
+        .catch(err => console.error(err));
     });
 }
 

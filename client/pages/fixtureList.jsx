@@ -1,5 +1,6 @@
 import React from 'react';
 import { fromUnixTime, format } from 'date-fns';
+import axios from 'axios';
 
 export default class FixtureList extends React.Component {
   constructor(props) {
@@ -10,10 +11,11 @@ export default class FixtureList extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/api/weekGames/')
-      .then(game =>
-        this.setState({ fixturesList: game.data.response })
-      )
+    axios.request('/api/week-games').then(response => {
+      this.setState({ fixturesList: response.data.matches });
+
+    }
+    )
       .catch(err => {
         console.error(err);
       });
@@ -40,7 +42,9 @@ export default class FixtureList extends React.Component {
       return this.noGamesToday();
     }
     return (
+
         <>
+
       <div className="league-logo">
         {this.state.fixturesList[0].league.name}
         </div>
