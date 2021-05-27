@@ -48,7 +48,7 @@ export default class FixtureList extends React.Component {
           <a key={fixture.fixture.id}>
             <div className="row column-full center">
               <div className="outer-card column-full">
-                <div className="inner-card">
+                <div className="inner-card column-full">
                   <div className="team-container">
                     <div className="image-container">
                       <img
