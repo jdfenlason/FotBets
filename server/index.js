@@ -20,7 +20,7 @@ const db = new pg.Pool({
 });
 
 app.get('/api/week-games/', (req, res, next) => {
-  const leagueId = 255;
+  const leagueId = 253;
   const today = new Date();
   const year = today.getFullYear();
   const dayOfWeek = today.getDay();
@@ -96,7 +96,7 @@ app.get('/api/week-games/:date', (req, res, next) => {
 `;
   db.query(sql)
     .then(result => {
-      const dbresult = result.rows[1];
+      const dbresult = result.rows[0];
       const todayGames = dbresult.fixtures;
       const time = new Date();
       const formatDate = dateFns.format(time, 'yyyy-MM-dd');
