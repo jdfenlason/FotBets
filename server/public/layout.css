@@ -13,7 +13,7 @@
 }
 
 .column-thirds {
-  flex-basis: calc(100% / 2);
+  flex-basis: calc(100% / 3);
 }
 
 .column-75 {

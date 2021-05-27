@@ -21,11 +21,19 @@
 }
 
 .match-details {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  line-height: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.sub-head {
+  font-family: "Lato", sans-serif;
 }
 
 .league-logo {
-  width: 1rem;
+  width: 2rem;
 }
 
 .team-container {
@@ -50,6 +58,12 @@ a {
   cursor: pointer;
   text-decoration: none;
   color: #f8f8f8;
+}
+
+.sub-details {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .team-logo {

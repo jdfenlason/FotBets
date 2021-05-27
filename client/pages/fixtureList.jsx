@@ -1,5 +1,5 @@
 import React from 'react';
-import { fromUnixTime, format } from 'date-fns';
+import { fromUnixTime, format, parseISO } from 'date-fns';
 import axios from 'axios';
 export default class FixtureList extends React.Component {
   constructor(props) {
@@ -23,30 +23,48 @@ export default class FixtureList extends React.Component {
   matchDetails() {
 
     return (
-     <div>
+     <>
+
             {this.state.fixturesList.map(matchDetails =>
-      <div className ="row column-full center" key= {matchDetails.fixture.id}>
-
+      <div className ="row center" key= {matchDetails.fixture.id}>
           <div className = "outer-card column-full">
-            <div className ="inner-card ">
+              <div className="match-details column-full center">
 
-          <div className="match-details column-full">
-          <h3>Match Details</h3>
-          <h5>{matchDetails.league.name}</h5>
-          <h6>{matchDetails.league.round}</h6>
+               <h2>Match Details</h2>
+            <h5 className="sub-head">{matchDetails.league.name}</h5>
+          <h6 className="sub-head">{matchDetails.league.round}</h6>
           <img className="league-logo" src={matchDetails.league.logo} alt="" />
-          <div className = "row">
+            <div className ="sub-details column-thirds">
+
+          <div className = "location">
+          <h6>{matchDetails.fixture.venue.city}</h6>
+          <h6>{matchDetails.fixture.venue.name}</h6>
 
           </div>
-
+<div className="location">
+  <h6>
+    {this.formatTime(matchDetails.fixture.timestamp)}
+    </h6>
+   <h6>
+     {this.formatDate(matchDetails.fixture.date)}
+     </h6>
           </div>
+
+          <div className= "location">
+         <span>
+           <h6>Referee:</h6>
+          <h6>{matchDetails.fixture.referee}</h6>
+           </span>
+</div>
+        </div>
 
             </div>
+
           </div>
         </div>
 
             )}
-        </div>
+        </>
     );
 
   }
@@ -59,7 +77,12 @@ export default class FixtureList extends React.Component {
     });
   }
 
-  getDateData(props) {
+  formatDate(props) {
+    const gameDate = format(parseISO(props), 'MM-dd');
+    return gameDate;
+  }
+
+  formatTime(props) {
     const unix = fromUnixTime(props);
     const gameTime = format(unix, 'KK:mm bb');
     return gameTime;
@@ -102,7 +125,7 @@ export default class FixtureList extends React.Component {
                   </div>
                   <div className="kick-off-container">
                     <h3>Kick-Off</h3>
-                    <h4 className= "kick-off-time">{this.getDateData(fixture.fixture.timestamp)}</h4>
+                    <h4 className= "kick-off-time">{this.formatTime(fixture.fixture.timestamp)}</h4>
                   </div>
                   <div className="team-container">
                     <div className="image-container"></div>
@@ -115,11 +138,11 @@ export default class FixtureList extends React.Component {
                   </div>
                 </div>
               </div>
+            {this.matchDetails()}
             </div>
           </a>
         ))}
       <div>
-        {this.matchDetails()}
       </div>
         </>
     );
