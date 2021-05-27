@@ -1,13 +1,54 @@
 import React from 'react';
 import { fromUnixTime, format } from 'date-fns';
 import axios from 'axios';
-
 export default class FixtureList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      fixturesList: []
+      fixturesList: [],
+      toggleMatchDetails: null
     };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
+    const clickedFixture = event.target.getAttribute('id');
+    if (clickedFixture === this.state.toggleMatchDetails) {
+      this.setState({ toggleMatchDetails: null });
+    } else {
+      this.setState({ toggleMatchDetails: clickedFixture });
+    }
+  }
+
+  matchDetails() {
+
+    return (
+     <div>
+            {this.state.fixturesList.map(matchDetails =>
+      <div className ="row column-full center" key= {matchDetails.fixture.id}>
+
+          <div className = "outer-card column-full">
+            <div className ="inner-card ">
+
+          <div className="match-details column-full">
+          <h3>Match Details</h3>
+          <h5>{matchDetails.league.name}</h5>
+          <h6>{matchDetails.league.round}</h6>
+          <img className="league-logo" src={matchDetails.league.logo} alt="" />
+          <div className = "row">
+
+          </div>
+
+          </div>
+
+            </div>
+          </div>
+        </div>
+
+            )}
+        </div>
+    );
+
   }
 
   componentDidMount() {
@@ -45,7 +86,7 @@ export default class FixtureList extends React.Component {
        <h1>Today&apos;s Fixtures</h1>
         </div>
         {this.state.fixturesList.map(fixture => (
-          <a key={fixture.fixture.id}>
+          <a key={fixture.fixture.id} onClick={(this.handleClick)} id= {(fixture.fixture.id)}>
             <div className="row column-full center">
               <div className="outer-card column-full">
                 <div className="inner-card column-full">
@@ -77,7 +118,9 @@ export default class FixtureList extends React.Component {
             </div>
           </a>
         ))}
-
+      <div>
+        {this.matchDetails()}
+      </div>
         </>
     );
   }
