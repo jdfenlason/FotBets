@@ -6,18 +6,21 @@ export default class FixtureList extends React.Component {
     super(props);
     this.state = {
       fixturesList: [],
-      toggleMatchDetails: null
+      toggleMatchDetails: null,
+      isLoading: true
     };
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick(event) {
-    const clickedFixture = event.target.getAttribute('id');
+    const clickedFixture = event.target.getAttribute('fixtureid');
+
     if (clickedFixture === this.state.toggleMatchDetails) {
-      this.setState({ toggleMatchDetails: null });
+      this.setState({ toggleMatchDetails: '' });
     } else {
       this.setState({ toggleMatchDetails: clickedFixture });
     }
+
   }
 
   footer() {
@@ -85,7 +88,11 @@ export default class FixtureList extends React.Component {
 
   componentDidMount() {
     axios.request('/api/week-games/:date').then(response => {
-      this.setState({ fixturesList: response.data });
+      const fixtures = response.data;
+      this.setState({
+        fixturesList: fixtures,
+        isLoading: false
+      });
     }).catch(err => {
       console.error(err);
     });
@@ -112,52 +119,64 @@ export default class FixtureList extends React.Component {
     );
   }
 
+  todaysFixture() {
+    return (
+  <div className = "fixture-date-heading">
+       <h1>Today&apos;s Fixtures</h1>
+        </div>
+    );
+  }
+
+  fixtures() {
+
+    return (
+    <>
+    {this.todaysFixture()}
+      {this.state.fixturesList.map(fixture => (
+        <div key={fixture.fixture.id} onClick={(this.handleClick)} fixtureid = {fixture.fixture.id} className="row column-full center fixture-card">
+            <div className="outer-card column-full">
+              <div className="inner-card column-full">
+                <div className="team-container">
+                  <div className="image-container">
+                    <img
+                      className="team-logo"
+                      src={fixture.teams.home.logo}
+                      alt="home-team-logo"
+                      />
+                  </div>
+                  <h4>{fixture.teams.home.name}</h4>
+                </div>
+                <div className="kick-off-container">
+                  <h3>Kick-Off</h3>
+                  <h4 className= "kick-off-time">{this.formatTime(fixture.fixture.timestamp)}</h4>
+                </div>
+                <div className="team-container">
+                  <div className="image-container"></div>
+                  <img
+                    className="team-logo"
+                    src={fixture.teams.away.logo}
+                    alt="away-team-logo"
+                    />
+                  <h4>{fixture.teams.away.name}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+      ))}
+    </>
+    );
+  }
+
   render() {
     if (!this.state.fixturesList.length) {
       return this.noGamesToday();
     }
     return (
-
-        <>
-        <div className = "fixture-date-heading">
-       <h1>Today&apos;s Fixtures</h1>
-        </div>
-        {this.state.fixturesList.map(fixture => (
-          <a key={fixture.fixture.id} onClick={(this.handleClick)} id= {(fixture.fixture.id)}>
-            <div className="row column-full center">
-              <div className="outer-card column-full">
-                <div className="inner-card column-full">
-                  <div className="team-container">
-                    <div className="image-container">
-                      <img
-                        className="team-logo"
-                        src={fixture.teams.home.logo}
-                        alt="home-team-logo"
-                        />
-                    </div>
-                    <h4>{fixture.teams.home.name}</h4>
-                  </div>
-                  <div className="kick-off-container">
-                    <h3>Kick-Off</h3>
-                    <h4 className= "kick-off-time">{this.formatTime(fixture.fixture.timestamp)}</h4>
-                  </div>
-                  <div className="team-container">
-                    <div className="image-container"></div>
-                    <img
-                      className="team-logo"
-                      src={fixture.teams.away.logo}
-                      alt="away-team-logo"
-                      />
-                    <h4>{fixture.teams.away.name}</h4>
-                  </div>
-                </div>
-              </div>
-            {/* {this.matchDetails()} */}
-            </div>
-          </a>
-        ))}
-      <div>
-      </div>
+      this.state.isLoading
+        ? <p>...Loading</p>
+        : <>
+        {this.fixtures()}
         </>
     );
   }

@@ -17,6 +17,14 @@
   background-color: #1b1b1b;
 }
 
+.hidden {
+  display: none;
+}
+
+.fixture-card {
+  cursor: pointer;
+}
+
 .outer-card {
   margin: 0.5rem;
   background-color: #1b1b1b;
@@ -60,12 +68,6 @@ h6 {
 
 .header {
   width: 100%;
-}
-
-a {
-  cursor: pointer;
-  text-decoration: none;
-  color: #f8f8f8;
 }
 
 .sub-details {

@@ -20,7 +20,7 @@ const db = new pg.Pool({
 });
 
 app.get('/api/week-games/', (req, res, next) => {
-  const leagueId = 253;
+  const leagueId = 255;
   const today = new Date();
   const year = today.getFullYear();
   const dayOfWeek = today.getDay();
@@ -71,7 +71,7 @@ function getCurrentRound(currentYear, leagueId) {
   };
   return axios.request(init)
     .then(response => {
-      return response.data.response.pop();
+      return response.data.response;
     });
 }
 
@@ -96,14 +96,18 @@ app.get('/api/week-games/:date', (req, res, next) => {
 `;
   db.query(sql)
     .then(result => {
-      const dbresult = result.rows[0];
-      const todayGames = dbresult.fixtures;
-      // const time = new Date();
-      // const formatDate = dateFns.format(time, 'yyyy-MM-dd');
-      const filter = todayGames.filter(fixture => {
-        return fixture.fixture.date.slice(0, 10) === '2021-05-30';
+      const dbresult = result.rows;
+      const todayGames = dbresult.map(fixtures => {
+        const filteredGames = fixtures.fixtures.filter(fixture => {
+          // const time = new Date();
+          // const formatDate = dateFns.format(time, 'yyyy-MM-dd');
+          return fixture.fixture.date.slice(0, 10) === '2021-05-28';
+          // return dateFns.isToday(fixture.fixture.date);
+        });
+        return filteredGames;
       });
-      res.json(filter);
+      const flatten = todayGames.flat(1);
+      res.json(flatten);
     })
     .catch(err => next(err));
 });
