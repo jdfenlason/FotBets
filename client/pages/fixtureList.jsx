@@ -161,8 +161,8 @@ export default class FixtureList extends React.Component {
                 </div>
               </div>
             </div>
+            {this.matchDetails()}
           </div>
-
       ))}
     </>
     );
