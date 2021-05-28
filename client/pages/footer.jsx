@@ -10,7 +10,7 @@ export default class Footer extends React.Component {
 
   render() {
     return (
-<>
+
       <div className="row">
         <div className="column-full">
           <div className="header-container center">
@@ -18,7 +18,7 @@ export default class Footer extends React.Component {
           </div>
         </div>
       </div>
-</>
+
     );
   }
 
