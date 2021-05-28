@@ -20,6 +20,20 @@ export default class FixtureList extends React.Component {
     }
   }
 
+  footer() {
+    return (
+<>
+      <div className="row">
+        <div className="column-full">
+          <div className="header-container center">
+          <i className="fas fa-home"></i>
+          </div>
+        </div>
+      </div>
+</>
+    );
+  }
+
   matchDetails() {
 
     return (
@@ -138,7 +152,7 @@ export default class FixtureList extends React.Component {
                   </div>
                 </div>
               </div>
-            {this.matchDetails()}
+            {/* {this.matchDetails()} */}
             </div>
           </a>
         ))}

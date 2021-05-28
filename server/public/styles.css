@@ -9,6 +9,14 @@
   padding-left: 1rem;
 }
 
+.footer-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #1b1b1b;
+}
+
 .outer-card {
   margin: 0.5rem;
   background-color: #1b1b1b;
