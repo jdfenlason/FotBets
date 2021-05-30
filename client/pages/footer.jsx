@@ -1,25 +1,14 @@
 import React from 'react';
 
-export default class Footer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-
-    };
-  }
-
-  render() {
-    return (
-
-      <div className="row">
+const Footer = () => {
+  return (
+    <div className="row">
         <div className="column-full">
-          <div className="header-container center">
-          <i className="fas fa-home"></i>
+          <div className="footer-container">
+          <i className="fas fa-home size"></i>
           </div>
         </div>
       </div>
-
-    );
-  }
-
-}
+  );
+};
+export default Footer;

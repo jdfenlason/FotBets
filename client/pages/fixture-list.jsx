@@ -5,8 +5,6 @@ import TodayFixtures from './today-fixtures';
 import NoGamesToday from './no-games-today';
 import Fixtures from './fixtures';
 import Loading from './loading';
-// import formatDate from './format-date';
-// import formatTime from './format-time';
 
 export default class FixtureList extends React.Component {
   constructor(props) {
@@ -54,8 +52,8 @@ export default class FixtureList extends React.Component {
       return (
         <div key={fixtures.fixture.id} onClick={() => this.handleClick(fixtures.fixture.id)} id={fixtures.fixture.id}>
 
-      <Fixtures fixtures={fixtures} id={fixtures.fixture.id} />
-    <MatchDetails matchdetails={fixtures} id={fixtures.fixture.id} className={this.state.toggleMatchDetails && this.state.activeId === fixtures.fixture.id ? '' : 'hidden'}/>
+    <Fixtures fixtures={fixtures} />
+    <MatchDetails matchdetails={fixtures} className={this.state.toggleMatchDetails && this.state.activeId === fixtures.fixture.id ? '' : 'hidden'}/>
         </div>
       );
     })}

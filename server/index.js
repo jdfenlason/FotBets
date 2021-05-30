@@ -112,22 +112,6 @@ app.get('/api/week-games/:date', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// app.get('api/week-games/:fixtureId', (req, res, next) => {
-//   const fixtureId = 695222;
-//   const sql = `
-//     select "fixtures"
-//       from "weekGames"
-//     `;
-//   db.query(sql).then(result => {
-//     const dbresult = result.rows[0];
-//     const fixtures = dbresult.fixtures;
-//     const filterById = fixtures.filter(fixture => {
-//       return fixture.fixture.id === 695222;
-//     });
-//     res.json(filterById);
-//   });
-// });
-
 app.use(staticMiddleware);
 
 app.use(errorMiddleware);
