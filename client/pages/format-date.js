@@ -1,6 +1,8 @@
-import { format, parseISO } from 'date-fns';
+import { format, utcToZonedTime } from 'date-fns-tz';
 const formatDate = props => {
-  const gameDate = format(parseISO(props), 'MM-dd');
+
+  const formatDate = utcToZonedTime(props, 'America/Los_Angeles');
+  const gameDate = format(formatDate, 'MM/dd');
   return gameDate;
 
 };

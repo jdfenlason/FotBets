@@ -1,49 +1,48 @@
 import React from 'react';
 import formatDate from './format-date';
-import formatTime from './format-time';
-export default function MatchDetails(props) {
+// import MatchForm from './matchForm';
+// import formatTime from './format-time';
+const MatchDetails = props => {
   return (
-     <>
-            {props.matchdetails.map(matchDetails =>
-      <div className ="row center" key= {matchDetails.fixture.id}>
-          <div className = "outer-card column-full">
-              <div className="match-details column-full center">
+    <div className = {props.className} id={props.id}>
+     <div className="row column-full center fixture-card">
 
-               <h2>Match Details</h2>
-            <h5 className="sub-head">{matchDetails.league.name}</h5>
-          <h6 className="sub-head">{matchDetails.league.round}</h6>
-          <img className="league-logo" src={matchDetails.league.logo} alt="" />
-            <div className ="sub-details column-thirds">
+        <div className="outer-card column-full">
+      <div className ="match-card row center" >
+                <h2>Match Details</h2>
+             <h5 className="sub-head">{props.matchdetails.league.name}</h5>
+           <h6 className="sub-head">{props.matchdetails.league.round}</h6>
+           <img className="league-logo" src={props.matchdetails.league.logo} alt="" />
 
-          <div className = "location">
-          <h6>{matchDetails.fixture.venue.city}</h6>
-          <h6>{matchDetails.fixture.venue.name}</h6>
+             <div className ="sub-details column-full">
 
-          </div>
-<div className="location">
-  <h6>
-    {formatTime(matchDetails.fixture.timestamp)}
-    </h6>
-   <h6>
-     {formatDate(matchDetails.fixture.date)}
-     </h6>
-          </div>
+           <div className = "location column-thirds">
 
-          <div className= "location">
-         <span>
-           <h6>Referee:</h6>
-          <h6>{matchDetails.fixture.referee}</h6>
-           </span>
+           <h5>{props.matchdetails.fixture.venue.city}</h5>
+
+           <h5>{props.matchdetails.fixture.venue.name}</h5>
+
+           </div>
+ <div className="location column-thirds1">
+    <h4>
+      {formatDate(props.matchdetails.fixture.date)}
+      </h4>
+           </div>
+
+           <div className= "location column-thirds">
+
+            <h4>Referee:</h4>
+           <h4>{props.matchdetails.fixture.referee}</h4>
+
+ </div>
+         </div>
 </div>
-        </div>
+</div>
+     </div>
 
-            </div>
+    </div>
 
-          </div>
-        </div>
-
-            )}
-        </>
   );
 
-}
+};
+export default MatchDetails;

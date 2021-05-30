@@ -99,9 +99,9 @@ app.get('/api/week-games/:date', (req, res, next) => {
       const dbresult = result.rows;
       const todayGames = dbresult.map(fixtures => {
         const filteredGames = fixtures.fixtures.filter(fixture => {
-          // const time = new Date();
-          // const formatDate = dateFns.format(time, 'yyyy-MM-dd');
-          return fixture.fixture.date.slice(0, 10) === '2021-05-28';
+          const time = new Date();
+          const formatDate = dateFns.format(time, 'yyyy-MM-dd');
+          return fixture.fixture.date.slice(0, 10) === formatDate;
           // return dateFns.isToday(fixture.fixture.date);
         });
         return filteredGames;
