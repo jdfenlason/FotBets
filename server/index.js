@@ -20,7 +20,7 @@ const db = new pg.Pool({
 });
 
 app.get('/api/week-games/', (req, res, next) => {
-  const leagueId = 253;
+  const leagueId = 255;
   const today = new Date();
   const year = today.getFullYear();
   const dayOfWeek = today.getDay();
@@ -71,7 +71,7 @@ function getCurrentRound(currentYear, leagueId) {
   };
   return axios.request(init)
     .then(response => {
-      return response.data.response;
+      return response.data.response.pop();
     });
 }
 
@@ -89,6 +89,17 @@ function getCurrentFixtures(round, currentSeason, leagueId) {
     return response.data.response;
   });
 }
+app.get('/api/team-form', (req, res, next) => {
+  const sql = `
+    select "matchDetails"
+    From "teamForm"
+    `;
+  db.query(sql)
+    .then(result => {
+      const dbresult = result.rows[0];
+      res.json(dbresult);
+    });
+});
 app.get('/api/week-games/:date', (req, res, next) => {
   const sql = `
    select "fixtures"
@@ -110,6 +121,74 @@ app.get('/api/week-games/:date', (req, res, next) => {
     })
     .catch(err => next(err));
 });
+
+app.post('/api/team-form/:teamId', (req, res, next) => {
+  const { utcDate } = req.body.teamId;
+  const sql = `
+    select *
+    from "teamForm"
+    where "date" = $1
+  `;
+  const params = [utcDate];
+  db.query(sql, params)
+    .then(result => {
+      if (result.rows.length) {
+        return result.rows[0];
+      }
+      return Promise.all([
+        getHomeForm(req.body.teamId),
+        getAwayForm(req.body.teamId)
+      ])
+        .then(concatPromises => {
+          return [].concat.apply([], concatPromises);
+        })
+        .then(matchDetails => {
+          const jsonMatchDetails = JSON.stringify(matchDetails);
+          const sql = `
+      insert into "teamForm" ("date", "matchDetails")
+      values ($1, $2)
+      returning *
+      `;
+          const params = [utcDate, jsonMatchDetails];
+          return db.query(sql, params).then(result => {
+            return result.rows[0];
+          });
+        });
+    })
+    .then(matchdetails => {
+      res.json(matchdetails);
+    })
+    .catch(err => next(err));
+});
+
+function getAwayForm(obj) {
+  const init = {
+    method: 'GET',
+    url: 'https://api-football-v1.p.rapidapi.com/v3/teams/statistics',
+    params: { league: obj.leagueId, season: obj.currentSeason, team: obj.awayId, date: obj.date },
+    headers: {
+      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
+    }
+  };
+  return axios.request(init).then(response => {
+    return response.data.response;
+  });
+}
+function getHomeForm(obj) {
+  const init = {
+    method: 'GET',
+    url: 'https://api-football-v1.p.rapidapi.com/v3/teams/statistics',
+    params: { league: obj.leagueId, season: obj.currentSeason, team: obj.homeId, date: obj.date },
+    headers: {
+      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
+    }
+  };
+  return axios.request(init).then(response => {
+    return response.data.response;
+  });
+}
 
 app.use(staticMiddleware);
 

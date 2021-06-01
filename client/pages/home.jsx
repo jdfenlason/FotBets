@@ -1,12 +1,13 @@
 import React from 'react';
 import Header from './header';
-import FixtureList from './fixture-list';
+
 import Footer from './footer';
+import FetchData from './fetch-data';
 export default function Home(props) {
   return (
     <>
     <Header />
-    <FixtureList />
+    <FetchData/>
     <Footer />
     </>
   );

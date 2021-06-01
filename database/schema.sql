@@ -22,3 +22,8 @@ create table "users" (
   primary key ("userId"),
   unique ("username")
 );
+
+create table "teamForm" (
+  "date" date not null,
+  "matchDetails" json
+);
