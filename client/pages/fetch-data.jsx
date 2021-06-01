@@ -12,6 +12,7 @@ export default class FetchData extends React.Component {
       toggleMatchDetails: false,
       activeId: ''
     };
+    this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick(id) {
@@ -29,7 +30,8 @@ export default class FetchData extends React.Component {
         matchForm: teamForm,
         isLoading: false
       });
-    });
+    }).catch(err => console.error(err));
+
     axios.request('/api/week-games/:date').then(response => {
       const fixtures = response.data;
       this.setState({
@@ -47,7 +49,7 @@ export default class FetchData extends React.Component {
       this.state.isLoading
         ? <p>isLoading...</p>
         : <>
-        <FixturesList fixtures ={this.state.fixturesList} matchForm = {this.state.matchForm} onClick={() => this.handleClick()}/>
+        <FixturesList toggleMatchDetails= {this.state.toggleMatchDetails} activeId = {this.state.activeId} fixtures ={this.state.fixturesList} matchForm = {this.state.matchForm} click={id => this.handleClick(id)}/>
 </>
     );
   }

@@ -5,19 +5,18 @@ import Fixtures from './fixtures';
 import MatchForm from './match-form';
 
 const FixtureList = props => {
-
   return (
     <>
         <TodayFixtures />
-    {props.fixtures.map((fixtures, event) => {
+    {props.fixtures.map(fixtures => {
       return (
-        <div key={fixtures.fixture.id} onClick={() => (fixtures.fixture.id)} id={fixtures.fixture.id}>
+        <div key={fixtures.fixture.id} id={fixtures.fixture.id} onClick={event => { props.click(fixtures.fixture.id); }} >
     <Fixtures fixtures={fixtures}/>
-    <MatchDetails fixtures={fixtures } />
-    <MatchForm matchForm = {props.matchForm}/>
+    <MatchDetails fixtures={fixtures } toggleMatchDetails={props.toggleMatchDetails} activeId={props.activeId} />
+    <MatchForm fixtures={fixtures } matchForm = {props.matchForm} id={fixtures.fixture.id} activeId={props.activeId} toggleMatchDetails={props.toggleMatchDetails}/>
+
       </div>
       );
-
     })}
     </>
   );

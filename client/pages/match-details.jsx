@@ -1,10 +1,23 @@
-
+import axios from 'axios';
 import React from 'react';
 import formatDate from './format-date';
 
 const MatchDetails = props => {
+  const teamId = {
+    leagueId: props.fixtures.league.id,
+    currentSeason: props.fixtures.league.season,
+    awayId: props.fixtures.teams.away.id,
+    homeId: props.fixtures.teams.home.id,
+    date: props.fixtures.fixture.date.slice(0, 10),
+    utcDate: props.fixtures.fixture.date
+  };
+  axios.post('/api/team-form/:teamId', { teamId }).then(response => {
+    // console.log(response);
+  }).catch(err => {
+    console.error(err);
+  });
   return (
-    <div className={props.className} id={props.id}>
+    <div className={props.toggleMatchDetails && props.activeId === props.fixtures.fixture.id ? '' : 'hidden'} id={props.fixtures.fixture.id} >
       <div className="row column-full center fixture-card">
         <div className="outer-card column-full">
           <div className="match-card row center">

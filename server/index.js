@@ -20,7 +20,7 @@ const db = new pg.Pool({
 });
 
 app.get('/api/week-games/', (req, res, next) => {
-  const leagueId = 255;
+  const leagueId = 253;
   const today = new Date();
   const year = today.getFullYear();
   const dayOfWeek = today.getDay();
@@ -96,7 +96,7 @@ app.get('/api/team-form', (req, res, next) => {
     `;
   db.query(sql)
     .then(result => {
-      const dbresult = result.rows[0];
+      const dbresult = result.rows;
       res.json(dbresult);
     });
 });
@@ -125,7 +125,7 @@ app.get('/api/week-games/:date', (req, res, next) => {
 app.post('/api/team-form/:teamId', (req, res, next) => {
   const { utcDate } = req.body.teamId;
   const sql = `
-    select *
+    select "matchDetails"
     from "teamForm"
     where "date" = $1
   `;
@@ -147,20 +147,21 @@ app.post('/api/team-form/:teamId', (req, res, next) => {
           const sql = `
       insert into "teamForm" ("date", "matchDetails")
       values ($1, $2)
-      returning *
+      returning "matchDetails"
       `;
           const params = [utcDate, jsonMatchDetails];
           return db.query(sql, params).then(result => {
             return result.rows[0];
-          });
+          })
+            .then(matchdetails => {
+              return res.json(matchdetails);
+            });
         });
-    })
-    .then(matchdetails => {
-      res.json(matchdetails);
+    }).then(matchDetails => {
+      return res.json(matchDetails);
     })
     .catch(err => next(err));
 });
-
 function getAwayForm(obj) {
   const init = {
     method: 'GET',
