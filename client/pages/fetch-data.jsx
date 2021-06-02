@@ -22,7 +22,7 @@ export default class FetchData extends React.Component {
       toggleMatchDetails: !prevState.toggleMatchDetails,
       activeId: id
     }));
-    this.willFetch(id);
+    this.filteredFixtureId(id);
   }
 
   handleTeamDetails(id) {
@@ -42,7 +42,7 @@ export default class FetchData extends React.Component {
 
   }
 
-  willFetch(id) {
+  filteredFixtureId(id) {
     const newArray = this.state.fixturesList.filter(fixtures => {
       return fixtures.fixture.id === id;
     });
@@ -55,18 +55,17 @@ export default class FetchData extends React.Component {
       date: newArray[0].fixture.date.slice(0, 10),
       utcDate: newArray[0].fixture.date
     };
+    return Promise.all([
+      axios.get('/api/odds/',
+        { params: teamId }),
+      axios.get('/api/team-form/', {
+        params: teamId
+      })]).then(response => {
 
-    return axios.get('/api/team-form/', {
-
-      params: teamId
-    }
-    ).then(response => {
       this.setState({
         isLoading: false,
         teamDetails: response.data[0].teamDetails
       });
-    }).catch(err => {
-      console.error(err);
     });
   }
 

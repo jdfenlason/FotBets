@@ -19,13 +19,68 @@ const db = new pg.Pool({
   }
 });
 
-app.get('/api/week-games/', (req, res, next) => {
-  const leagueId = 255;
+function getNewWeek() {
   const today = new Date();
   const year = today.getFullYear();
   const dayOfWeek = today.getDay();
   const daysSinceTuesday = dayOfWeek < 2 ? 2 - dayOfWeek - 7 : 2 - dayOfWeek;
   const firstDay = dateFns.addDays(today, daysSinceTuesday);
+  return [year, firstDay];
+}
+app.get('/api/odds/', (req, res, next) => {
+  const { fixtureId, leagueId, awayId, homeId, currentSeason } = req.query;
+  const results = getNewWeek();
+  const firstDay = results[1];
+  const sql = `
+  select "weekOdds"
+  from "oddsList"
+  where "date" = $1 AND
+  "fixtureId" = $2
+  `;
+  const params = [firstDay, fixtureId];
+  return db.query(sql, params).then(result => {
+    if (result.rows.length) {
+      return result.rows;
+    }
+    return getOdds(leagueId, currentSeason, firstDay);
+  }).then(oddsDetails => {
+    const jsonOddsDetails = JSON.stringify(oddsDetails);
+    const sql = `
+    insert into "weekOdds" ("leagueId", "fixtureId","homeId", "awayId", "firstDay", "oddDetails")
+    values ($1, $2, $3, $4, $5, $6)
+    where "fixtureId" = $3
+    returning "oddDetails"
+    `;
+    const params = [leagueId, fixtureId, homeId, awayId, firstDay, jsonOddsDetails];
+    return db
+      .query(sql, params)
+      .then(result => {
+        return result.rows[0];
+      })
+      .then(oddsDetails => {
+        return res.json(oddsDetails);
+      });
+  }).catch(err => next(err));
+});
+
+function getOdds(leagueId, currentSeason, firstDay) {
+  const init = {
+    method: 'GET',
+    url: 'https://api-football-v1.p.rapidapi.com/v3/odds',
+    params: { league: leagueId, season: currentSeason, date: firstDay, bookmaker: 6 },
+    headers: {
+      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
+    }
+  };
+  return axios.request(init).then(response => {
+
+    return response.data.response;
+  });
+}
+app.get('/api/week-games/', (req, res, next) => {
+  const leagueId = 255;
+  const [year, firstDay] = getNewWeek();
   const sql = ` select *
 From "weekGames"
 where "leagueId" = $1
@@ -113,8 +168,7 @@ app.get('/api/week-games/:date', (req, res, next) => {
 });
 
 app.get('/api/team-form/', (req, res, next) => {
-  const { fixtureId, leagueId, awayId, homeId, utcDate } =
-    req.query;
+  const { fixtureId, leagueId, awayId, homeId, utcDate } = req.query;
   const sql = `
     select "teamDetails"
     from "teamForm"

@@ -31,3 +31,13 @@ create table "teamForm" (
   "awayId" int not null,
   "teamDetails" json
 );
+
+create table "weekOdds" (
+  "oddsId" serial,
+  "leagueId" int not null,
+  "fixtureId" int not null,
+  "homeId" int not null,
+  "awayId" int not null,
+  "firstDay" date not null,
+  "oddsDetails" json
+)
