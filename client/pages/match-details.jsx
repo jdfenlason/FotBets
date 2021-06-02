@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React from 'react';
 import formatDate from './format-date';
-
 const MatchDetails = props => {
   const teamId = {
     leagueId: props.fixtures.league.id,
@@ -12,11 +11,12 @@ const MatchDetails = props => {
     utcDate: props.fixtures.fixture.date
   };
   axios.post('/api/team-form/:teamId', { teamId }).then(response => {
-    // console.log(response);
   }).catch(err => {
+
     console.error(err);
   });
   return (
+    <>
     <div className={props.toggleMatchDetails && props.activeId === props.fixtures.fixture.id ? '' : 'hidden'} id={props.fixtures.fixture.id} >
       <div className="row column-full center fixture-card">
         <div className="outer-card column-full">
@@ -46,6 +46,7 @@ const MatchDetails = props => {
     </div>
 </div>
 </div>
+</>
   );
 
 };

@@ -20,7 +20,7 @@ const db = new pg.Pool({
 });
 
 app.get('/api/week-games/', (req, res, next) => {
-  const leagueId = 253;
+  const leagueId = 114;
   const today = new Date();
   const year = today.getFullYear();
   const dayOfWeek = today.getDay();
@@ -97,9 +97,12 @@ app.get('/api/team-form', (req, res, next) => {
   db.query(sql)
     .then(result => {
       const dbresult = result.rows;
-      res.json(dbresult);
-    });
+      const flatten = dbresult.flat(1);
+      res.json(flatten);
+    })
+    .catch(err => next(err));
 });
+
 app.get('/api/week-games/:date', (req, res, next) => {
   const sql = `
    select "fixtures"
@@ -133,7 +136,7 @@ app.post('/api/team-form/:teamId', (req, res, next) => {
   db.query(sql, params)
     .then(result => {
       if (result.rows.length) {
-        return result.rows[0];
+        return result.rows;
       }
       return Promise.all([
         getHomeForm(req.body.teamId),
@@ -162,6 +165,7 @@ app.post('/api/team-form/:teamId', (req, res, next) => {
     })
     .catch(err => next(err));
 });
+
 function getAwayForm(obj) {
   const init = {
     method: 'GET',

@@ -7,10 +7,10 @@ export default class FetchData extends React.Component {
     super(props);
     this.state = {
       fixturesList: [],
-      matchForm: [],
       isLoading: false,
       toggleMatchDetails: false,
-      activeId: ''
+      activeId: '',
+      matchForm: []
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -23,12 +23,11 @@ export default class FetchData extends React.Component {
   }
 
   componentDidMount() {
-
     axios.request('/api/team-form').then(response => {
-      const teamForm = response.data.matchDetails;
+      const teamForm = response.data;
       this.setState({
         matchForm: teamForm,
-        isLoading: false
+        isLoading: true
       });
     }).catch(err => console.error(err));
 
@@ -46,10 +45,11 @@ export default class FetchData extends React.Component {
       <NoGamesToday/>;
     }
     return (
-      this.state.isLoading
+      (!this.state.isLoading)
         ? <p>isLoading...</p>
         : <>
-        <FixturesList toggleMatchDetails= {this.state.toggleMatchDetails} activeId = {this.state.activeId} fixtures ={this.state.fixturesList} matchForm = {this.state.matchForm} click={id => this.handleClick(id)}/>
+        <FixturesList toggleMatchDetails= {this.state.toggleMatchDetails} activeId = {this.state.activeId} fixtures ={this.state.fixturesList} matchForm = {this.state.matchForm} click={id => this.handleClick(id)} loading={this.state.isLoading}/>
+
 </>
     );
   }
