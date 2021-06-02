@@ -5,7 +5,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false
+      isLoading: true
     };
   }
 
@@ -17,9 +17,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      this.state.isLoading
-        ? <p>isLoading...</p>
-        : <Home />
+       <Home />
     );
   }
 }

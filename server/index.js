@@ -20,14 +20,13 @@ const db = new pg.Pool({
 });
 
 app.get('/api/week-games/', (req, res, next) => {
-  const leagueId = 114;
+  const leagueId = 255;
   const today = new Date();
   const year = today.getFullYear();
   const dayOfWeek = today.getDay();
   const daysSinceTuesday = dayOfWeek < 2 ? 2 - dayOfWeek - 7 : 2 - dayOfWeek;
   const firstDay = dateFns.addDays(today, daysSinceTuesday);
-  const sql =
-` select *
+  const sql = ` select *
 From "weekGames"
 where "leagueId" = $1
 AND   "firstDay" = $2
@@ -41,7 +40,8 @@ AND   "firstDay" = $2
       return getCurrentRound(year, leagueId)
         .then(currentRound => {
           return getCurrentFixtures(currentRound, year, leagueId);
-        }).then(currentFixtures => {
+        })
+        .then(currentFixtures => {
           const jsonFixtures = JSON.stringify(currentFixtures);
           const params = [jsonFixtures, firstDay, leagueId];
           const sql = `
@@ -53,10 +53,11 @@ AND   "firstDay" = $2
             return result.rows[0];
           });
         });
-    }).then(round => {
+    })
+    .then(round => {
       res.json(round);
-    }).catch(err => next(err));
-
+    })
+    .catch(err => next(err));
 });
 
 function getCurrentRound(currentYear, leagueId) {
@@ -69,10 +70,9 @@ function getCurrentRound(currentYear, leagueId) {
       'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
     }
   };
-  return axios.request(init)
-    .then(response => {
-      return response.data.response.pop();
-    });
+  return axios.request(init).then(response => {
+    return response.data.response.pop();
+  });
 }
 
 function getCurrentFixtures(round, currentSeason, leagueId) {
@@ -89,19 +89,6 @@ function getCurrentFixtures(round, currentSeason, leagueId) {
     return response.data.response;
   });
 }
-app.get('/api/team-form', (req, res, next) => {
-  const sql = `
-    select "matchDetails"
-    From "teamForm"
-    `;
-  db.query(sql)
-    .then(result => {
-      const dbresult = result.rows;
-      const flatten = dbresult.flat(1);
-      res.json(flatten);
-    })
-    .catch(err => next(err));
-});
 
 app.get('/api/week-games/:date', (req, res, next) => {
   const sql = `
@@ -110,11 +97,11 @@ app.get('/api/week-games/:date', (req, res, next) => {
 `;
   db.query(sql)
     .then(result => {
+      const time = new Date();
+      const formatDate = dateFns.format(time, 'yyyy-MM-dd');
       const dbresult = result.rows;
       const todayGames = dbresult.map(fixtures => {
         const filteredGames = fixtures.fixtures.filter(fixture => {
-          const time = new Date();
-          const formatDate = dateFns.format(time, 'yyyy-MM-dd');
           return fixture.fixture.date.slice(0, 10) === formatDate;
         });
         return filteredGames;
@@ -125,66 +112,66 @@ app.get('/api/week-games/:date', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.post('/api/team-form/:teamId', (req, res, next) => {
-  const { utcDate } = req.body.teamId;
+app.get('/api/team-form/', (req, res, next) => {
+  const { fixtureId, leagueId, awayId, homeId, utcDate } =
+    req.query;
   const sql = `
-    select "matchDetails"
+    select "teamDetails"
     from "teamForm"
-    where "date" = $1
+    where "date" = $1 AND
+    "fixtureId" = $2
   `;
-  const params = [utcDate];
+  const params = [utcDate, fixtureId];
   db.query(sql, params)
     .then(result => {
       if (result.rows.length) {
         return result.rows;
       }
       return Promise.all([
-        getHomeForm(req.body.teamId),
-        getAwayForm(req.body.teamId)
-      ])
-        .then(concatPromises => {
-          return [].concat.apply([], concatPromises);
-        })
-        .then(matchDetails => {
-          const jsonMatchDetails = JSON.stringify(matchDetails);
-          const sql = `
-      insert into "teamForm" ("date", "matchDetails")
-      values ($1, $2)
-      returning "matchDetails"
+        getTeamStats(req.query.teamId, homeId),
+        getTeamStats(req.query.teamId, awayId)
+      ]).then(teamDetails => {
+        const jsonTeamDetails = JSON.stringify(teamDetails);
+        const sql = `
+      insert into "teamForm" ("date", "leagueId", "fixtureId", "homeId", "awayId", "teamDetails")
+      values ($1, $2, $3, $4, $5, $6)
+      where "fixutreId" = $3
+      returning "teamDetails"
       `;
-          const params = [utcDate, jsonMatchDetails];
-          return db.query(sql, params).then(result => {
+        const params = [
+          utcDate,
+          leagueId,
+          fixtureId,
+          homeId,
+          awayId,
+          jsonTeamDetails
+        ];
+        return db
+          .query(sql, params)
+          .then(result => {
             return result.rows[0];
           })
-            .then(matchdetails => {
-              return res.json(matchdetails);
-            });
-        });
-    }).then(matchDetails => {
-      return res.json(matchDetails);
+          .then(teamDetails => {
+            return res.json(teamDetails);
+          });
+      });
+    })
+    .then(teamDetails => {
+      return res.json(teamDetails);
     })
     .catch(err => next(err));
 });
 
-function getAwayForm(obj) {
+function getTeamStats(obj, teamId) {
   const init = {
     method: 'GET',
     url: 'https://api-football-v1.p.rapidapi.com/v3/teams/statistics',
-    params: { league: obj.leagueId, season: obj.currentSeason, team: obj.awayId, date: obj.date },
-    headers: {
-      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
-      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
-    }
-  };
-  return axios.request(init).then(response => {
-    return response.data.response;
-  });
-}
-function getHomeForm(obj) {
-  const init = {
-    method: 'GET',
-    url: 'https://api-football-v1.p.rapidapi.com/v3/teams/statistics',
-    params: { league: obj.leagueId, season: obj.currentSeason, team: obj.homeId, date: obj.date },
+    params: {
+      league: obj.leagueId,
+      season: obj.currentSeason,
+      team: teamId,
+      date: obj.date
+    },
     headers: {
       'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
       'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'

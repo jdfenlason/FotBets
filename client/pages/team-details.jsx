@@ -1,11 +1,13 @@
-import React from 'react';
-const MatchForm = props => {
 
+import React from 'react';
+
+const TeamDetails = props => {
   return (
-    (!props.loading)
+    (props.loading)
       ? <p className = 'hidden'>Loading</p>
       : <>
-       <div className={props.toggleMatchDetails && props.activeId === props.fixtures.fixture.id ? '' : 'hidden'} id={props.fixtures.fixture.id} >
+
+       <div className={props.toggleMatchDetails && props.activeId === props.fixtures.fixture.id ? '' : 'hidden'} id={props.fixtures.fixture.id}>
          <div className="row column-full center fixture-card">
          <div className="outer-card column-full">
            <div className="match-card row center">
@@ -13,12 +15,12 @@ const MatchForm = props => {
              <div className="row column-full">
         <div className="location column-half margin-bottom">
 
-         <h4>{props.matchForm[0].matchDetails[0].team.name}</h4>
-              <h4>{props.matchForm[0].matchDetails[0].form} </h4>
+         <h4>{props.teamDetails[0].team.name}</h4>
+              <h4>{props.teamDetails[0].form} </h4>
         </div>
  <div className="location column-half margin-bottom">
-               <h4>{props.matchForm[0].matchDetails[1].team.name}</h4>
-               <span>{props.matchForm[0].matchDetails[1].form}</span>
+               <h4>{props.teamDetails[1].team.name}</h4>
+               <span>{props.teamDetails[1].form}</span>
              </div>
  </div>
 
@@ -30,4 +32,4 @@ const MatchForm = props => {
 
   );
 };
-export default MatchForm;
+export default TeamDetails;

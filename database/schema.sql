@@ -25,5 +25,9 @@ create table "users" (
 
 create table "teamForm" (
   "date" date not null,
-  "matchDetails" json
+  "leagueId" int not null,
+  "fixtureId" int not null,
+  "homeId" int not null,
+  "awayId" int not null,
+  "teamDetails" json
 );

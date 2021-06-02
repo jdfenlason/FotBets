@@ -1,7 +1,7 @@
 import React from 'react';
 
 import formatTime from './format-time';
-const Fixtures = props => {
+const Fixture = props => {
   return (
  <div className="row column-full center fixture-card" id={props.id}>
       <div className="outer-card column-full">
@@ -38,4 +38,4 @@ const Fixtures = props => {
 
   );
 };
-export default Fixtures;
+export default Fixture;
