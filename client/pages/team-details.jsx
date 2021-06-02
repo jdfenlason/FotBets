@@ -14,12 +14,13 @@ const TeamDetails = props => {
              <h3>Team Facts</h3>
              <div className="row column-full">
         <div className="location column-half margin-bottom">
-
          <h4>{props.teamDetails[0].team.name}</h4>
+             <h5>Past Results:</h5>
               <h4>{props.teamDetails[0].form} </h4>
         </div>
  <div className="location column-half margin-bottom">
                <h4>{props.teamDetails[1].team.name}</h4>
+                 <h5>Past Results:</h5>
                <span>{props.teamDetails[1].form}</span>
              </div>
  </div>
