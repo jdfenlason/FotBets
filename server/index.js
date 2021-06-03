@@ -58,18 +58,18 @@ app.get('/api/odds/', (req, res, next) => {
             });
             return filteredOdds;
           });
-          const flatten = (oddsDetailsMapped);
+          const flatten = oddsDetailsMapped.flat(1);
           return res.json(flatten);
         });
     });
   }).then(oddDetails => {
     const oddsDetailsMapped = oddDetails.map(oddsDetail => {
       const filteredOdds = oddsDetail.oddsDetails.filter(oddsDetails => {
-        return oddsDetails.fixture.id === fixtureId;
+        return Number(oddsDetails.fixture.id) === Number(fixtureId);
       });
       return filteredOdds;
     });
-    const flatten = oddsDetailsMapped;
+    const flatten = oddsDetailsMapped.flat(1);
     return res.json(flatten);
   })
     .catch(err => next(err));
@@ -90,7 +90,7 @@ function getOdds(date) {
   });
 }
 app.get('/api/week-games/', (req, res, next) => {
-  const leagueId = 255;
+  const leagueId = 30;
   const [year, firstDay] = getNewWeek();
   const sql = ` select *
 From "weekGames"

@@ -165,3 +165,51 @@ body {
   max-height: 50px;
   object-fit: contain;
 }
+
+.enter-button {
+  z-index: 10;
+  padding: 0.5rem;
+  margin: 0.5rem;
+  background-color: transparent;
+  font-size: 18px;
+  text-decoration: none;
+  color: #f8f8f8;
+  border: #f8f8f8 2px solid;
+  border-radius: 0.4rem;
+  width: 6rem;
+  font-weight: 600;
+}
+
+.enter-button:hover {
+  background-color: rgba(122, 112, 112, 0.2);
+  cursor: pointer;
+}
+
+.wager-input {
+  padding: 0.5rem;
+  margin: 0.5rem;
+  border-radius: 0.4rem;
+  border: #1b1b1b 1px solid;
+  color: #f8f8f8;
+  background-color: #6c6c6c;
+  text-align: center;
+}
+
+.wager-input::placeholder {
+  color: #f8f8f8;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.payout {
+  text-align: center;
+}

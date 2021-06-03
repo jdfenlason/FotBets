@@ -10,12 +10,10 @@ export default class FetchData extends React.Component {
       isLoading: true,
       toggleMatchDetails: false,
       activeId: '',
-      teamDetails: [],
-      oddsDetails: []
+      teamDetails: []
 
     };
     this.handleClick = this.handleClick.bind(this);
-    this.handleTeamDetails = this.handleTeamDetails.bind(this);
   }
 
   handleClick(id) {
@@ -24,11 +22,6 @@ export default class FetchData extends React.Component {
       activeId: id
     }));
     this.willFetch(id);
-    this.getOddsData(id);
-  }
-
-  handleTeamDetails(id) {
-
   }
 
   componentDidMount() {
@@ -66,25 +59,6 @@ export default class FetchData extends React.Component {
       this.setState({
         isLoading: false,
         teamDetails: response.data[0].teamDetails
-      });
-    }).catch(err => {
-      console.error(err);
-    });
-  }
-
-  getOddsData(id) {
-    const newArray = this.state.fixturesList.filter(fixtures => {
-      return fixtures.fixture.id === id;
-    });
-    const teamId = {
-      fixtureId: newArray[0].fixture.id,
-      date: newArray[0].fixture.date.slice(0, 10)
-    };
-    return axios.get('/api/odds/', {
-      params: teamId
-    }).then(response => {
-      this.setState({
-        oddsDetails: response.data[0]
       });
     }).catch(err => {
       console.error(err);
