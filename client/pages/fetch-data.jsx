@@ -10,7 +10,8 @@ export default class FetchData extends React.Component {
       isLoading: true,
       toggleMatchDetails: false,
       activeId: '',
-      teamDetails: []
+      teamDetails: [],
+      oddsDetails: []
 
     };
     this.handleClick = this.handleClick.bind(this);
@@ -22,7 +23,8 @@ export default class FetchData extends React.Component {
       toggleMatchDetails: !prevState.toggleMatchDetails,
       activeId: id
     }));
-    this.filteredFixtureId(id);
+    this.willFetch(id);
+    this.getOddsData(id);
   }
 
   handleTeamDetails(id) {
@@ -42,7 +44,7 @@ export default class FetchData extends React.Component {
 
   }
 
-  filteredFixtureId(id) {
+  willFetch(id) {
     const newArray = this.state.fixturesList.filter(fixtures => {
       return fixtures.fixture.id === id;
     });
@@ -55,17 +57,37 @@ export default class FetchData extends React.Component {
       date: newArray[0].fixture.date.slice(0, 10),
       utcDate: newArray[0].fixture.date
     };
-    return Promise.all([
-      axios.get('/api/odds/',
-        { params: teamId }),
-      axios.get('/api/team-form/', {
-        params: teamId
-      })]).then(response => {
 
+    return axios.get('/api/team-form/', {
+
+      params: teamId
+    }
+    ).then(response => {
       this.setState({
         isLoading: false,
         teamDetails: response.data[0].teamDetails
       });
+    }).catch(err => {
+      console.error(err);
+    });
+  }
+
+  getOddsData(id) {
+    const newArray = this.state.fixturesList.filter(fixtures => {
+      return fixtures.fixture.id === id;
+    });
+    const teamId = {
+      fixtureId: newArray[0].fixture.id,
+      date: newArray[0].fixture.date.slice(0, 10)
+    };
+    return axios.get('/api/odds/', {
+      params: teamId
+    }).then(response => {
+      this.setState({
+        oddsDetails: response.data[0]
+      });
+    }).catch(err => {
+      console.error(err);
     });
   }
 
@@ -77,7 +99,7 @@ export default class FetchData extends React.Component {
       this.state.isLoading
         ? <p>isLoading...</p>
         : <>
-        <FixturesList toggleMatchDetails= {this.state.toggleMatchDetails} activeId = {this.state.activeId} fixtures ={this.state.fixturesList} click={id => this.handleClick(id)} teamDetails = {this.state.teamDetails}loading={this.state.isLoading} clickTeamDetails={() => this.handleTeamDetails()}/>
+        <FixturesList toggleMatchDetails= {this.state.toggleMatchDetails} activeId = {this.state.activeId} fixtures ={this.state.fixturesList} click={id => this.handleClick(id)} teamDetails = {this.state.teamDetails}loading={this.state.isLoading} showOdds = {this.state.oddsDetails} clickTeamDetails={() => this.handleTeamDetails()}/>
 </>
     );
   }

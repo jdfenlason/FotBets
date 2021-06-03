@@ -3,6 +3,7 @@ import MatchDetails from './match-details';
 import TodayFixtures from './today-fixtures';
 import Fixture from './fixture';
 import TeamDetails from './team-details';
+import ShowOdds from './show-odds';
 const FixtureList = props => {
   return (
     (!props.teamDetails.length)
@@ -27,6 +28,7 @@ const FixtureList = props => {
     <Fixture fixtures={fixtures}/>
     <MatchDetails fixtures={fixtures} toggleMatchDetails={props.toggleMatchDetails} activeId={props.activeId} />
     <TeamDetails toggleMatchDetails={props.toggleMatchDetails} fixtures={fixtures } activeId={props.activeId} teamDetails ={props.teamDetails} loading= {props.loading}/>
+    <ShowOdds showOdds={props.showOdds} fixtures={fixtures} teamDetails ={props.teamDetails} activeId= {props.activeId} toggleMatchDetails={props.toggleMatchDetails}/>
       </div>
       );
     })}

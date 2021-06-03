@@ -33,11 +33,6 @@ create table "teamForm" (
 );
 
 create table "weekOdds" (
-  "oddsId" serial,
-  "leagueId" int not null,
-  "fixtureId" int not null,
-  "homeId" int not null,
-  "awayId" int not null,
-  "firstDay" date not null,
-  "oddsDetails" json
-)
+  "date" text not null,
+  "oddsDetails" json not null
+);

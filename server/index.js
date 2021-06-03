@@ -27,54 +27,65 @@ function getNewWeek() {
   const firstDay = dateFns.addDays(today, daysSinceTuesday);
   return [year, firstDay];
 }
+
 app.get('/api/odds/', (req, res, next) => {
-  const { fixtureId, leagueId, awayId, homeId, currentSeason } = req.query;
-  const results = getNewWeek();
-  const firstDay = results[1];
+  const { date, fixtureId } = req.query;
   const sql = `
-  select "weekOdds"
-  from "oddsList"
-  where "date" = $1 AND
-  "fixtureId" = $2
+  select "oddsDetails"
+  from "weekOdds"
+  Where "date" = $1
   `;
-  const params = [firstDay, fixtureId];
-  return db.query(sql, params).then(result => {
+  const params = [date];
+  db.query(sql, params).then(result => {
     if (result.rows.length) {
       return result.rows;
     }
-    return getOdds(leagueId, currentSeason, firstDay);
-  }).then(oddsDetails => {
-    const jsonOddsDetails = JSON.stringify(oddsDetails);
-    const sql = `
-    insert into "weekOdds" ("leagueId", "fixtureId","homeId", "awayId", "firstDay", "oddDetails")
-    values ($1, $2, $3, $4, $5, $6)
-    where "fixtureId" = $3
-    returning "oddDetails"
-    `;
-    const params = [leagueId, fixtureId, homeId, awayId, firstDay, jsonOddsDetails];
-    return db
-      .query(sql, params)
-      .then(result => {
-        return result.rows[0];
-      })
-      .then(oddsDetails => {
-        return res.json(oddsDetails);
+    return getOdds(date).then(oddsDetails => {
+      const jsonOddsDetails = JSON.stringify(oddsDetails);
+      const sql = `
+      insert into "weekOdds" ("date", "oddsDetails")
+      values ($1, $2)
+      returning "oddsDetails"
+      `;
+      const params = [date, jsonOddsDetails];
+      return db
+        .query(sql, params)
+        .then(result => {
+          const oddDetails = result.rows;
+          const oddsDetailsMapped = oddDetails.map(oddsDetail => {
+            const filteredOdds = oddsDetail.oddsDetails.filter(oddsDetails => {
+              return oddsDetails.fixture.id === fixtureId;
+            });
+            return filteredOdds;
+          });
+          const flatten = (oddsDetailsMapped);
+          return res.json(flatten);
+        });
+    });
+  }).then(oddDetails => {
+    const oddsDetailsMapped = oddDetails.map(oddsDetail => {
+      const filteredOdds = oddsDetail.oddsDetails.filter(oddsDetails => {
+        return oddsDetails.fixture.id === fixtureId;
       });
-  }).catch(err => next(err));
+      return filteredOdds;
+    });
+    const flatten = oddsDetailsMapped;
+    return res.json(flatten);
+  })
+    .catch(err => next(err));
 });
 
-function getOdds(leagueId, currentSeason, firstDay) {
+function getOdds(date) {
   const init = {
     method: 'GET',
     url: 'https://api-football-v1.p.rapidapi.com/v3/odds',
-    params: { league: leagueId, season: currentSeason, date: firstDay, bookmaker: 6 },
+    params: { date: date },
     headers: {
       'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
       'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
     }
   };
   return axios.request(init).then(response => {
-
     return response.data.response;
   });
 }
@@ -176,20 +187,20 @@ app.get('/api/team-form/', (req, res, next) => {
     "fixtureId" = $2
   `;
   const params = [utcDate, fixtureId];
-  db.query(sql, params)
+  return db.query(sql, params)
     .then(result => {
       if (result.rows.length) {
         return result.rows;
       }
       return Promise.all([
-        getTeamStats(req.query.teamId, homeId),
-        getTeamStats(req.query.teamId, awayId)
+        getTeamStats(req.query, homeId),
+        getTeamStats(req.query, awayId)
       ]).then(teamDetails => {
         const jsonTeamDetails = JSON.stringify(teamDetails);
         const sql = `
       insert into "teamForm" ("date", "leagueId", "fixtureId", "homeId", "awayId", "teamDetails")
       values ($1, $2, $3, $4, $5, $6)
-      where "fixutreId" = $3
+
       returning "teamDetails"
       `;
         const params = [
