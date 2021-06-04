@@ -43,7 +43,7 @@ create table "wagerInputs" (
   "fixtureId" int not null,
   "wagerAmount" int not null,
   "profitAmount" int not null,
-  "teamId" int not null,
+  "betTeamId" int not null,
   "teamLogo" text not null,
   "createdAt" timestamptz(6) not null default now(),
   primary Key ("betId")

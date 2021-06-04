@@ -4,6 +4,21 @@
   min-width: 100%;
 }
 
+.header {
+  height: 50px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.main {
+  flex: 1 0 auto;
+}
+
+.footer {
+  height: 50px;
+  flex-shrink: 0;
+}
+
 .column-full {
   width: 100%;
 }

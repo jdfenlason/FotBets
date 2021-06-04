@@ -3,7 +3,8 @@ import MatchDetails from './match-details';
 import TodayFixtures from './today-fixtures';
 import Fixture from './fixture';
 import TeamDetails from './team-details';
-import OddsHandler from './odds-handler';
+// import OddsHandler from './odds-handler';
+import BetSlip from './bet-slip';
 
 const FixtureList = props => {
   return (
@@ -13,10 +14,11 @@ const FixtureList = props => {
     {props.fixtures.map(fixtures => {
       return (
         <div key={fixtures.fixture.id} id={fixtures.fixture.id} onClick={event => { props.click(fixtures.fixture.id); }} >
-    <Fixture fixtures={fixtures}/>
-    <MatchDetails fixtures={fixtures } toggleMatchDetails={props.toggleMatchDetails} activeId={props.activeId} />
+    <Fixture fixtures={fixtures} toggleMatchDetails={props.toggleMatchDetails}/>
+    <MatchDetails fixtures={fixtures } toggleMatchDetails={props.toggleMatchDetails} onClick={event => { props.click(fixtures.fixture.id); }} activeId={props.activeId} />
 
-   <OddsHandler id= {fixtures.fixture.id} fixtures={fixtures } activeId={props.activeId} wagerAmount={props.wagerAmount} homeOdds={props.homeOdds} awayOdds = {props.awayOdds} userTokens = {props.UserTokens} betOn = {props.betOn}/>
+  <BetSlip id= {fixtures.fixture.id} fixtures ={fixtures} activeId={props.activeId} wagerAmount={props.wagerAmount} homeOdds={props.homeOdds} awayOdds = {props.awayOdds} userTokens = {props.userTokens} betOn = {props.betOn} handleChange = {props.handleChange} betId = {props.betId}
+    addWagerTeam = {props.addWagerTeam} />
     </div>
       );
 
@@ -34,7 +36,8 @@ const FixtureList = props => {
 
     <TeamDetails fixtures={fixtures } activeId={props.activeId} teamDetails ={props.teamDetails} loading= {props.loading}/>
 
-    <OddsHandler id= {fixtures.fixture.id} fixtures ={fixtures} activeId={props.activeId} wagerAmount={props.wagerAmount} homeOdds={props.homeOdds} awayOdds = {props.awayOdds} userTokens = {props.UserTokens} betOn = {props.betOn} />
+    <BetSlip id= {fixtures.fixture.id} fixtures ={fixtures} activeId={props.activeId} wagerAmount={props.wagerAmount} homeOdds={props.homeOdds} awayOdds = {props.awayOdds} betOn = {props.betOn} betId = {props.betTeamId}
+    addWagerTeam = {props.addWagerTeam} />
       </div>
       );
     })}

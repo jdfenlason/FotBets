@@ -18,26 +18,35 @@ const db = new pg.Pool({
     rejectUnauthorized: false
   }
 });
-
-app.post('/api/wager-input', (req, res, next) => {
-  const { userId, fixtureId, wagerAmount, profitAmount, teamId, teamLogo } =
-    req.body;
+app.get('/api/wager-input', (req, res, next) => {
   const sql = `
-        insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "teamId", "teamLogo")
+  select "fixtureId"
+  from "wagerInputs" `;
+
+  db.query(sql)
+    .then(result => {
+      res.json(result.rows);
+    })
+    .catch(err => next(err));
+});
+app.post('/api/wager-input', (req, res, next) => {
+  const { userId, fixtureId, wagerAmount, profitAmount, betTeamId, teamLogo } =
+    req.body.newWager;
+  const sql = `
+        insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "betTeamId", "teamLogo")
         values ($1, $2, $3, $4, $5, $6)
-        returning *
         `;
   const params = [
     userId,
     fixtureId,
     wagerAmount,
     profitAmount,
-    teamId,
+    betTeamId,
     teamLogo
   ];
   db.query(sql, params)
     .then(result => {
-      res.json(result.rows);
+      return res.json(result.rows);
     }).catch(err => next(err));
 });
 
@@ -50,69 +59,6 @@ function getNewWeek() {
   return [year, firstDay];
 }
 
-app.get('/api/odds/', (req, res, next) => {
-  const { date, fixtureId } = req.query;
-  const sql = `
-  select "oddsDetails"
-  from "weekOdds"
-  Where "date" = $1
-  `;
-  const params = [date];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length) {
-        return result.rows;
-      }
-      return getOdds(date).then(oddsDetails => {
-        const jsonOddsDetails = JSON.stringify(oddsDetails);
-        const sql = `
-      insert into "weekOdds" ("date", "oddsDetails")
-      values ($1, $2)
-      returning "oddsDetails"
-      `;
-        const params = [date, jsonOddsDetails];
-        return db.query(sql, params).then(result => {
-          const oddDetails = result.rows;
-          const oddsDetailsMapped = oddDetails.map(oddsDetail => {
-            const filteredOdds = oddsDetail.oddsDetails.filter(
-              oddsDetails => {
-                return oddsDetails.fixture.id === fixtureId;
-              }
-            );
-            return filteredOdds;
-          });
-          const flatten = oddsDetailsMapped.flat(1);
-          return res.json(flatten);
-        });
-      });
-    })
-    .then(oddDetails => {
-      const oddsDetailsMapped = oddDetails.map(oddsDetail => {
-        const filteredOdds = oddsDetail.oddsDetails.filter(oddsDetails => {
-          return Number(oddsDetails.fixture.id) === Number(fixtureId);
-        });
-        return filteredOdds;
-      });
-      const flatten = oddsDetailsMapped.flat(1);
-      return res.json(flatten);
-    })
-    .catch(err => next(err));
-});
-
-function getOdds(date) {
-  const init = {
-    method: 'GET',
-    url: 'https://api-football-v1.p.rapidapi.com/v3/odds',
-    params: { date: date },
-    headers: {
-      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
-      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
-    }
-  };
-  return axios.request(init).then(response => {
-    return response.data.response;
-  });
-}
 app.get('/api/week-games/', (req, res, next) => {
   const leagueId = 255;
   const [year, firstDay] = getNewWeek();
