@@ -10,10 +10,17 @@ export default class FetchData extends React.Component {
       isLoading: true,
       toggleMatchDetails: false,
       activeId: '',
-      teamDetails: []
+      teamDetails: [],
+      wagerAmount: '',
+      homeOdds: '',
+      awayOdds: '',
+      userTokens: '',
+      betOn: ''
 
     };
     this.handleClick = this.handleClick.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleClick(id) {
@@ -35,6 +42,33 @@ export default class FetchData extends React.Component {
       );
     });
 
+  }
+
+  addWagerInput(newWager) {
+    axios.post('/api/wager-input', { newWager });
+
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const newWager = {
+      userId: this.state.userId,
+      fixtureId: this.state.filterId,
+      wagerAmount: this.state.wagerAmount,
+      betOn: true,
+      oddsPicked: this.state.oddsPicked,
+      teamLogo: this.state.teamLogo
+      // add teamId
+    };
+    // this.onSubmit(newWager);
+    this.addWagerInput(newWager);
+    this.setState({ wagerAmount: '' });
+  }
+
+  handleChange(event) {
+    this.setState({
+      wagerAmount: event.target.value
+    });
   }
 
   willFetch(id) {
@@ -73,7 +107,7 @@ export default class FetchData extends React.Component {
       this.state.isLoading
         ? <p>isLoading...</p>
         : <>
-        <FixturesList toggleMatchDetails= {this.state.toggleMatchDetails} activeId = {this.state.activeId} fixtures ={this.state.fixturesList} click={id => this.handleClick(id)} teamDetails = {this.state.teamDetails}loading={this.state.isLoading} showOdds = {this.state.oddsDetails} clickTeamDetails={() => this.handleTeamDetails()}/>
+        <FixturesList wagerAmount={this.state.wagerAmount} homeOdds={this.state.homeOdds} awayOdds = {this.state.awayOdds} userTokens = {this.state.UserTokens} betOn = {this.state.betOn} toggleMatchDetails= {this.state.toggleMatchDetails} activeId = {this.state.activeId} fixtures ={this.state.fixturesList} click={id => this.handleClick(id)} teamDetails = {this.state.teamDetails}loading={this.state.isLoading} onSubmit ={this.handleSubmit} />
 </>
     );
   }

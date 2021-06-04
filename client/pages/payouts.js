@@ -1,7 +1,6 @@
-const makeBets = props => {
-  const totalPayout = props.stake * props.odds;
-  const profit = Math.floor(props.stake * (props.odds - 1));
-  const localProfit = profit.toLocaleString('en');
-  return [totalPayout, localProfit];
-};
+function makeBets(stake, odds) {
+  const totalPayout = stake * odds;
+  const profit = Math.floor(stake * (odds - 1));
+  return [`Your total payout will be ${totalPayout}, and your profit will be ${profit}`];
+}
 export default makeBets;

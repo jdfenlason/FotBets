@@ -19,6 +19,28 @@ const db = new pg.Pool({
   }
 });
 
+app.post('/api/wager-input', (req, res, next) => {
+  const { userId, fixtureId, wagerAmount, profitAmount, teamId, teamLogo } =
+    req.body;
+  const sql = `
+        insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "teamId", "teamLogo")
+        values ($1, $2, $3, $4, $5, $6)
+        returning *
+        `;
+  const params = [
+    userId,
+    fixtureId,
+    wagerAmount,
+    profitAmount,
+    teamId,
+    teamLogo
+  ];
+  db.query(sql, params)
+    .then(result => {
+      res.json(result.rows);
+    }).catch(err => next(err));
+});
+
 function getNewWeek() {
   const today = new Date();
   const year = today.getFullYear();
@@ -36,42 +58,44 @@ app.get('/api/odds/', (req, res, next) => {
   Where "date" = $1
   `;
   const params = [date];
-  db.query(sql, params).then(result => {
-    if (result.rows.length) {
-      return result.rows;
-    }
-    return getOdds(date).then(oddsDetails => {
-      const jsonOddsDetails = JSON.stringify(oddsDetails);
-      const sql = `
+  db.query(sql, params)
+    .then(result => {
+      if (result.rows.length) {
+        return result.rows;
+      }
+      return getOdds(date).then(oddsDetails => {
+        const jsonOddsDetails = JSON.stringify(oddsDetails);
+        const sql = `
       insert into "weekOdds" ("date", "oddsDetails")
       values ($1, $2)
       returning "oddsDetails"
       `;
-      const params = [date, jsonOddsDetails];
-      return db
-        .query(sql, params)
-        .then(result => {
+        const params = [date, jsonOddsDetails];
+        return db.query(sql, params).then(result => {
           const oddDetails = result.rows;
           const oddsDetailsMapped = oddDetails.map(oddsDetail => {
-            const filteredOdds = oddsDetail.oddsDetails.filter(oddsDetails => {
-              return oddsDetails.fixture.id === fixtureId;
-            });
+            const filteredOdds = oddsDetail.oddsDetails.filter(
+              oddsDetails => {
+                return oddsDetails.fixture.id === fixtureId;
+              }
+            );
             return filteredOdds;
           });
           const flatten = oddsDetailsMapped.flat(1);
           return res.json(flatten);
         });
-    });
-  }).then(oddDetails => {
-    const oddsDetailsMapped = oddDetails.map(oddsDetail => {
-      const filteredOdds = oddsDetail.oddsDetails.filter(oddsDetails => {
-        return Number(oddsDetails.fixture.id) === Number(fixtureId);
       });
-      return filteredOdds;
-    });
-    const flatten = oddsDetailsMapped.flat(1);
-    return res.json(flatten);
-  })
+    })
+    .then(oddDetails => {
+      const oddsDetailsMapped = oddDetails.map(oddsDetail => {
+        const filteredOdds = oddsDetail.oddsDetails.filter(oddsDetails => {
+          return Number(oddsDetails.fixture.id) === Number(fixtureId);
+        });
+        return filteredOdds;
+      });
+      const flatten = oddsDetailsMapped.flat(1);
+      return res.json(flatten);
+    })
     .catch(err => next(err));
 });
 
@@ -90,7 +114,7 @@ function getOdds(date) {
   });
 }
 app.get('/api/week-games/', (req, res, next) => {
-  const leagueId = 30;
+  const leagueId = 255;
   const [year, firstDay] = getNewWeek();
   const sql = ` select *
 From "weekGames"
@@ -187,7 +211,8 @@ app.get('/api/team-form/', (req, res, next) => {
     "fixtureId" = $2
   `;
   const params = [utcDate, fixtureId];
-  return db.query(sql, params)
+  return db
+    .query(sql, params)
     .then(result => {
       if (result.rows.length) {
         return result.rows;
@@ -195,12 +220,11 @@ app.get('/api/team-form/', (req, res, next) => {
       return Promise.all([
         getTeamStats(req.query, homeId),
         getTeamStats(req.query, awayId)
-      ]).then(teamDetails => {
-        const jsonTeamDetails = JSON.stringify(teamDetails);
+      ]).then(response => {
+        const jsonTeamDetails = JSON.stringify(response);
         const sql = `
       insert into "teamForm" ("date", "leagueId", "fixtureId", "homeId", "awayId", "teamDetails")
       values ($1, $2, $3, $4, $5, $6)
-
       returning "teamDetails"
       `;
         const params = [
@@ -211,14 +235,9 @@ app.get('/api/team-form/', (req, res, next) => {
           awayId,
           jsonTeamDetails
         ];
-        return db
-          .query(sql, params)
-          .then(result => {
-            return result.rows[0];
-          })
-          .then(teamDetails => {
-            return res.json(teamDetails);
-          });
+        return db.query(sql, params).then(result => {
+          return result.rows[0];
+        });
       });
     })
     .then(teamDetails => {

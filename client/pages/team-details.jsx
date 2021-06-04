@@ -7,7 +7,7 @@ const TeamDetails = props => {
       ? <p className = 'hidden'>Loading</p>
       : <>
 
-       <div className={props.toggleMatchDetails && props.activeId === props.fixtures.fixture.id ? '' : 'hidden'} id={props.fixtures.fixture.id}>
+       <div className={props.activeId === props.fixtures.fixture.id ? '' : 'hidden'} id={props.fixtures.fixture.id}>
          <div className="row column-full center fixture-card">
          <div className="outer-card column-full">
            <div className="match-card row center">

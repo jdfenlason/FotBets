@@ -1,86 +1,43 @@
-import React from 'react';
-import axios from 'axios';
-export default class WagerInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      oddsDetails: [],
-      fixtures: [],
-      filterId: '',
-      wagerInput: '',
-      betOn: false
-    };
-    this.handleFilterId = this.handleFilterId.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+// import React, { useState } from 'react';
+// import makeBets from './payouts';
+// const WagerInput = props => {
+//   console.log(() => props.handleSubmit());
+//   console.log(props);
+//   const [homeOdds, setHomeOdds] = useState();
+//   const [awayOdds, setAwayOdds] = useState();
+//   const [userId, setUserId] = useState();
+//   const [userTokens, setUserTokens] = useState('');
+//   const [wagerAmount, setWagerAmount] = useState('');
+//   const [value, setValue] = useState('');
+//   const [betOn, setBetOn] = useState('');
+//   const onChange = event => setWagerAmount(event.target.value);
+//   // const onClick = event =>
+//   // const onSubmit = event => {}
+//   return (
+//     <div className = {(!props.betOn) ? 'row' : 'hidden'}>
+//       <div className = "input-container column-full">
+//         <form onSubmit={this.props.onHandleSubmit()} className="column-full" >
+//         <input
+//         className = "wager-input"
+//         type="number"
+//         max = {userTokens}
+//         required
+//         autoFocus
+//         value = {wagerAmount}
+//         placeholder= "WAGER HERE"
+//         onChange={onChange}/>
+//         <div className = {(!betOn) ? 'row' : 'hidden'}>
 
-  handleFilterId(id, fixturesArray) {
-    this.setState(prevState => ({
-      filterId: id
-    }));
-    this.getOddsData(id, fixturesArray);
-  }
+//       {/* <h4 className={!wagerAmount ? 'hidden' : 'row payout center'}>{makeBets(Number(wagerAmount), Number(homeOdds))}</h4> */}
 
-  handleChange(event) {
-    this.setState({
-      wagerInput: event.target.value
-    });
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    const newWager = {
-      wagerInput: this.state.wagerInput,
-      betOn: true
-    };
-    this.props.Onsubmit(newWager);
-    this.setState({ wagerInput: ' ' });
-  }
-
-  getOddsData(id, fixturesArray) {
-    const newArray = fixturesArray.filter(fixtures => {
-      return fixtures.fixture.id === id;
-    });
-    const teamId = {
-      fixtureId: newArray[0].fixture.id,
-      date: newArray[0].fixture.date.slice(0, 10)
-    };
-    return axios.get('/api/odds/', {
-      params: teamId
-    }).then(response => {
-      this.setState({
-        oddsDetails: response.data[0]
-      });
-    }).catch(err => {
-      console.error(err);
-    });
-  }
-
-  render() {
-    const value = this.state.wagerInput;
-    return (
-      <div className = "input-container column-full">
-        <form onSubmit={this.handleSubmit} className="column-full" >
-        <input
-        className = "wager-input"
-        type="number"
-        max= '10'
-        required
-        autoFocus
-        value = {value}
-        placeholder= "WAGER HERE"
-        onChange={this.handleChange}/>
-          <div className = "row">
-
-      <h4 className={!value ? 'hidden' : 'row payout center'}>{`TOTAL PAYOUT IS ${value} and profit is ${value}`}</h4>
-
-          </div>
-        <div className = "button-container row">
-      <button className = "enter-button" type="submit" >ENTER</button>
-        </div>
-        </form>
-      </div>
-    );
-  }
-}
+//           </div>
+//         <div className = "button-container row">
+//       <button className = "enter-button" type="button" >Check Profit</button>
+//       <button className = "enter-button" type="submit" >ENTER</button>
+//         </div>
+//         </form>
+//       </div>
+//         </div>
+//   );
+// };
+// export default WagerInput;

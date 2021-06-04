@@ -213,3 +213,7 @@ body {
 .payout {
   text-align: center;
 }
+
+input:focus::placeholder {
+  color: transparent;
+}
