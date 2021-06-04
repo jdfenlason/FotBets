@@ -77,11 +77,13 @@ export default class FetchData extends React.Component {
   }
 
   checkProfit(props) {
+
     const odds = this.state.setOdds;
     const stake = this.state.wagerAmount;
+    const script = makeBetsScript(stake, odds);
     this.setState({
       checkProfit: true,
-      script: makeBetsScript(odds, stake)
+      script: script
     });
 
   }
@@ -91,13 +93,14 @@ export default class FetchData extends React.Component {
     event.target.reset();
     const stake = this.state.wagerAmount;
     const odds = this.state.setOdds;
+    const profitAmount = makeBets(stake, odds);
     const newWager = {
       userId: this.state.userId,
       fixtureId: this.state.activeId,
       wagerAmount: this.state.wagerAmount,
       betOn: true,
       teamLogo: this.state.teamLogo,
-      profitAmount: makeBets(stake, odds),
+      profitAmount: profitAmount,
       betTeamId: this.state.betTeamId
     };
     this.addWagerInput(newWager);

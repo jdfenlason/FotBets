@@ -171,11 +171,6 @@ body {
   border-radius: 1.25rem;
 }
 
-.enter-buttton:hover {
-  background-color: #aeaeae;
-  cursor: pointer;
-}
-
 .enter-button {
   z-index: 10;
   padding: 0.5rem;
@@ -188,6 +183,12 @@ body {
   border-radius: 0.4rem;
   width: 6rem;
   font-weight: 600;
+  cursor: pointer;
+}
+
+.enter-button:hover {
+  background-color: #aeaeae;
+  cursor: pointer;
 }
 
 .wager-input {
