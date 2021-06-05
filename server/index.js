@@ -18,14 +18,52 @@ const db = new pg.Pool({
     rejectUnauthorized: false
   }
 });
+app.get('/api/wager-input', (req, res, next) => {
+  const sql = `
+  select "fixtureId"
+  from "wagerInputs" `;
+
+  db.query(sql)
+    .then(result => {
+      res.json(result.rows);
+    })
+    .catch(err => next(err));
+});
+app.post('/api/wager-input', (req, res, next) => {
+  const { userId, fixtureId, wagerAmount, profitAmount, betTeamId, teamLogo } =
+    req.body.newWager;
+  const sql = `
+        insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "betTeamId", "teamLogo")
+        values ($1, $2, $3, $4, $5, $6)
+        `;
+  const params = [
+    userId,
+    fixtureId,
+    wagerAmount,
+    profitAmount,
+    betTeamId,
+    teamLogo
+  ];
+  db.query(sql, params)
+    .then(result => {
+      return res.json(result.rows);
+    })
+    .catch(err => next(err));
+});
+
+function getNewWeek() {
+  const today = new Date();
+  const year = today.getFullYear();
+  // const dayOfWeek = today.getDay();
+  // const daysSinceTuesday = dayOfWeek < 2 ? 2 - dayOfWeek - 7 : 2 - dayOfWeek;
+  // const firstDay = dateFns.addDays(today, daysSinceTuesday);
+  const firstDay = today;
+  return [year, firstDay];
+}
 
 app.get('/api/week-games/', (req, res, next) => {
   const leagueId = 255;
-  const today = new Date();
-  const year = today.getFullYear();
-  const dayOfWeek = today.getDay();
-  const daysSinceTuesday = dayOfWeek < 2 ? 2 - dayOfWeek - 7 : 2 - dayOfWeek;
-  const firstDay = dateFns.addDays(today, daysSinceTuesday);
+  const [year, firstDay] = getNewWeek();
   const sql = ` select *
 From "weekGames"
 where "leagueId" = $1
@@ -113,29 +151,31 @@ app.get('/api/week-games/:date', (req, res, next) => {
 });
 
 app.get('/api/team-form/', (req, res, next) => {
-  const { fixtureId, leagueId, awayId, homeId, utcDate } =
-    req.query;
+  const { fixtureId, leagueId, awayId, homeId, utcDate } = req.query;
   const sql = `
-    select "teamDetails"
+    select *
     from "teamForm"
     where "date" = $1 AND
     "fixtureId" = $2
   `;
   const params = [utcDate, fixtureId];
-  db.query(sql, params)
+  return db
+    .query(sql, params)
     .then(result => {
       if (result.rows.length) {
         return result.rows;
       }
       return Promise.all([
-        getTeamStats(req.query.teamId, homeId),
-        getTeamStats(req.query.teamId, awayId)
-      ]).then(teamDetails => {
-        const jsonTeamDetails = JSON.stringify(teamDetails);
+        getTeamStats(req.query, homeId),
+        getTeamStats(req.query, awayId)
+      ]).then(response => {
+        const jsonTeamDetails = JSON.stringify(response);
+        const awayOdds = randomOdds(1, 6, 2);
+        const homeOdds = randomOdds(1, 4, 2);
+
         const sql = `
-      insert into "teamForm" ("date", "leagueId", "fixtureId", "homeId", "awayId", "teamDetails")
-      values ($1, $2, $3, $4, $5, $6)
-      where "fixutreId" = $3
+      insert into "teamForm" ("date", "leagueId", "fixtureId", "homeId", "homeOdds", "awayOdds", "awayId", "teamDetails")
+      values ($1, $2, $3, $4, $5, $6, $7, $8)
       returning "teamDetails"
       `;
         const params = [
@@ -143,17 +183,14 @@ app.get('/api/team-form/', (req, res, next) => {
           leagueId,
           fixtureId,
           homeId,
+          homeOdds,
+          awayOdds,
           awayId,
           jsonTeamDetails
         ];
-        return db
-          .query(sql, params)
-          .then(result => {
-            return result.rows[0];
-          })
-          .then(teamDetails => {
-            return res.json(teamDetails);
-          });
+        return db.query(sql, params).then(result => {
+          return result.rows[0];
+        });
       });
     })
     .then(teamDetails => {
@@ -162,6 +199,9 @@ app.get('/api/team-form/', (req, res, next) => {
     .catch(err => next(err));
 });
 
+const randomOdds = (min, max, decimalPlaces) => {
+  return (Math.random() * (max - min) + min).toFixed(decimalPlaces) * 1;
+};
 function getTeamStats(obj, teamId) {
   const init = {
     method: 'GET',

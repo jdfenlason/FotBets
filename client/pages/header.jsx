@@ -1,17 +1,10 @@
 import React from 'react';
 
-export default class Header extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tokenAmount: 'tokenAmount'
-    };
-  }
+const Header = () => {
 
-  render() {
-    return (
+  return (
 
-    <header>
+      <header>
       <div className="row">
         <div className="column-full">
           <div className="header-container">
@@ -21,7 +14,7 @@ export default class Header extends React.Component {
       </div>
     </header>
 
-    );
-  }
+  );
+};
 
-}
+export default Header;

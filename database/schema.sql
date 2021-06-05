@@ -9,7 +9,7 @@ create schema "public";
 create table "weekGames" (
     "leagueId" int  not null,
     "firstDay" date not null,
-    "fixtures"    json
+    "fixtures"    json not null
 );
 
 create table "users" (
@@ -28,6 +28,25 @@ create table "teamForm" (
   "leagueId" int not null,
   "fixtureId" int not null,
   "homeId" int not null,
+  "homeOdds" numeric not null,
   "awayId" int not null,
+  "awayOdds" numeric not null,
   "teamDetails" json
 );
+
+create table "weekOdds" (
+  "date" text not null,
+  "oddsDetails" json not null
+);
+
+create table "wagerInputs" (
+  "betId" serial,
+  "userId"  int not null,
+  "fixtureId" int not null,
+  "wagerAmount" int not null,
+  "profitAmount" int not null,
+  "betTeamId" int not null,
+  "teamLogo" text not null,
+  "createdAt" timestamptz(6) not null default now(),
+  primary Key ("betId")
+)
