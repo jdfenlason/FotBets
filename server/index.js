@@ -47,7 +47,8 @@ app.post('/api/wager-input', (req, res, next) => {
   db.query(sql, params)
     .then(result => {
       return res.json(result.rows);
-    }).catch(err => next(err));
+    })
+    .catch(err => next(err));
 });
 
 function getNewWeek() {
@@ -151,7 +152,7 @@ app.get('/api/week-games/:date', (req, res, next) => {
 app.get('/api/team-form/', (req, res, next) => {
   const { fixtureId, leagueId, awayId, homeId, utcDate } = req.query;
   const sql = `
-    select "teamDetails"
+    select *
     from "teamForm"
     where "date" = $1 AND
     "fixtureId" = $2
@@ -168,9 +169,12 @@ app.get('/api/team-form/', (req, res, next) => {
         getTeamStats(req.query, awayId)
       ]).then(response => {
         const jsonTeamDetails = JSON.stringify(response);
+        const awayOdds = randomOdds(1, 6, 2);
+        const homeOdds = randomOdds(1, 4, 2);
+
         const sql = `
-      insert into "teamForm" ("date", "leagueId", "fixtureId", "homeId", "awayId", "teamDetails")
-      values ($1, $2, $3, $4, $5, $6)
+      insert into "teamForm" ("date", "leagueId", "fixtureId", "homeId", "homeOdds", "awayOdds", "awayId", "teamDetails")
+      values ($1, $2, $3, $4, $5, $6, $7, $8)
       returning "teamDetails"
       `;
         const params = [
@@ -178,6 +182,8 @@ app.get('/api/team-form/', (req, res, next) => {
           leagueId,
           fixtureId,
           homeId,
+          homeOdds,
+          awayOdds,
           awayId,
           jsonTeamDetails
         ];
@@ -192,6 +198,9 @@ app.get('/api/team-form/', (req, res, next) => {
     .catch(err => next(err));
 });
 
+const randomOdds = (min, max, decimalPlaces) => {
+  return (Math.random() * (max - min) + min).toFixed(decimalPlaces) * 1;
+};
 function getTeamStats(obj, teamId) {
   const init = {
     method: 'GET',

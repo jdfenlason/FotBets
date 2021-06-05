@@ -28,7 +28,9 @@ create table "teamForm" (
   "leagueId" int not null,
   "fixtureId" int not null,
   "homeId" int not null,
+  "homeOdds" numeric not null,
   "awayId" int not null,
+  "awayOdds" numeric not null,
   "teamDetails" json
 );
 

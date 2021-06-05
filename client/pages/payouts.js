@@ -6,7 +6,7 @@ const makeBets = (stake, odds) => {
 const makeBetsScript = (stake, odds) => {
   const totalPayout = Math.floor(stake * odds);
   const profit = Math.floor(stake * (odds - 1));
-  return `Your total payout will be ${totalPayout} tokens, and your profit will be ${profit} tokens`;
+  return `Your profit will be ${profit} tokens, and your total payout will be ${totalPayout} tokens`;
 };
 
 export { makeBets, makeBetsScript };

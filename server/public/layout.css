@@ -4,8 +4,12 @@
   min-width: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .header {
-  height: 50px;
+  height: 45px;
   flex-shrink: 0;
   width: 100%;
 }

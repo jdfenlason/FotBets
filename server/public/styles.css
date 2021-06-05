@@ -124,7 +124,7 @@ h5 {
 .fixture-date-heading {
   text-align: center;
   font-family: "Abhaya Libre", serif;
-  margin: 4rem;
+  margin-top: 4rem;
 }
 
 .inner-card {
@@ -160,6 +160,7 @@ body {
 
 .small-logo {
   max-height: 75px;
+  padding: 0.5rem;
   object-fit: contain;
   cursor: pointer;
   z-index: 5;
