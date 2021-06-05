@@ -61,7 +61,7 @@ function getNewWeek() {
   return [year, firstDay];
 }
 
-app.get('/api/week-games/', (req, res, next) => {
+app.get('/api/week-games', (req, res, next) => {
   const leagueId = 255;
   const [year, firstDay] = getNewWeek();
   const sql = ` select *
@@ -150,7 +150,7 @@ app.get('/api/week-games/:date', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.get('/api/team-form/', (req, res, next) => {
+app.get('/api/team-form', (req, res, next) => {
   const { fixtureId, leagueId, awayId, homeId, utcDate } = req.query;
   const sql = `
     select *
