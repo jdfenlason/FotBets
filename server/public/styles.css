@@ -1,5 +1,6 @@
 .header-container {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   font-family: "Abhaya Libre", serif;
   font-weight: 700;
@@ -12,14 +13,21 @@
 .footer-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   background-color: #1b1b1b;
   height: 3rem;
   margin-top: 1rem;
 }
 
+.tokens {
+  color: gold;
+  margin: 1rem;
+  font-size: 1.8rem;
+}
+
 .size {
   font-size: 2em;
+  cursor: pointer;
 }
 
 .hidden {

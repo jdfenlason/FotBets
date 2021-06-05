@@ -1,7 +1,6 @@
 import React from 'react';
 
 const Header = () => {
-
   return (
 
       <header>
@@ -9,6 +8,7 @@ const Header = () => {
         <div className="column-full">
           <div className="header-container">
             <h2>FotBets</h2>
+            <i className="fas fa-coins tokens "></i>
           </div>
         </div>
       </div>

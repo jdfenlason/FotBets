@@ -3,7 +3,6 @@ import MatchDetails from './match-details';
 import TodayFixtures from './today-fixtures';
 import Fixture from './fixture';
 import TeamDetails from './team-details';
-// import OddsHandler from './odds-handler';
 import BetSlip from './bet-slip';
 
 const FixtureList = props => {
@@ -37,12 +36,9 @@ const FixtureList = props => {
               id={fixtures.fixture.id}
               fixtures={fixtures}
               activeId={props.activeId}
-              wagerAmount={props.wagerAmount}
               homeOdds={props.homeOdds}
               awayOdds={props.awayOdds}
-              userTokens={props.userTokens}
               betOn={props.betOn}
-              handleChange={props.handleChange}
               betId={props.betId}
               addWagerTeam={props.addWagerTeam}
             />
