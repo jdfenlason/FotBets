@@ -8,6 +8,16 @@
   background-color: #1b1b1b;
   color: #f8f8f8;
   padding-left: 1rem;
+  max-height: 75px;
+}
+
+.token-amount-container {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.token-amount-container > h2 {
+  margin-bottom: 0;
 }
 
 .footer-container {
@@ -19,15 +29,30 @@
   margin-top: 1rem;
 }
 
+.inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 1rem;
+}
+
 .tokens {
   color: gold;
-  margin: 1rem;
+  margin: 0.5rem;
   font-size: 1.8rem;
 }
 
 .size {
   font-size: 2em;
   cursor: pointer;
+}
+
+.size:hover {
+  background-color: #aeaeae;
+}
+
+.sml-margin {
+  margin-right: 1rem;
 }
 
 .hidden {
@@ -83,6 +108,10 @@
   justify-content: center;
 }
 
+.align-center {
+  align-items: align-center;
+}
+
 h6 {
   margin: 1rem;
 }
@@ -132,7 +161,7 @@ h5 {
 .fixture-date-heading {
   text-align: center;
   font-family: "Abhaya Libre", serif;
-  margin-top: 4rem;
+  margin-top: 1rem;
 }
 
 .inner-card {

@@ -2,14 +2,17 @@ import React from 'react';
 import Header from './header';
 import Footer from './footer';
 import FixturesContainer from './fixtures-container';
-export default function Home(props) {
+import Profile from './user-profile';
+
+const Home = props => {
   return (
     <>
       <div className="container">
         <div className="header">
-          <Header />
+          <Header userTokens={props.userTokens} />
         </div>
         <div className="main">
+          <Profile className= "hidden" userTokens={props.userTokens} userName={props.userName} />
           <FixturesContainer />
         </div>
         <div className="footer">
@@ -18,4 +21,6 @@ export default function Home(props) {
       </div>
     </>
   );
-}
+
+};
+export default Home;

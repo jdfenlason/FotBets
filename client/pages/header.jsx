@@ -1,14 +1,16 @@
 import React from 'react';
 
-const Header = () => {
+const Header = props => {
   return (
-
       <header>
       <div className="row">
         <div className="column-full">
           <div className="header-container">
             <h2>FotBets</h2>
-            <i className="fas fa-coins tokens "></i>
+            <div className = "inline">
+              <i className="fas fa-coins tokens"></i>
+              <h4>{props.userTokens.toLocaleString('en-US')}</h4>
+            </div>
           </div>
         </div>
       </div>

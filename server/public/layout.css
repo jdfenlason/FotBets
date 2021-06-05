@@ -9,7 +9,6 @@ html {
 }
 
 .header {
-  height: 45px;
   flex-shrink: 0;
   width: 100%;
 }

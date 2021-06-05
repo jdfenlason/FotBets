@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import FixturesList from './fixture-list';
-import NoGamesToday from './no-games-today';
+import NoMatchesToday from './no-matches-today';
 import { makeBets, makeBetsScript } from './payouts';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
@@ -14,16 +14,17 @@ export default class FixturesContainer extends React.Component {
       teamDetails: [],
       wagerAmount: '',
       profitAmount: '',
-      userTokens: 300,
-      gamesBetOn: [],
+      userTokens: '',
+      matchesBetOn: [],
       betTeamId: '',
-      userId: 1,
+      userId: 2,
       setOdds: '',
       betTeamLogo: '',
       checkProfit: false,
       script: '',
       homeOdds: '',
-      awayOdds: ''
+      awayOdds: '',
+      userName: ''
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -51,14 +52,14 @@ export default class FixturesContainer extends React.Component {
     axios.get('/api/wager-input').then(response => {
       const pastBets = response.data;
       this.setState({
-        gamesBetOn: pastBets
+        matchesBetOn: pastBets
       });
     });
   }
 
   addWagerInput(newWager) {
     const { fixtureId } = newWager.fixtureId;
-    const newArray = this.state.gamesBetOn.slice();
+    const newArray = this.state.matchesBetOn.slice();
     newArray.push(fixtureId);
     axios.post('/api/wager-input', { newWager });
   }
@@ -127,7 +128,7 @@ export default class FixturesContainer extends React.Component {
     };
 
     axios
-      .get('/api/team-form/', {
+      .get('/api/team-form', {
         params: teamId
       })
       .then(response => {
@@ -145,8 +146,9 @@ export default class FixturesContainer extends React.Component {
 
   render() {
     const value = this.state.wagerAmount;
+    const checkBet = this.state.matchesBetOn.includes(this.state.activeId);
     if (!this.state.fixturesList.length) {
-      <NoGamesToday />;
+      <NoMatchesToday />;
     }
     return this.state.isLoading
       ? (
@@ -169,45 +171,56 @@ export default class FixturesContainer extends React.Component {
           addWagerTeam={this.addWagerTeam}
         />
         <>
-          <div className={!this.state.betTeamId ? 'none' : ''}>
-            <div className="row column-full center">
-              <div className="outer-card column-full">
-                <div className="match-card row center">
-                  <img
-                    className={'team-logo'}
-                    src={this.state.teamLogo}
-                    alt=""
-                  />
-                  <div className="input-container column-full">
-                    <form onSubmit={this.handleSubmit} className="column-full">
-                      <input
-                        className="wager-input"
-                        type="number"
-                        max={this.state.userTokens}
-                        required
-                        autoFocus
-                        value={value}
-                        placeholder="WAGER HERE"
-                        onChange={this.handleChange}
-                      />
-                      <div>
-                        <h4 className={this.state.script === '' ? 'hidden' : 'row payout center'}>
-                          {this.state.script}
-                        </h4>
-                      </div>
-                      <div className="button-container row">
-                        <button className="enter-button " type="submit">
-                          Enter
-                        </button>
-                        <button
-                          onClick={this.checkProfit}
-                          className="enter-button"
-                          type="button"
-                        >
-                          Check Profit
-                        </button>
-                      </div>
-                    </form>
+          <div className={checkBet ? 'hidden' : ''}>
+            <div className={!this.state.betTeamId ? 'none' : ''}>
+              <div className="row column-full center">
+                <div className="outer-card column-full">
+                  <div className="match-card row center">
+                    <img
+                      className={'team-logo'}
+                      src={this.state.teamLogo}
+                      alt=""
+                    />
+                    <div className="input-container column-full">
+                      <form
+                        onSubmit={this.handleSubmit}
+                        className="column-full"
+                      >
+                        <input
+                          className="wager-input"
+                          type="number"
+                          max={this.state.userTokens}
+                          required
+                          autoFocus
+                          value={value}
+                          placeholder="WAGER HERE"
+                          onChange={this.handleChange}
+                        />
+                        <div>
+                          <h4
+                            className={
+                              this.state.script === ''
+                                ? 'hidden'
+                                : 'row payout center'
+                            }
+                          >
+                            {this.state.script}
+                          </h4>
+                        </div>
+                        <div className="button-container row">
+                          <button className="enter-button " type="submit">
+                            Enter
+                          </button>
+                          <button
+                            onClick={this.checkProfit}
+                            className="enter-button"
+                            type="button"
+                          >
+                            Check Profit
+                          </button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>

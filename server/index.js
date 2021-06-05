@@ -18,6 +18,23 @@ const db = new pg.Pool({
     rejectUnauthorized: false
   }
 });
+
+app.get('/api/user-profile', (req, res, next) => {
+
+  const { userId } = req.query;
+  const sql = `
+  select "tokenAmount", "userName"
+  From "users"
+  where "userId" = $1
+  `;
+  const params = [userId];
+  db.query(sql, params)
+    .then(result => {
+      res.json(result.rows[0]);
+    })
+    .catch(err => next(err));
+});
+
 app.get('/api/wager-input', (req, res, next) => {
   const sql = `
   select "fixtureId"
@@ -25,7 +42,12 @@ app.get('/api/wager-input', (req, res, next) => {
 
   db.query(sql)
     .then(result => {
-      res.json(result.rows);
+      const dbresult = result.rows;
+      const gamesBetOn = dbresult.map(fixturesId => {
+        return fixturesId.fixtureId;
+      }
+      );
+      res.json(gamesBetOn);
     })
     .catch(err => next(err));
 });
@@ -60,7 +82,7 @@ function getNewWeek() {
   return [year, firstDay];
 }
 
-app.get('/api/week-games/', (req, res, next) => {
+app.get('/api/week-games', (req, res, next) => {
   const leagueId = 255;
   const [year, firstDay] = getNewWeek();
   const sql = ` select *
@@ -149,7 +171,7 @@ app.get('/api/week-games/:date', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.get('/api/team-form/', (req, res, next) => {
+app.get('/api/team-form', (req, res, next) => {
   const { fixtureId, leagueId, awayId, homeId, utcDate } = req.query;
   const sql = `
     select *
