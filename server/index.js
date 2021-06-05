@@ -54,9 +54,10 @@ app.post('/api/wager-input', (req, res, next) => {
 function getNewWeek() {
   const today = new Date();
   const year = today.getFullYear();
-  const dayOfWeek = today.getDay();
-  const daysSinceTuesday = dayOfWeek < 2 ? 2 - dayOfWeek - 7 : 2 - dayOfWeek;
-  const firstDay = dateFns.addDays(today, daysSinceTuesday);
+  // const dayOfWeek = today.getDay();
+  // const daysSinceTuesday = dayOfWeek < 2 ? 2 - dayOfWeek - 7 : 2 - dayOfWeek;
+  // const firstDay = dateFns.addDays(today, daysSinceTuesday);
+  const firstDay = today;
   return [year, firstDay];
 }
 
