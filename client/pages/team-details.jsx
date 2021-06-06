@@ -15,7 +15,7 @@ const TeamDetails = props => {
         <div className="row column-full center fixture-card">
           <div className="outer-card column-full">
             <div className="match-card row center">
-              <h2>Team Facts and Bet Slip</h2>
+              <h2> Wager Slip</h2>
               <div className="row column-full">
                 <div className="location column-half margin-bottom">
                   <h4>{props.fixtures.teams.home.name}</h4>

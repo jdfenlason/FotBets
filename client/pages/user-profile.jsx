@@ -9,7 +9,7 @@ const Profile = props => {
             <h1>{props.userName}</h1>
           </div>
           <div className = "token-amount-container">
-          <h3>Your current Token Amount is:</h3>
+          <h3>Your current Token amount is:</h3>
             <h2>
               <i className="fas fa-coins tokens"></i>
               {props.userTokens.toLocaleString('en-US')}
