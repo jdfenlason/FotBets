@@ -83,7 +83,9 @@ function getNewWeek() {
 }
 
 app.get('/api/week-games', (req, res, next) => {
-  const leagueId = 114;
+
+  const leagueId = 255;
+
   const [year, firstDay] = getNewWeek();
   const sql = ` select *
 From "weekGames"
