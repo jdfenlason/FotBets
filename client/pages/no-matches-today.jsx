@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NoGamesToday = () => {
+const NoMatchesToday = () => {
   return (
       <div className="row">
         <div className="no-game">
@@ -10,4 +10,4 @@ const NoGamesToday = () => {
   );
 
 };
-export default NoGamesToday;
+export default NoMatchesToday;

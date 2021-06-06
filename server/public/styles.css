@@ -1,5 +1,6 @@
 .header-container {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   font-family: "Abhaya Libre", serif;
   font-weight: 700;
@@ -7,19 +8,47 @@
   background-color: #1b1b1b;
   color: #f8f8f8;
   padding-left: 1rem;
+  max-height: 75px;
+}
+
+.token-amount-container {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.token-amount-container > h2 {
+  margin-bottom: 0;
 }
 
 .footer-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   background-color: #1b1b1b;
   height: 3rem;
   margin-top: 1rem;
 }
 
+.inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 1rem;
+}
+
+.tokens {
+  color: gold;
+  margin: 0.5rem;
+  font-size: 1.8rem;
+}
+
 .size {
   font-size: 2em;
+  cursor: pointer;
+}
+
+.sml-margin {
+  margin-right: 1rem;
 }
 
 .hidden {
@@ -28,6 +57,11 @@
 
 .fixture-card {
   cursor: pointer;
+}
+
+.text-center {
+  text-align: center;
+  justify-content: center;
 }
 
 .outer-card {
@@ -75,6 +109,10 @@
   justify-content: center;
 }
 
+.align-center {
+  align-items: align-center;
+}
+
 h6 {
   margin: 1rem;
 }
@@ -98,11 +136,6 @@ h6 {
   margin-bottom: 1rem;
 }
 
-.location > h4,
-h5 {
-  margin: 0.5rem;
-}
-
 .team-logo {
   margin-top: 1rem;
   height: 75px;
@@ -124,7 +157,7 @@ h5 {
 .fixture-date-heading {
   text-align: center;
   font-family: "Abhaya Libre", serif;
-  margin-top: 4rem;
+  margin-top: 1rem;
 }
 
 .inner-card {

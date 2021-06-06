@@ -14,13 +14,13 @@ create table "weekGames" (
 
 create table "users" (
   "userId"           serial,
-  "username"         text    not null,
+  "userName"         text    not null,
   "hashedPassword"   text    not null,
   "tokenAmount"   integer   not null,
   "createdAt"   timestamptz(6) not null default now(),
   "updatedAt"   timestamptz(6) not null default now(),
   primary key ("userId"),
-  unique ("username")
+  unique ("userName")
 );
 
 create table "teamForm" (

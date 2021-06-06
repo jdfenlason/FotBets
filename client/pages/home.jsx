@@ -2,20 +2,30 @@ import React from 'react';
 import Header from './header';
 import Footer from './footer';
 import FixturesContainer from './fixtures-container';
-export default function Home(props) {
+import Profile from './user-profile';
+
+const Home = props => {
   return (
     <>
       <div className="container">
         <div className="header">
-          <Header />
+          <Header userTokens={props.userTokens} />
         </div>
         <div className="main">
-          <FixturesContainer />
+          <div className={!props.profileOn && props.fixturesOn ? 'hidden' : ''}>
+            <Profile userTokens={props.userTokens} userName={props.userName} />
+          </div>
+          <div className={props.profileOn && !props.fixturesOn ? 'hidden' : ''}>
+            <FixturesContainer />
+          </div>
         </div>
         <div className="footer">
-          <Footer />
+          <Footer handleProfile={props.handleProfile}
+            handleFixtures = {props.handleFixtures}
+          />
         </div>
       </div>
     </>
   );
-}
+};
+export default Home;

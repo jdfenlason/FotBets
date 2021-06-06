@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import FixturesList from './fixture-list';
-import NoGamesToday from './no-games-today';
+import NoMatchesToday from './no-matches-today';
 import { makeBets, makeBetsScript } from './payouts';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
@@ -14,12 +14,11 @@ export default class FixturesContainer extends React.Component {
       teamDetails: [],
       wagerAmount: '',
       profitAmount: '',
-      userTokens: 300,
-      gamesBetOn: [],
+      userTokens: 1000,
+      matchesBetOn: [],
       betTeamId: '',
-      userId: 1,
+      userId: 2,
       setOdds: '',
-      betTeamLogo: '',
       checkProfit: false,
       script: '',
       homeOdds: '',
@@ -33,11 +32,11 @@ export default class FixturesContainer extends React.Component {
   }
 
   handleClick(id) {
+    this.willFetch(id);
     this.setState(prevState => ({
       toggleMatchDetails: !prevState.toggleMatchDetails,
       activeId: id
     }));
-    this.willFetch(id);
   }
 
   componentDidMount() {
@@ -51,24 +50,27 @@ export default class FixturesContainer extends React.Component {
     axios.get('/api/wager-input').then(response => {
       const pastBets = response.data;
       this.setState({
-        gamesBetOn: pastBets
+        matchesBetOn: pastBets
       });
     });
   }
 
   addWagerInput(newWager) {
     const { fixtureId } = newWager.fixtureId;
-    const newArray = this.state.gamesBetOn.slice();
+    const newArray = this.state.matchesBetOn.slice();
     newArray.push(fixtureId);
     axios.post('/api/wager-input', { newWager });
   }
 
-  addWagerTeam(event, odds) {
-    this.setState({
-      betTeamId: event.target.id,
-      teamLogo: event.target.src,
-      setOdds: odds
-    });
+  addWagerTeam(event, odds, id) {
+    const checkBet = this.state.matchesBetOn.includes(id);
+    if (!checkBet) {
+      this.setState({
+        betTeamId: event.target.id,
+        teamLogo: event.target.src,
+        setOdds: odds
+      });
+    }
   }
 
   checkProfit(props) {
@@ -91,18 +93,20 @@ export default class FixturesContainer extends React.Component {
       userId: this.state.userId,
       fixtureId: this.state.activeId,
       wagerAmount: this.state.wagerAmount,
-      betOn: true,
       teamLogo: this.state.teamLogo,
       profitAmount: profitAmount,
       betTeamId: this.state.betTeamId
     };
-    this.addWagerInput(newWager);
+    const newArray = this.state.matchesBetOn.slice();
+    newArray.push(this.state.activeId);
+    axios.post('/api/wager-input', { newWager });
     this.setState({
       wagerAmount: '',
       checkProfit: false,
       script: '',
       betTeamId: '',
-      activeId: ''
+      activeId: '',
+      matchesBetOn: newArray
     });
   }
 
@@ -127,7 +131,7 @@ export default class FixturesContainer extends React.Component {
     };
 
     axios
-      .get('/api/team-form/', {
+      .get('/api/team-form', {
         params: teamId
       })
       .then(response => {
@@ -145,8 +149,9 @@ export default class FixturesContainer extends React.Component {
 
   render() {
     const value = this.state.wagerAmount;
+    const checkBet = this.state.matchesBetOn.includes(this.state.activeId);
     if (!this.state.fixturesList.length) {
-      <NoGamesToday />;
+      <NoMatchesToday />;
     }
     return this.state.isLoading
       ? (
@@ -167,47 +172,61 @@ export default class FixturesContainer extends React.Component {
           loading={this.state.isLoading}
           betTeamId={this.betTeamId}
           addWagerTeam={this.addWagerTeam}
+          matchesBetOn = {this.state.matchesBetOn}
         />
         <>
-          <div className={!this.state.betTeamId ? 'none' : ''}>
-            <div className="row column-full center">
-              <div className="outer-card column-full">
-                <div className="match-card row center">
-                  <img
-                    className={'team-logo'}
-                    src={this.state.teamLogo}
-                    alt=""
-                  />
-                  <div className="input-container column-full">
-                    <form onSubmit={this.handleSubmit} className="column-full">
-                      <input
-                        className="wager-input"
-                        type="number"
-                        max={this.state.userTokens}
-                        required
-                        autoFocus
-                        value={value}
-                        placeholder="WAGER HERE"
-                        onChange={this.handleChange}
-                      />
-                      <div>
-                        <h4 className={this.state.script === '' ? 'hidden' : 'row payout center'}>
-                          {this.state.script}
-                        </h4>
-                      </div>
-                      <div className="button-container row">
-                        <button className="enter-button " type="submit">
-                          Enter
-                        </button>
-                        <button
-                          onClick={this.checkProfit}
-                          className="enter-button"
-                          type="button"
-                        >
-                          Check Profit
-                        </button>
-                      </div>
-                    </form>
+          <div className={checkBet ? 'hidden' : ''}>
+            <div className={!this.state.betTeamId ? 'none' : ''}>
+              <div className="row column-full center">
+                <div className="outer-card column-full">
+                  <div className="match-card row center">
+                    <img
+                      className={'team-logo'}
+                      src={this.state.teamLogo}
+                      alt=""
+                    />
+                    <h4 className = 'sub-head'>Odds:</h4>
+                    <h4 className = 'sub-head'>{ this.state.setOdds}</h4>
+                    <div className="input-container column-full">
+                      <form
+                        onSubmit={this.handleSubmit}
+                        className="column-full"
+                      >
+                        <input
+                          className="wager-input"
+                          type="number"
+                          max={this.state.userTokens}
+                          required
+                          autoFocus
+                          value={value}
+                          placeholder="WAGER HERE"
+                          onChange={this.handleChange}
+                        />
+                        <div>
+                          <h4
+                            className={
+                              this.state.script === ''
+                                ? 'hidden'
+                                : 'row payout center'
+                            }
+                          >
+                            {this.state.script}
+                          </h4>
+                        </div>
+                        <div className="button-container row">
+                          <button className="enter-button " type="submit">
+                            Enter
+                          </button>
+                          <button
+                            onClick={this.checkProfit}
+                            className="enter-button"
+                            type="button"
+                          >
+                            Check Profit
+                          </button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
