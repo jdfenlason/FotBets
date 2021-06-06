@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TeamDetails = props => {
+const WagerDetails = props => {
   const checkBet = props.matchesBetOn.includes(props.fixtures.fixture.id);
   return props.loading
     ? (
@@ -15,7 +15,7 @@ const TeamDetails = props => {
         <div className="row column-full center fixture-card">
           <div className="outer-card column-full">
             <div className="match-card row center">
-              <h2> Wager Slip</h2>
+              <h2>Wager Slip</h2>
               <div className="row column-full">
                 <div className="location column-half margin-bottom">
                   <h4>{props.fixtures.teams.home.name}</h4>
@@ -50,8 +50,8 @@ const TeamDetails = props => {
                   <h3>Odds:</h3>
                   <h4 className="sub-head">{props.awayOdds}</h4>
                 </div>
-                <h2 className={!checkBet ? 'hidden' : 'text-center'}>You have an active wager for this fixture</h2>
               </div>
+                <h2 className={!checkBet ? 'hidden' : 'text-center'}>You have an active wager for this fixture</h2>
             </div>
           </div>
         </div>
@@ -59,4 +59,4 @@ const TeamDetails = props => {
     </>
       );
 };
-export default TeamDetails;
+export default WagerDetails;

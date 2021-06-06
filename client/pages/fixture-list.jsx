@@ -1,8 +1,8 @@
 import React from 'react';
-import MatchDetails from './match-details';
+import FixtureDetails from './fixture-details';
 import TodayFixtures from './today-fixtures';
 import Fixture from './fixture';
-import TeamDetails from './team-details';
+import WagerDetails from './wager-details';
 
 const FixtureList = props => {
   return !props.teamDetails.length
@@ -43,8 +43,8 @@ const FixtureList = props => {
             }}
           >
             <Fixture fixtures={fixtures} />
-            <MatchDetails fixtures={fixtures} activeId={props.activeId} matchesBetOn = {props.matchesBetOn}/>
-            <TeamDetails
+            <FixtureDetails fixtures={fixtures} activeId={props.activeId} matchesBetOn = {props.matchesBetOn}/>
+            <WagerDetails
               fixtures={fixtures}
               activeId={props.activeId}
               teamDetails={props.teamDetails}
