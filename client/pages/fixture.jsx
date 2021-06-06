@@ -1,5 +1,4 @@
 import React from 'react';
-
 import formatTime from './format-time';
 const Fixture = props => {
   return (

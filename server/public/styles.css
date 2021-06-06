@@ -59,6 +59,10 @@
   cursor: pointer;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .outer-card {
   margin: 0.5rem;
   background-color: #1b1b1b;

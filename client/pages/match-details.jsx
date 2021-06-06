@@ -9,7 +9,7 @@ const MatchDetails = props => {
           <div className="match-card row center">
             <h2>Match Details</h2>
             <h5 className="sub-head">{props.fixtures.league.name}</h5>
-            <h6 className="sub-head">{props.fixtures.league.round}</h6>
+            <h5 className="sub-head">{props.fixtures.league.round}</h5>
             <img
               className="small-logo"
               src={props.fixtures.league.logo}

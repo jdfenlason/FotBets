@@ -47,7 +47,9 @@ export default class App extends React.Component {
 
   render() {
     return (
-       <Home userName={this.state.userName}
+      this.state.isLoading
+        ? <p className='hidden'>isLoading</p>
+        : <Home userName={this.state.userName}
              userTokens={this.state.userTokens}
              handleProfile ={this.handleProfile}
              handleFixtures = {this.handleFixtures}
