@@ -18,13 +18,28 @@ const TeamDetails = props => {
               <div className="row column-full">
                 <div className="location column-half margin-bottom">
                   <h4>{props.teamDetails[0].team.name}</h4>
-                  <h5>Past Results:</h5>
-                  <h4>{props.teamDetails[0].form} </h4>
+
+                    <img
+                      id={props.fixtures.teams.home.id}
+                      className="small-logo"
+                      src={props.fixtures.teams.home.logo}
+                      alt={props.fixtures.teams.home.name}
+                    />
+                  <h3>Past Results:</h3>
+                  <span>{props.teamDetails[0].form}</span>
                 </div>
                 <div className="location column-half margin-bottom">
                   <h4>{props.teamDetails[1].team.name}</h4>
-                  <h5>Past Results:</h5>
-                  <span>{props.teamDetails[1].form}</span>
+
+                    <img
+                      id={props.fixtures.teams.away.id}
+                      className="small-logo"
+                      src={props.fixtures.teams.away.logo}
+                      alt={props.fixtures.teams.away.name}
+                    />
+
+                  <h3 >Past Results:</h3>
+                  <span className="sub-head">{props.teamDetails[1].form}</span>
                 </div>
               </div>
             </div>

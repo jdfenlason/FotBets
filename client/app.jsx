@@ -8,8 +8,27 @@ export default class App extends React.Component {
       isLoading: true,
       userName: '',
       userTokens: '',
-      userId: 1
+      userId: 2,
+      profileOn: false,
+      fixturesOn: true
     };
+    this.handleProfile = this.handleProfile.bind(this);
+    this.handleFixtures = this.handleFixtures.bind(this);
+  }
+
+  handleProfile(event) {
+    this.setState(prevState => ({
+      profileOn: true,
+      fixturesOn: false
+    }));
+  }
+
+  handleFixtures(event) {
+    this.setState(prevState => ({
+      profileOn: false,
+      fixturesOn: true
+    }));
+
   }
 
   componentDidMount() {
@@ -29,7 +48,12 @@ export default class App extends React.Component {
   render() {
     return (
        <Home userName={this.state.userName}
-             userTokens={this.state.userTokens}/>
+             userTokens={this.state.userTokens}
+             handleProfile ={this.handleProfile}
+             handleFixtures = {this.handleFixtures}
+             profileOn ={this.state.profileOn}
+             fixturesOn = {this.state.fixturesOn}
+             />
     );
   }
 }

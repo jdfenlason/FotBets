@@ -3,6 +3,7 @@ import axios from 'axios';
 import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
 import { makeBets, makeBetsScript } from './payouts';
+import WagerInput from './wager-input';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -23,8 +24,7 @@ export default class FixturesContainer extends React.Component {
       checkProfit: false,
       script: '',
       homeOdds: '',
-      awayOdds: '',
-      userName: ''
+      awayOdds: ''
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -145,8 +145,6 @@ export default class FixturesContainer extends React.Component {
   }
 
   render() {
-    const value = this.state.wagerAmount;
-    const checkBet = this.state.matchesBetOn.includes(this.state.activeId);
     if (!this.state.fixturesList.length) {
       <NoMatchesToday />;
     }
@@ -170,63 +168,18 @@ export default class FixturesContainer extends React.Component {
           betTeamId={this.betTeamId}
           addWagerTeam={this.addWagerTeam}
         />
-        <>
-          <div className={checkBet ? 'hidden' : ''}>
-            <div className={!this.state.betTeamId ? 'none' : ''}>
-              <div className="row column-full center">
-                <div className="outer-card column-full">
-                  <div className="match-card row center">
-                    <img
-                      className={'team-logo'}
-                      src={this.state.teamLogo}
-                      alt=""
-                    />
-                    <div className="input-container column-full">
-                      <form
-                        onSubmit={this.handleSubmit}
-                        className="column-full"
-                      >
-                        <input
-                          className="wager-input"
-                          type="number"
-                          max={this.state.userTokens}
-                          required
-                          autoFocus
-                          value={value}
-                          placeholder="WAGER HERE"
-                          onChange={this.handleChange}
-                        />
-                        <div>
-                          <h4
-                            className={
-                              this.state.script === ''
-                                ? 'hidden'
-                                : 'row payout center'
-                            }
-                          >
-                            {this.state.script}
-                          </h4>
-                        </div>
-                        <div className="button-container row">
-                          <button className="enter-button " type="submit">
-                            Enter
-                          </button>
-                          <button
-                            onClick={this.checkProfit}
-                            className="enter-button"
-                            type="button"
-                          >
-                            Check Profit
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
+
+          <WagerInput wagerAmount = {this.state.wagerAmount}
+                      activeId = {this.state.activeId}
+                      betTeamId = {this.state.betTeamId}
+                      handleSubit = {this.handleSubmit}
+                      handleChange = {this.handleChange}
+                      script = {this.state.script}
+                      checkProfit = {this.checkProfit}
+                      matchesBetOn ={this.state.matchesBetOn}
+                      teamLogo = {this.state.teamLogo}
+
+          />
       </>
         );
   }

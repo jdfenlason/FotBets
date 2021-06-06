@@ -47,10 +47,6 @@
   cursor: pointer;
 }
 
-.size:hover {
-  background-color: #aeaeae;
-}
-
 .sml-margin {
   margin-right: 1rem;
 }
@@ -133,11 +129,6 @@ h6 {
 
 .ref {
   margin-bottom: 1rem;
-}
-
-.location > h4,
-h5 {
-  margin: 0.5rem;
 }
 
 .team-logo {

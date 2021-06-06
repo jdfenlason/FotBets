@@ -12,15 +12,20 @@ const Home = props => {
           <Header userTokens={props.userTokens} />
         </div>
         <div className="main">
-          <Profile className= "hidden" userTokens={props.userTokens} userName={props.userName} />
-          <FixturesContainer />
+          <div className={!props.profileOn && props.fixturesOn ? 'hidden' : ''}>
+            <Profile userTokens={props.userTokens} userName={props.userName} />
+          </div>
+          <div className={props.profileOn && !props.fixturesOn ? 'hidden' : ''}>
+            <FixturesContainer />
+          </div>
         </div>
         <div className="footer">
-          <Footer />
+          <Footer handleProfile={props.handleProfile}
+            handleFixtures = {props.handleFixtures}
+          />
         </div>
       </div>
     </>
   );
-
 };
 export default Home;

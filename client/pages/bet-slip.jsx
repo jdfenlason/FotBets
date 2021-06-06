@@ -10,6 +10,9 @@ const BetSlip = props => {
         <div className="outer-card column-full">
           <div className="match-card row center">
             <h3>Bet Slip</h3>
+              <h4>Pick a Team:</h4>
+            <div>
+            </div>
           </div>
           <div className="row column-full">
             <div className="location column-thirds margin-bottom">
@@ -22,9 +25,9 @@ const BetSlip = props => {
                   alt={props.fixtures.teams.home.name}
                 />
               </div>
-              <h4>{props.fixtures.teams.home.name}</h4>
-              <h5>Odds:</h5>
-              <h4>{props.homeOdds}</h4>
+              <h4 className="sub-head">{props.fixtures.teams.home.name}</h4>
+              <h3>Odds:</h3>
+              <h4 className="sub-head">{props.homeOdds}</h4>
             </div>
             <div className="location column-thirds margin-bottom">
               <div className="logo-button">
@@ -36,9 +39,9 @@ const BetSlip = props => {
                   alt={props.fixtures.teams.away.name}
                 />
               </div>
-              <h4>{props.fixtures.teams.away.name}</h4>
-              <h5>Odds:</h5>
-              <h4>{props.awayOdds}</h4>
+              <h4 className="sub-head">{props.fixtures.teams.away.name}</h4>
+              <h3>Odds:</h3>
+              <h4 className="sub-head">{props.awayOdds}</h4>
             </div>
           </div>
         </div>
