@@ -80,7 +80,7 @@ export default class FixturesContainer extends React.Component {
     });
   }
 
-  handleSubmit(event) {
+  handleSubmit() {
     event.preventDefault();
     const stake = this.state.wagerAmount;
     const odds = this.state.setOdds;
@@ -181,7 +181,8 @@ export default class FixturesContainer extends React.Component {
                      activeId = {activeId}
                      matchesBetOn={matchesBetOn}
                      wagerAmount = {wagerAmount}
-
+                     userTokens = {this.props.userTokens}
+                     handleSubmit = {this.handleSubmit}
           />
       </>
         );

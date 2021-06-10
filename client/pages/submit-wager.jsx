@@ -2,6 +2,7 @@ import React from 'react';
 
 const SubmitWager = props => {
   const { checkProfit, wagerAmount, handleSubmit, script, handleChange, setOdds, teamLogo, betTeamId, activeId, matchesBetOn } = props;
+  const { userTokens } = props.userTokens;
   const checkBet = matchesBetOn.includes(activeId);
   const value = wagerAmount;
   return (
@@ -20,13 +21,13 @@ const SubmitWager = props => {
                     <h4 className = 'sub-head'>{setOdds}</h4>
                     <div className="input-container column-full">
                       <form
-                        onSubmit={() => handleSubmit()}
+                        onSubmit={() => handleSubmit(event)}
                         className="column-full"
                       >
                         <input
                           className="wager-input"
                           type="number"
-                          max= '300'
+                          max= {userTokens}
                           required
                           autoFocus
                           value={value}
