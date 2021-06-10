@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import TodayFixtures from './today-fixtures';
 export default class DateStrip extends React.Component {
   constructor(props) {
+
     super(props);
     const formatDay = format(new Date(), 'yyyy-MM-dd');
     this.state = {

@@ -17,8 +17,8 @@ const Home = props => {
             <Profile userTokens={props.userTokens} userName={props.userName} />
           </div>
           <div className={props.profileOn && !props.fixturesOn ? 'hidden' : ''}>
-            <DateStrip/>
-            <FixturesContainer />
+            <DateStrip />
+            <FixturesContainer userTokens={props.userTokens}/>
           </div>
         </div>
         <div className="footer">
