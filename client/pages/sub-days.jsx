@@ -1,19 +1,20 @@
 import React from 'react';
-import { subDays, format } from 'date-fns';
+import { subDays, format, getUnixTime } from 'date-fns';
 const SubDays = props => {
   const { today } = props;
-  const numbers = [1, 2, 3];
+  const numbers = [3, 2, 1];
   return (
 
     numbers.map((daysNums, index) => {
+      const unix = getUnixTime(subDays(today, daysNums));
       return (
-      <div key = {index}>
-        <h4>
+      <div className = "date-item" key = {index} onClick = {() => props.handleDateClick(event)} id = {unix}>
+        <span id = {unix} className="day-label" >
         {format(subDays(today, daysNums), 'E')}
-        </h4>
-        <h3>
+        </span>
+        <span id = {unix} className = "date-label">
         {format(subDays(today, daysNums), 'dd')}
-        </h3>
+        </span>
       </div>
       );
     })

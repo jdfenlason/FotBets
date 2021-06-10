@@ -1,6 +1,7 @@
 import React from 'react';
 import AddDays from './add-days';
 import SubDays from './sub-days';
+import Today from './today';
 import { format } from 'date-fns';
 export default class DateStrip extends React.Component {
   constructor(props) {
@@ -16,18 +17,17 @@ export default class DateStrip extends React.Component {
     return format(this.state.selectedDay, 'MMMM');
   }
 
-  handleDateClick(event) {
-    this.state({
-      selectedDay: 'day'
-    });
+  handleDateClick(event, id) {
+
   }
 
   render() {
     return (
       <>
         <div className="day-container">
-          <AddDays today={this.state.today} />
-          <SubDays today={this.state.today} />
+          <SubDays handleDateClick = {this.handleDateClick} today={this.state.today} />
+          <Today handleDateClick = {this.handleDateClick} today = {this.state.today}/>
+          <AddDays handleDateClick = {this.handleDateClick} today={this.state.today} />
         </div>
       </>
     );

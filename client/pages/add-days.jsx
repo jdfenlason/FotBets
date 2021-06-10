@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { addDays, format } from 'date-fns';
+import { addDays, format, getUnixTime } from 'date-fns';
 const AddDays = props => {
 
   const { today } = props;
@@ -8,14 +8,16 @@ const AddDays = props => {
   return (
 
     numbers.map((daysNums, index) => {
+      const unix = getUnixTime(addDays(today, daysNums));
+
       return (
-      <div key = {index}>
-        <h4>
+      <div className = "date-item" key = {index} id = {unix} onClick = {() => props.handleDateClick(event)} >
+        <span id = {unix} className = "day-label">
         {format(addDays(today, daysNums), 'E')}
-        </h4>
-        <h3>
+        </span>
+        <span id = {unix} className = "date-label">
         {format(addDays(today, daysNums), 'dd')}
-        </h3>
+        </span>
       </div>
       );
     })
