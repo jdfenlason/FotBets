@@ -301,7 +301,7 @@ input:focus::placeholder {
 .selected-date {
   font-weight: bold;
   height: 4rem;
+  background-color: #aeaeae;
   border-radius: 50%;
   border: 2px solid #aeaeae;
-  color: #aeaeae;
 }
