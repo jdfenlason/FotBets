@@ -9,6 +9,7 @@ const SubDays = props => {
       const formatDay = format(subDays(today, daysNums), 'yyyy-MM-dd');
       return (
       <div className = {selectedDay === formatDay ? 'selected-date date-item' : 'date-item'} key = {index} onClick = {() => props.handleDateClick(event)} id = {formatDay}>
+
         <span className="day-label" >
         {format(subDays(today, daysNums), 'E')}
         </span>

@@ -1,6 +1,5 @@
 import React from 'react';
 import FixtureDetails from './fixture-details';
-import TodayFixtures from './today-fixtures';
 import Fixture from './fixture';
 import WagerDetails from './wager-details';
 
@@ -8,7 +7,6 @@ const FixtureList = props => {
   return !props.teamDetails.length
     ? (
     <>
-      <TodayFixtures />
       {props.fixtures.map(fixtures => {
         return (
           <div
@@ -32,7 +30,6 @@ const FixtureList = props => {
       )
     : (
     <>
-      <TodayFixtures />
       {props.fixtures.map(fixtures => {
         return (
           <div
