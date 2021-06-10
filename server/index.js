@@ -19,7 +19,7 @@ const db = new pg.Pool({
   }
 });
 app.get('/api/week-games', (req, res, next) => {
-  const leagueId = 114;
+  const leagueId = 10;
   const [year, firstDay] = getNewWeek();
   const sql = ` select *
   From "weekGames"

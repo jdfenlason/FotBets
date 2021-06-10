@@ -55,20 +55,22 @@ export default class FixturesContainer extends React.Component {
     });
   }
 
-  addWagerTeam(event, odds, id) {
+  addWagerTeam(event, odds) {
+    const { id, src } = event.target;
     const checkBet = this.state.matchesBetOn.includes(id);
     if (!checkBet) {
       this.setState({
-        betTeamId: event.target.id,
-        teamLogo: event.target.src,
+        betTeamId: id,
+        teamLogo: src,
         setOdds: odds
       });
     }
   }
 
   checkProfit(props) {
-    const odds = this.state.setOdds;
-    const stake = this.state.wagerAmount;
+    const { setOdds, wagerAmount } = this.state;
+    const odds = setOdds;
+    const stake = wagerAmount;
     const script = makeBetsScript(stake, odds);
     this.setState({
       checkProfit: true,
@@ -81,13 +83,14 @@ export default class FixturesContainer extends React.Component {
     const stake = this.state.wagerAmount;
     const odds = this.state.setOdds;
     const profitAmount = makeBets(stake, odds);
+    const { userId, activeId, wagerAmount, teamLogo, betTeamId } = this.state;
     const newWager = {
-      userId: this.state.userId,
-      fixtureId: this.state.activeId,
-      wagerAmount: this.state.wagerAmount,
-      teamLogo: this.state.teamLogo,
+      userId: userId,
+      fixtureId: activeId,
+      wagerAmount: wagerAmount,
+      teamLogo: teamLogo,
       profitAmount: profitAmount,
-      betTeamId: this.state.betTeamId
+      betTeamId: betTeamId
     };
     const newArray = this.state.matchesBetOn.slice();
     newArray.push(this.state.activeId);
@@ -112,14 +115,15 @@ export default class FixturesContainer extends React.Component {
     const newArray = this.state.fixturesList.filter(fixtures => {
       return fixtures.fixture.id === id;
     });
+    const { fixture, league, teams } = newArray[0];
     const teamId = {
-      fixtureId: newArray[0].fixture.id,
-      leagueId: newArray[0].league.id,
-      currentSeason: newArray[0].league.season,
-      awayId: newArray[0].teams.away.id,
-      homeId: newArray[0].teams.home.id,
-      date: newArray[0].fixture.date.slice(0, 10),
-      utcDate: newArray[0].fixture.date
+      fixtureId: fixture.id,
+      leagueId: league.id,
+      currentSeason: league.season,
+      awayId: teams.away.id,
+      homeId: teams.home.id,
+      date: fixture.date.slice(0, 10),
+      utcDate: fixture.date
     };
 
     axios
@@ -127,11 +131,12 @@ export default class FixturesContainer extends React.Component {
         params: teamId
       })
       .then(response => {
+        const { teamDetails, homeOdds, awayOdds } = response.data[0];
         this.setState({
           isLoading: false,
-          teamDetails: response.data[0].teamDetails,
-          awayOdds: response.data[0].homeOdds,
-          homeOdds: response.data[0].awayOdds
+          teamDetails: teamDetails,
+          awayOdds: homeOdds,
+          homeOdds: awayOdds
         });
       })
       .catch(err => {
@@ -140,45 +145,46 @@ export default class FixturesContainer extends React.Component {
   }
 
   render() {
+    const { toggleMatchDetails, activeId, fixturesList, matchesBetOn, teamDetails, isLoading, wagerAmount, betOn, homeOdds, awayOdds, betTeamId, teamLogo, setOdds, script } = this.state;
     const value = this.state.wagerAmount;
-    const checkBet = this.state.matchesBetOn.includes(this.state.activeId);
-    if (!this.state.fixturesList.length) {
+    const checkBet = matchesBetOn.includes(activeId);
+    if (!fixturesList.length) {
       <NoMatchesToday />;
     }
-    return this.state.isLoading
+    return isLoading
       ? (
       <p>isLoading...</p>
         )
       : (
       <>
         <FixturesList
-          wagerAmount={this.state.wagerAmount}
-          homeOdds={this.state.homeOdds}
-          awayOdds={this.state.awayOdds}
-          betOn={this.state.betOn}
-          toggleMatchDetails={this.state.toggleMatchDetails}
-          activeId={this.state.activeId}
-          fixtures={this.state.fixturesList}
+          wagerAmount={wagerAmount}
+          homeOdds={homeOdds}
+          awayOdds={awayOdds}
+          betOn={betOn}
+          toggleMatchDetails={toggleMatchDetails}
+          activeId={activeId}
+          fixtures={fixturesList}
           click={id => this.handleClick(id)}
-          teamDetails={this.state.teamDetails}
-          loading={this.state.isLoading}
-          betTeamId={this.betTeamId}
+          teamDetails={teamDetails}
+          loading={isLoading}
+          betTeamId={betTeamId}
           addWagerTeam={this.addWagerTeam}
-          matchesBetOn = {this.state.matchesBetOn}
+          matchesBetOn = {matchesBetOn}
         />
         <>
           <div className={checkBet ? 'hidden' : ''}>
-            <div className={!this.state.betTeamId ? 'none' : ''}>
+            <div className={!betTeamId ? 'none' : ''}>
               <div className="row column-full center">
                 <div className="outer-card column-full">
                   <div className="match-card row center">
                     <img
                       className={'team-logo'}
-                      src={this.state.teamLogo}
+                      src={teamLogo}
                       alt=""
                     />
                     <h4 className = 'sub-head'>Odds:</h4>
-                    <h4 className = 'sub-head'>{ this.state.setOdds}</h4>
+                    <h4 className = 'sub-head'>{setOdds}</h4>
                     <div className="input-container column-full">
                       <form
                         onSubmit={this.handleSubmit}
@@ -187,7 +193,7 @@ export default class FixturesContainer extends React.Component {
                         <input
                           className="wager-input"
                           type="number"
-                          max={this.state.userTokens}
+                          max= '300'
                           required
                           autoFocus
                           value={value}
@@ -197,12 +203,12 @@ export default class FixturesContainer extends React.Component {
                         <div>
                           <h4
                             className={
-                              this.state.script === ''
+                              script === ''
                                 ? 'hidden'
                                 : 'row payout center'
                             }
                           >
-                            {this.state.script}
+                            {script}
                           </h4>
                         </div>
                         <div className="button-container row">
