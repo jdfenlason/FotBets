@@ -16,7 +16,7 @@ const WagerDetails = props => {
           <div className="outer-card column-full">
             <div className="match-card row center">
               <h2>Wager Slip</h2>
-               <h3>Pick a Team:</h3>
+              <h3>Pick a Team:</h3>
               <div className="row column-full">
                 <div className="location column-half margin-bottom">
                   <h4>{props.fixtures.teams.home.name}</h4>
@@ -24,7 +24,13 @@ const WagerDetails = props => {
                   <div className={!checkBet ? 'logo-button' : ''}>
                     <img
                       className="small-logo"
-                      onClick={() => props.addWagerTeam(event, props.homeOdds, props.activeId)}
+                      onClick={() =>
+                        props.addWagerTeam(
+                          event,
+                          props.homeOdds,
+                          props.activeId
+                        )
+                      }
                       id={props.fixtures.teams.home.id}
                       src={props.fixtures.teams.home.logo}
                       alt={props.fixtures.teams.home.name}
@@ -39,7 +45,13 @@ const WagerDetails = props => {
                   <h4>{props.fixtures.teams.away.name}</h4>
                   <div className={!checkBet ? 'logo-button' : ''}>
                     <img
-                      onClick={() => props.addWagerTeam(event, props.awayOdds, props.activeId)}
+                      onClick={() =>
+                        props.addWagerTeam(
+                          event,
+                          props.awayOdds,
+                          props.activeId
+                        )
+                      }
                       id={props.fixtures.teams.away.id}
                       className="small-logo"
                       src={props.fixtures.teams.away.logo}
@@ -52,7 +64,9 @@ const WagerDetails = props => {
                   <h4 className="sub-head">{props.awayOdds}</h4>
                 </div>
               </div>
-                <h2 className={!checkBet ? 'hidden' : 'text-center'}>You have an active wager for this fixture</h2>
+              <h2 className={!checkBet ? 'hidden' : 'text-center'}>
+                You have an active wager for this fixture
+              </h2>
             </div>
           </div>
         </div>

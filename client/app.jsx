@@ -42,19 +42,20 @@ export default class App extends React.Component {
         isLoading: false
       });
     });
-
   }
 
   render() {
+    const { userName, userTokens, profileOn, fixturesOn, fixtures } = this.state;
     return (
       this.state.isLoading
         ? <p className='hidden'>isLoading</p>
-        : <Home userName={this.state.userName}
-             userTokens={this.state.userTokens}
+        : <Home userName={userName}
+             userTokens={userTokens}
              handleProfile ={this.handleProfile}
              handleFixtures = {this.handleFixtures}
-             profileOn ={this.state.profileOn}
-             fixturesOn = {this.state.fixturesOn}
+             profileOn ={profileOn}
+             fixturesOn = {fixturesOn}
+             fixtures = {fixtures}
              />
     );
   }

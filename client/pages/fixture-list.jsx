@@ -19,9 +19,9 @@ const FixtureList = props => {
             <Fixture
               fixtures={fixtures}
               toggleMatchDetails={props.toggleMatchDetails}
-               onClick={event => {
-                 props.click(fixtures.fixture.id);
-               }}
+              onClick={event => {
+                props.click(fixtures.fixture.id);
+              }}
             />
           </div>
         );
@@ -40,7 +40,11 @@ const FixtureList = props => {
             }}
           >
             <Fixture fixtures={fixtures} />
-            <FixtureDetails fixtures={fixtures} activeId={props.activeId} matchesBetOn = {props.matchesBetOn}/>
+            <FixtureDetails
+              fixtures={fixtures}
+              activeId={props.activeId}
+              matchesBetOn={props.matchesBetOn}
+            />
             <WagerDetails
               fixtures={fixtures}
               activeId={props.activeId}
@@ -51,7 +55,7 @@ const FixtureList = props => {
               betOn={props.betOn}
               betId={props.betId}
               addWagerTeam={props.addWagerTeam}
-              matchesBetOn = {props.matchesBetOn}
+              matchesBetOn={props.matchesBetOn}
             />
           </div>
         );

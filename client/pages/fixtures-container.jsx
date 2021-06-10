@@ -3,13 +3,18 @@ import axios from 'axios';
 import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
 import SubmitWager from './submit-wager';
+import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { makeBets, makeBetsScript } from './payouts';
+import DateStrip from './date-strip';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
-
     super(props);
+    const formatDay = format(new Date(), 'yyyy-MM-dd');
     this.state = {
-      fixturesList: [],
+      today: new Date(),
+      selectedDay: formatDay,
+      formatDay: formatDay,
+      fixtures: [],
       isLoading: true,
       toggleMatchDetails: false,
       activeId: '',
@@ -24,13 +29,15 @@ export default class FixturesContainer extends React.Component {
       checkProfit: false,
       script: '',
       homeOdds: '',
-      awayOdds: ''
+      awayOdds: '',
+      dayOfFixtures: []
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addWagerTeam = this.addWagerTeam.bind(this);
     this.checkProfit = this.checkProfit.bind(this);
+    this.handleDateClick = this.handleDateClick.bind(this);
   }
 
   handleClick(id) {
@@ -42,19 +49,50 @@ export default class FixturesContainer extends React.Component {
   }
 
   componentDidMount() {
-    axios.request('/api/week-games/').then(response => {
-      const fixtures = response.data.fixtures;
-      this.setState({
-        fixturesList: fixtures,
-        isLoading: false
-      });
-    });
     axios.get('/api/wager-input').then(response => {
       const pastBets = response.data;
       this.setState({
         matchesBetOn: pastBets
       });
     });
+    axios.get('/api/week-games/').then(response => {
+      const fixtures = response.data.fixtures;
+      this.setState({
+        fixtures: fixtures,
+        isLoading: false
+      });
+    });
+  }
+
+  changeDate(dateObj) {
+    const { selectedDay } = dateObj;
+    const { fixtures } = this.state;
+    const selectedDaytoUTC = zonedTimeToUtc(selectedDay);
+    const formatSelected = format(selectedDaytoUTC, 'yyyy-MM-dd');
+    const dayOfFixtures = fixtures.filter(fixtures => {
+      const zonedDate = utcToZonedTime(
+        fixtures.fixture.date,
+        'America/New_York'
+      );
+      const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
+      return formatUTCDate === formatSelected;
+    });
+    this.setState({
+      dayOfFixtures: dayOfFixtures,
+      isLoading: false,
+      selectedDay: selectedDay
+    });
+  }
+
+  handleDateClick(event) {
+    const id = event.target.closest('div').id;
+    this.setState({
+      selectedDay: id
+    });
+    const dateObj = {
+      selectedDay: id
+    };
+    this.changeDate(dateObj);
   }
 
   addWagerTeam(event, odds) {
@@ -114,7 +152,7 @@ export default class FixturesContainer extends React.Component {
   }
 
   willFetch(id) {
-    const newArray = this.state.fixturesList.filter(fixtures => {
+    const newArray = this.state.fixtures.filter(fixtures => {
       return fixtures.fixture.id === id;
     });
     const { fixture, league, teams } = newArray[0];
@@ -147,9 +185,38 @@ export default class FixturesContainer extends React.Component {
   }
 
   render() {
-    const { toggleMatchDetails, activeId, fixturesList, matchesBetOn, teamDetails, isLoading, wagerAmount, betOn, homeOdds, awayOdds, betTeamId, teamLogo, setOdds, script } = this.state;
-    if (!fixturesList.length) {
-      <NoMatchesToday />;
+    const {
+      toggleMatchDetails,
+      activeId,
+      dayOfFixtures,
+      matchesBetOn,
+      teamDetails,
+      isLoading,
+      wagerAmount,
+      betOn,
+      homeOdds,
+      awayOdds,
+      betTeamId,
+      teamLogo,
+      setOdds,
+      script,
+      today,
+      selectedDay,
+      formatDay
+    } = this.state;
+
+    if (dayOfFixtures.length === 0) {
+      return (
+        <>
+          <DateStrip
+            handleDateClick={this.handleDateClick}
+            today={today}
+            selectedDay={selectedDay}
+            formatDay={formatDay}
+          />
+          <NoMatchesToday />
+        </>
+      );
     }
     return isLoading
       ? (
@@ -157,6 +224,12 @@ export default class FixturesContainer extends React.Component {
         )
       : (
       <>
+        <DateStrip
+          handleDateClick={this.handleDateClick}
+          today={today}
+          selectedDay={selectedDay}
+          formatDay={formatDay}
+        />
         <FixturesList
           wagerAmount={wagerAmount}
           homeOdds={homeOdds}
@@ -164,26 +237,27 @@ export default class FixturesContainer extends React.Component {
           betOn={betOn}
           toggleMatchDetails={toggleMatchDetails}
           activeId={activeId}
-          fixtures={fixturesList}
+          fixtures={dayOfFixtures}
           click={id => this.handleClick(id)}
           teamDetails={teamDetails}
           loading={isLoading}
           betTeamId={betTeamId}
           addWagerTeam={this.addWagerTeam}
-          matchesBetOn = {matchesBetOn}
+          matchesBetOn={matchesBetOn}
         />
-        <SubmitWager checkProfit={this.checkProfit}
-                     script = {script}
-                     handleChange = {this.handleChange}
-                     setOdds = {setOdds}
-                     teamLogo = {teamLogo}
-                     betTeamId = {betTeamId}
-                     activeId = {activeId}
-                     matchesBetOn={matchesBetOn}
-                     wagerAmount = {wagerAmount}
-                     userTokens = {this.props.userTokens}
-                     handleSubmit = {this.handleSubmit}
-          />
+        <SubmitWager
+          checkProfit={this.checkProfit}
+          script={script}
+          handleChange={this.handleChange}
+          setOdds={setOdds}
+          teamLogo={teamLogo}
+          betTeamId={betTeamId}
+          activeId={activeId}
+          matchesBetOn={matchesBetOn}
+          wagerAmount={wagerAmount}
+          userTokens={this.props.userTokens}
+          handleSubmit={this.handleSubmit}
+        />
       </>
         );
   }

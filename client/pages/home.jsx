@@ -3,27 +3,34 @@ import Header from './header';
 import Footer from './footer';
 import FixturesContainer from './fixtures-container';
 import Profile from './user-profile';
-import DateStrip from './date-strip';
 
 const Home = props => {
+  const {
+    userTokens,
+    userName,
+    profileOn,
+    fixturesOn,
+    handleProfile,
+    handleFixtures
+  } = props;
   return (
     <>
       <div className="container">
         <div className="header">
-          <Header userTokens={props.userTokens} />
+          <Header userTokens={userTokens} />
         </div>
         <div className="main">
-          <div className={!props.profileOn && props.fixturesOn ? 'hidden' : ''}>
-            <Profile userTokens={props.userTokens} userName={props.userName} />
+          <div className={!profileOn && fixturesOn ? 'hidden' : ''}>
+            <Profile userTokens={userTokens} userName={userName} />
           </div>
-          <div className={props.profileOn && !props.fixturesOn ? 'hidden' : ''}>
-            <DateStrip />
-            <FixturesContainer selectedDay = {props.selectedDay} userTokens={props.userTokens}/>
+          <div className={profileOn && !fixturesOn ? 'hidden' : ''}>
+            <FixturesContainer userTokens={userTokens} />
           </div>
         </div>
         <div className="footer">
-          <Footer handleProfile={props.handleProfile}
-            handleFixtures = {props.handleFixtures}
+          <Footer
+            handleProfile={handleProfile}
+            handleFixtures={handleFixtures}
           />
         </div>
       </div>

@@ -2,7 +2,6 @@ import React from 'react';
 import formatTime from './format-time';
 const Fixture = props => {
   return (
-
     <div className="row column-full center fixture-card" id={props.id}>
       <div className="outer-card column-full">
         <div className="inner-card column-full">
