@@ -2,9 +2,11 @@ import React from 'react';
 import axios from 'axios';
 import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
+import SubmitWager from './submit-wager';
 import { makeBets, makeBetsScript } from './payouts';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
+
     super(props);
     this.state = {
       fixturesList: [],
@@ -14,7 +16,7 @@ export default class FixturesContainer extends React.Component {
       teamDetails: [],
       wagerAmount: '',
       profitAmount: '',
-      userTokens: 1000,
+      userTokens: '',
       matchesBetOn: [],
       betTeamId: '',
       userId: 2,
@@ -40,8 +42,8 @@ export default class FixturesContainer extends React.Component {
   }
 
   componentDidMount() {
-    axios.request('/api/week-games/:date').then(response => {
-      const fixtures = response.data;
+    axios.request('/api/week-games/').then(response => {
+      const fixtures = response.data.fixtures;
       this.setState({
         fixturesList: fixtures,
         isLoading: false
@@ -146,8 +148,6 @@ export default class FixturesContainer extends React.Component {
 
   render() {
     const { toggleMatchDetails, activeId, fixturesList, matchesBetOn, teamDetails, isLoading, wagerAmount, betOn, homeOdds, awayOdds, betTeamId, teamLogo, setOdds, script } = this.state;
-    const value = this.state.wagerAmount;
-    const checkBet = matchesBetOn.includes(activeId);
     if (!fixturesList.length) {
       <NoMatchesToday />;
     }
@@ -172,65 +172,17 @@ export default class FixturesContainer extends React.Component {
           addWagerTeam={this.addWagerTeam}
           matchesBetOn = {matchesBetOn}
         />
-        <>
-          <div className={checkBet ? 'hidden' : ''}>
-            <div className={!betTeamId ? 'none' : ''}>
-              <div className="row column-full center">
-                <div className="outer-card column-full">
-                  <div className="match-card row center">
-                    <img
-                      className={'team-logo'}
-                      src={teamLogo}
-                      alt=""
-                    />
-                    <h4 className = 'sub-head'>Odds:</h4>
-                    <h4 className = 'sub-head'>{setOdds}</h4>
-                    <div className="input-container column-full">
-                      <form
-                        onSubmit={this.handleSubmit}
-                        className="column-full"
-                      >
-                        <input
-                          className="wager-input"
-                          type="number"
-                          max= '300'
-                          required
-                          autoFocus
-                          value={value}
-                          placeholder="WAGER HERE"
-                          onChange={this.handleChange}
-                        />
-                        <div>
-                          <h4
-                            className={
-                              script === ''
-                                ? 'hidden'
-                                : 'row payout center'
-                            }
-                          >
-                            {script}
-                          </h4>
-                        </div>
-                        <div className="button-container row">
-                          <button className="enter-button " type="submit">
-                            Enter
-                          </button>
-                          <button
-                            onClick={this.checkProfit}
-                            className="enter-button"
-                            type="button"
-                          >
-                            Check Profit
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
+        <SubmitWager checkProfit={this.checkProfit}
+                     script = {script}
+                     handleChange = {this.handleChange}
+                     setOdds = {setOdds}
+                     teamLogo = {teamLogo}
+                     betTeamId = {betTeamId}
+                     activeId = {activeId}
+                     matchesBetOn={matchesBetOn}
+                     wagerAmount = {wagerAmount}
+
+          />
       </>
         );
   }

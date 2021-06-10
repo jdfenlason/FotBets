@@ -25,6 +25,15 @@ export default class DateStrip extends React.Component {
 
   }
 
+  componentDidUpdate(props) {
+    const { fixtures } = props;
+    const { selectedDay } = this.state;
+    const dayOfFixtures = fixtures.filter(fixtures => {
+      return fixtures.fixture.date.slice(0, 10) === selectedDay;
+    });
+    return dayOfFixtures;
+  }
+
   render() {
     const { today, selectedDay, formatDay } = this.state;
     return (
