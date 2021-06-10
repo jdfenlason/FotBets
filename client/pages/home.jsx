@@ -3,6 +3,7 @@ import Header from './header';
 import Footer from './footer';
 import FixturesContainer from './fixtures-container';
 import Profile from './user-profile';
+import DateStrip from './date-strip';
 
 const Home = props => {
   return (
@@ -16,6 +17,7 @@ const Home = props => {
             <Profile userTokens={props.userTokens} userName={props.userName} />
           </div>
           <div className={props.profileOn && !props.fixturesOn ? 'hidden' : ''}>
+            <DateStrip/>
             <FixturesContainer />
           </div>
         </div>

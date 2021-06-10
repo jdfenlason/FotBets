@@ -18,23 +18,63 @@ const db = new pg.Pool({
     rejectUnauthorized: false
   }
 });
-
-app.get('/api/user-profile', (req, res, next) => {
-
-  const { userId } = req.query;
-  const sql = `
-  select "tokenAmount", "userName"
-  From "users"
-  where "userId" = $1
+app.get('/api/week-games', (req, res, next) => {
+  const leagueId = 114;
+  const [year, firstDay] = getNewWeek();
+  const sql = ` select *
+  From "weekGames"
+  where "leagueId" = $1
+  AND   "firstDay" = $2
   `;
-  const params = [userId];
+  const params = [leagueId, firstDay];
   db.query(sql, params)
     .then(result => {
-      res.json(result.rows[0]);
+      if (result.rows.length) {
+        return result.rows[0];
+      }
+      return getCurrentRound(year, leagueId)
+        .then(currentRound => {
+          return getCurrentFixtures(currentRound, year, leagueId);
+        })
+        .then(currentFixtures => {
+          const jsonFixtures = JSON.stringify(currentFixtures);
+          const params = [jsonFixtures, firstDay, leagueId];
+          const sql = `
+      insert  into "weekGames" ("fixtures", "firstDay","leagueId")
+      values ($1, $2, $3)
+      returning *
+      `;
+          return db.query(sql, params).then(result => {
+            return result.rows[0];
+          });
+        });
+    })
+    .then(round => {
+      res.json(round);
     })
     .catch(err => next(err));
 });
-
+app.post('/api/wager-input', (req, res, next) => {
+  const { userId, fixtureId, wagerAmount, profitAmount, betTeamId, teamLogo } =
+  req.body.newWager;
+  const sql = `
+  insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "betTeamId", "teamLogo")
+  values ($1, $2, $3, $4, $5, $6)
+  `;
+  const params = [
+    userId,
+    fixtureId,
+    wagerAmount,
+    profitAmount,
+    betTeamId,
+    teamLogo
+  ];
+  db.query(sql, params)
+    .then(result => {
+      return res.json(result.rows);
+    })
+    .catch(err => next(err));
+});
 app.get('/api/wager-input', (req, res, next) => {
   const sql = `
   select "fixtureId"
@@ -51,27 +91,6 @@ app.get('/api/wager-input', (req, res, next) => {
     })
     .catch(err => next(err));
 });
-app.post('/api/wager-input', (req, res, next) => {
-  const { userId, fixtureId, wagerAmount, profitAmount, betTeamId, teamLogo } =
-    req.body.newWager;
-  const sql = `
-        insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "betTeamId", "teamLogo")
-        values ($1, $2, $3, $4, $5, $6)
-        `;
-  const params = [
-    userId,
-    fixtureId,
-    wagerAmount,
-    profitAmount,
-    betTeamId,
-    teamLogo
-  ];
-  db.query(sql, params)
-    .then(result => {
-      return res.json(result.rows);
-    })
-    .catch(err => next(err));
-});
 
 function getNewWeek() {
   const today = new Date();
@@ -81,45 +100,6 @@ function getNewWeek() {
   const firstDay = dateFns.addDays(today, daysSinceTuesday);
   return [year, firstDay];
 }
-
-app.get('/api/week-games', (req, res, next) => {
-
-  const leagueId = 255;
-
-  const [year, firstDay] = getNewWeek();
-  const sql = ` select *
-From "weekGames"
-where "leagueId" = $1
-AND   "firstDay" = $2
-`;
-  const params = [leagueId, firstDay];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length) {
-        return result.rows[0];
-      }
-      return getCurrentRound(year, leagueId)
-        .then(currentRound => {
-          return getCurrentFixtures(currentRound, year, leagueId);
-        })
-        .then(currentFixtures => {
-          const jsonFixtures = JSON.stringify(currentFixtures);
-          const params = [jsonFixtures, firstDay, leagueId];
-          const sql = `
-          insert  into "weekGames" ("fixtures", "firstDay","leagueId")
-          values ($1, $2, $3)
-          returning *
-          `;
-          return db.query(sql, params).then(result => {
-            return result.rows[0];
-          });
-        });
-    })
-    .then(round => {
-      res.json(round);
-    })
-    .catch(err => next(err));
-});
 
 function getCurrentRound(currentYear, leagueId) {
   const init = {
@@ -151,9 +131,24 @@ function getCurrentFixtures(round, currentSeason, leagueId) {
   });
 }
 
+app.get('/api/user-profile', (req, res, next) => {
+  const { userId } = req.query;
+  const sql = `
+  select "tokenAmount", "userName"
+  From "users"
+  where "userId" = $1
+  `;
+  const params = [userId];
+  db.query(sql, params)
+    .then(result => {
+      res.json(result.rows[0]);
+    })
+    .catch(err => next(err));
+});
+
 app.get('/api/week-games/:date', (req, res, next) => {
   const sql = `
-   select "fixtures"
+  select "fixtures"
       from "weekGames"
 `;
   db.query(sql)

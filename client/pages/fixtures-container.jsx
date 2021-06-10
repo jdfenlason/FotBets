@@ -55,13 +55,6 @@ export default class FixturesContainer extends React.Component {
     });
   }
 
-  addWagerInput(newWager) {
-    const { fixtureId } = newWager.fixtureId;
-    const newArray = this.state.matchesBetOn.slice();
-    newArray.push(fixtureId);
-    axios.post('/api/wager-input', { newWager });
-  }
-
   addWagerTeam(event, odds, id) {
     const checkBet = this.state.matchesBetOn.includes(id);
     if (!checkBet) {
@@ -85,7 +78,6 @@ export default class FixturesContainer extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    event.target.reset();
     const stake = this.state.wagerAmount;
     const odds = this.state.setOdds;
     const profitAmount = makeBets(stake, odds);
