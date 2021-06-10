@@ -4,23 +4,25 @@ import Fixture from './fixture';
 import WagerDetails from './wager-details';
 
 const FixtureList = props => {
-  return !props.teamDetails.length
+  const { toggleMatchDetails, activeId, teamDetails, loading, homeOdds, awayOdds, betOn, betId, addWagerTeam, matchesBetOn, fixtures } = props;
+  return !teamDetails.length
     ? (
     <>
-      {props.fixtures.map(fixtures => {
+      {fixtures.map(fixtures => {
+        const { id } = fixtures.fixture;
         return (
           <div
-            key={fixtures.fixture.id}
-            id={fixtures.fixture.id}
+            key={id}
+            id={id}
             onClick={event => {
-              props.click(fixtures.fixture.id);
+              props.click(id);
             }}
           >
             <Fixture
               fixtures={fixtures}
-              toggleMatchDetails={props.toggleMatchDetails}
+              toggleMatchDetails={toggleMatchDetails}
               onClick={event => {
-                props.click(fixtures.fixture.id);
+                props.click(id);
               }}
             />
           </div>
@@ -31,31 +33,32 @@ const FixtureList = props => {
     : (
     <>
       {props.fixtures.map(fixtures => {
+        const { id } = fixtures.fixture;
         return (
           <div
-            key={fixtures.fixture.id}
-            id={fixtures.fixture.id}
+            key={id}
+            id={id}
             onClick={event => {
-              props.click(fixtures.fixture.id);
+              props.click(id);
             }}
           >
             <Fixture fixtures={fixtures} />
             <FixtureDetails
               fixtures={fixtures}
-              activeId={props.activeId}
-              matchesBetOn={props.matchesBetOn}
+              activeId={activeId}
+              matchesBetOn={matchesBetOn}
             />
             <WagerDetails
               fixtures={fixtures}
-              activeId={props.activeId}
-              teamDetails={props.teamDetails}
-              loading={props.loading}
-              homeOdds={props.homeOdds}
-              awayOdds={props.awayOdds}
-              betOn={props.betOn}
-              betId={props.betId}
-              addWagerTeam={props.addWagerTeam}
-              matchesBetOn={props.matchesBetOn}
+              activeId={activeId}
+              teamDetails={teamDetails}
+              loading={loading}
+              homeOdds={homeOdds}
+              awayOdds={awayOdds}
+              betOn={betOn}
+              betId={betId}
+              addWagerTeam={addWagerTeam}
+              matchesBetOn={matchesBetOn}
             />
           </div>
         );

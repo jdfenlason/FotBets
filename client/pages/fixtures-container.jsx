@@ -202,9 +202,10 @@ export default class FixturesContainer extends React.Component {
       script,
       today,
       selectedDay,
+
       formatDay
     } = this.state;
-
+    const { userTokens } = this.props;
     if (dayOfFixtures.length === 0) {
       return (
         <>
@@ -255,7 +256,7 @@ export default class FixturesContainer extends React.Component {
           activeId={activeId}
           matchesBetOn={matchesBetOn}
           wagerAmount={wagerAmount}
-          userTokens={this.props.userTokens}
+          userTokens={userTokens}
           handleSubmit={this.handleSubmit}
         />
       </>
