@@ -1,17 +1,17 @@
 import React from 'react';
-import { format, getUnixTime } from 'date-fns';
+import { format } from 'date-fns';
 
 const Today = props => {
   const { today } = props;
 
   return (
     <>
-   <div className = "date-item" onClick = {() => props.handleDateClick(event)} id = {getUnixTime(today)}>
+   <div className = "date-item" onClick = {() => props.handleDateClick(event)} id = {format(today, 'YYYY-mm-dd')}>
 
-        <span id = {getUnixTime(today)} className = "day-label">
+        <span className = "day-label">
         {format(today, 'E')}
         </span>
-        <span id = {getUnixTime(today)} className ="date-label">
+        <span className ="date-label">
         {format(today, 'dd')}
         </span>
 

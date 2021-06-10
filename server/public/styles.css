@@ -289,10 +289,10 @@ input:focus::placeholder {
 }
 
 .day-label {
-  font-size: 12px;
+  font-size: 2em;
   margin: 4px 0 0 0;
 }
 
 .date-label {
-  font-size: 18px;
+  font-size: 2em;
 }

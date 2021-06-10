@@ -8,7 +8,7 @@ export default class DateStrip extends React.Component {
     super(props);
     this.state = {
       today: new Date(),
-      selectedDay: new Date()
+      selectedDay: ''
     };
     this.handleDateClick = this.handleDateClick.bind(this);
   }
@@ -18,6 +18,10 @@ export default class DateStrip extends React.Component {
   }
 
   handleDateClick(event, id) {
+
+    this.setState({
+      selectedDay: event.target.id
+    });
 
   }
 
