@@ -289,10 +289,18 @@ input:focus::placeholder {
 }
 
 .day-label {
-  font-size: 2em;
+  font-size: 1.5em;
   margin: 4px 0 0 0;
 }
 
 .date-label {
-  font-size: 2em;
+  font-size: 1.5em;
+}
+
+.selected-date {
+  font-weight: bold;
+  height: 4rem;
+  border-radius: 50%;
+  border: 2px solid #aeaeae;
+  color: #aeaeae;
 }
