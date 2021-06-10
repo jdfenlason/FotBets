@@ -146,28 +146,6 @@ app.get('/api/user-profile', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.get('/api/week-games/:date', (req, res, next) => {
-  const sql = `
-  select "fixtures"
-      from "weekGames"
-`;
-  db.query(sql)
-    .then(result => {
-      const time = new Date();
-      const formatDate = dateFns.format(time, 'yyyy-MM-dd');
-      const dbresult = result.rows;
-      const todayGames = dbresult.map(fixtures => {
-        const filteredGames = fixtures.fixtures.filter(fixture => {
-          return fixture.fixture.date.slice(0, 10) === formatDate;
-        });
-        return filteredGames;
-      });
-      const flatten = todayGames.flat(1);
-      res.json(flatten);
-    })
-    .catch(err => next(err));
-});
-
 app.get('/api/team-form', (req, res, next) => {
   const { fixtureId, leagueId, awayId, homeId, utcDate } = req.query;
   const sql = `
