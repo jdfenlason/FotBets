@@ -10,7 +10,8 @@ export default class DateStrip extends React.Component {
     const formatDay = format(new Date(), 'yyyy-MM-dd');
     this.state = {
       today: new Date(),
-      selectedDay: formatDay
+      selectedDay: formatDay,
+      formatDay: formatDay
     };
     this.handleDateClick = this.handleDateClick.bind(this);
   }
@@ -24,15 +25,16 @@ export default class DateStrip extends React.Component {
   }
 
   render() {
-    const { today, selectedDay } = this.state;
+    const { today, selectedDay, formatDay } = this.state;
     return (
       <>
+
         <div className="day-container">
           <SubDays handleDateClick = {this.handleDateClick} today={today} selectedDay = {selectedDay}/>
           <Today handleDateClick = {this.handleDateClick} today = {today} selectedDay = {selectedDay}/>
           <AddDays handleDateClick = {this.handleDateClick} today={today} selectedDay = {selectedDay}/>
         </div>
-          <TodayFixtures today={today} selectedDay = {selectedDay}/>
+          <TodayFixtures formatDay = {formatDay}selectedDay = {selectedDay}/>
       </>
     );
   }
