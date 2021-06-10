@@ -1,17 +1,19 @@
 import React from 'react';
-import { subDays, addDays, format } from 'date-fns';
+import AddDays from './add-days';
+import SubDays from './sub-days';
+import { format } from 'date-fns';
 export default class DateStrip extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       today: new Date(),
-      selectedDay: ''
+      selectedDay: new Date()
     };
     this.handleDateClick = this.handleDateClick.bind(this);
   }
 
-  getUnixId() {
-
+  getMonth() {
+    return format(this.state.selectedDay, 'MMMM');
   }
 
   handleDateClick(event) {
@@ -21,20 +23,13 @@ export default class DateStrip extends React.Component {
   }
 
   render() {
-    const { today } = this.state;
     return (
       <>
-      <div className ="date-container">
-
-      <div>{format(subDays(today, 3), 'E')}</div>
-      <div>{format(subDays(today, 2), 'E')}</div>
-      <div>{format(subDays(today, 1), 'E')}</div>
-      <div>{format(today, 'E')}</div>
-      <div>{format(addDays(today, 1), 'E')}</div>
-      <div>{format(addDays(today, 2), 'E')}</div>
-      <div>{format(addDays(today, 3), 'E')}</div>
-      </div>
-    </>
+        <div className="day-container">
+          <AddDays today={this.state.today} />
+          <SubDays today={this.state.today} />
+        </div>
+      </>
     );
   }
 }
