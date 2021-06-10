@@ -276,6 +276,7 @@ input:focus::placeholder {
   display: flex;
   flex-basis: calc(100 / 7);
   justify-content: space-around;
+  margin-top: 1rem;
 }
 
 .date-item {

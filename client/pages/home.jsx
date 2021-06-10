@@ -11,7 +11,8 @@ const Home = props => {
     profileOn,
     fixturesOn,
     handleProfile,
-    handleFixtures
+    handleFixtures,
+    handleTokenChange
   } = props;
   return (
     <>
@@ -24,7 +25,7 @@ const Home = props => {
             <Profile userTokens={userTokens} userName={userName} />
           </div>
           <div className={profileOn && !fixturesOn ? 'hidden' : ''}>
-            <FixturesContainer userTokens={userTokens} />
+            <FixturesContainer userTokens={userTokens} handleTokenChange = {handleTokenChange} />
           </div>
         </div>
         <div className="footer">

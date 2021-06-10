@@ -118,10 +118,11 @@ export default class FixturesContainer extends React.Component {
     });
   }
 
-  handleSubmit() {
+  handleSubmit(props) {
     event.preventDefault();
     const stake = this.state.wagerAmount;
     const odds = this.state.setOdds;
+    this.props.handleTokenChange(stake);
     const profitAmount = makeBets(stake, odds);
     const { userId, activeId, wagerAmount, teamLogo, betTeamId } = this.state;
     const newWager = {

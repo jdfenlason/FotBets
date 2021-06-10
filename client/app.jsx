@@ -14,6 +14,7 @@ export default class App extends React.Component {
     };
     this.handleProfile = this.handleProfile.bind(this);
     this.handleFixtures = this.handleFixtures.bind(this);
+    this.handleTokenChange = this.handleTokenChange.bind(this);
   }
 
   handleProfile(event) {
@@ -28,7 +29,14 @@ export default class App extends React.Component {
       profileOn: false,
       fixturesOn: true
     }));
+  }
 
+  handleTokenChange(wagerAmount) {
+    const currentTokenAmount = this.state.userTokens;
+    const changeTokenAmount = currentTokenAmount - wagerAmount;
+    this.setState({
+      userTokens: changeTokenAmount
+    });
   }
 
   componentDidMount() {
@@ -46,16 +54,18 @@ export default class App extends React.Component {
 
   render() {
     const { userName, userTokens, profileOn, fixturesOn, fixtures } = this.state;
+    const { handleProfile, handleFixtures, handleTokenChange } = this;
     return (
       this.state.isLoading
         ? <p className='hidden'>isLoading</p>
         : <Home userName={userName}
              userTokens={userTokens}
-             handleProfile ={this.handleProfile}
-             handleFixtures = {this.handleFixtures}
+             handleProfile ={handleProfile}
+             handleFixtures = {handleFixtures}
              profileOn ={profileOn}
              fixturesOn = {fixturesOn}
              fixtures = {fixtures}
+             handleTokenChange ={handleTokenChange}
              />
     );
   }

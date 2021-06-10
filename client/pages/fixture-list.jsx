@@ -47,6 +47,8 @@ const FixtureList = props => {
               fixtures={fixtures}
               activeId={activeId}
               matchesBetOn={matchesBetOn}
+              toggleMatchDetails={toggleMatchDetails}
+
             />
             <WagerDetails
               fixtures={fixtures}
@@ -59,6 +61,7 @@ const FixtureList = props => {
               betId={betId}
               addWagerTeam={addWagerTeam}
               matchesBetOn={matchesBetOn}
+              toggleMatchDetails={toggleMatchDetails}
             />
           </div>
         );
