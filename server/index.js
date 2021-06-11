@@ -74,10 +74,13 @@ app.get('/api/week-games', (req, res, next) => {
 app.post('/api/wager-input', (req, res, next) => {
   const { userId, fixtureId, wagerAmount, profitAmount, betTeamId, teamLogo } =
   req.body.newWager;
-  const betResult = 'pending';
+  const betResult = 'Pending';
+  const dateObj = new Date();
+  const dateString = dateObj.toLocaleDateString();
+  const date = dateString.slice(0, 4);
   const sql = `
-  insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "betTeamId", "teamLogo", "betResult")
-  values ($1, $2, $3, $4, $5, $6)
+  insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "betTeamId", "teamLogo", "betResult", "date")
+  values ($1, $2, $3, $4, $5, $6, $7, $8)
   `;
   const params = [
     userId,
@@ -86,7 +89,8 @@ app.post('/api/wager-input', (req, res, next) => {
     profitAmount,
     betTeamId,
     teamLogo,
-    betResult
+    betResult,
+    date
   ];
   db.query(sql, params)
     .then(result => {

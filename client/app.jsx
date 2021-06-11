@@ -16,6 +16,7 @@ export default class App extends React.Component {
     this.handleProfile = this.handleProfile.bind(this);
     this.handleFixtures = this.handleFixtures.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
+    this.handlePastBets = this.handlePastBets.bind(this);
   }
 
   handleProfile(event) {
@@ -23,6 +24,20 @@ export default class App extends React.Component {
       profileOn: true,
       fixturesOn: false
     }));
+  }
+
+  handlePastBets(newWager) {
+    const betResult = 'Pending';
+    const newArray = this.state.pastBets;
+    const dateObj = new Date();
+    const dateString = dateObj.toLocaleDateString();
+    const date = dateString.slice(0, 4);
+    newWager.betResult = betResult;
+    newWager.date = date;
+    newArray.push(newWager);
+    this.setState({
+      pastBets: newArray
+    });
   }
 
   handleFixtures(event) {
@@ -61,7 +76,7 @@ export default class App extends React.Component {
 
   render() {
     const { userName, pastBets, userTokens, profileOn, fixturesOn, fixtures } = this.state;
-    const { handleProfile, handleFixtures, handleTokenChange } = this;
+    const { handleProfile, handlePastBets, handleFixtures, handleTokenChange } = this;
     return (
       this.state.isLoading
         ? <p className='hidden'>isLoading</p>
@@ -74,6 +89,7 @@ export default class App extends React.Component {
              fixtures = {fixtures}
              handleTokenChange ={handleTokenChange}
              pastBets = {pastBets}
+             handlePastBets = {handlePastBets}
              />
     );
   }

@@ -107,6 +107,7 @@
 
 .past-bets-container {
   display: flex;
+  justify-content: space-evenly;
   font-family: "lato", serif;
 }
 
