@@ -72,7 +72,7 @@ export default class FixturesContainer extends React.Component {
     const dayOfFixtures = fixtures.filter(fixtures => {
       const zonedDate = utcToZonedTime(
         fixtures.fixture.date,
-        'America/New_York'
+        'America/Los_Angeles'
       );
       const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
       return formatUTCDate === formatSelected;
