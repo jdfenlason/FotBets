@@ -6,7 +6,7 @@ const FixtureDetails = props => {
   const { fixture, league } = props.fixtures;
   return (
     <div
-      className={ activeId === fixture.id ? '' : 'hidden'}
+      className={activeId === fixture.id ? '' : 'hidden'}
       id={fixture.id}
     >
       <div className="row column-full center fixture-card">

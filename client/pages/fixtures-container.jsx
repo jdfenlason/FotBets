@@ -206,6 +206,7 @@ export default class FixturesContainer extends React.Component {
 
       formatDay
     } = this.state;
+    const { handleDateClick, addWagerTeam, handleClick, checkProfit, handleChange, handleSubmit } = this;
     const { userTokens } = this.props;
     if (dayOfFixtures.length === 0) {
       return (
@@ -227,7 +228,7 @@ export default class FixturesContainer extends React.Component {
       : (
       <>
         <DateStrip
-          handleDateClick={this.handleDateClick}
+          handleDateClick={handleDateClick}
           today={today}
           selectedDay={selectedDay}
           formatDay={formatDay}
@@ -240,17 +241,17 @@ export default class FixturesContainer extends React.Component {
           toggleMatchDetails={toggleMatchDetails}
           activeId={activeId}
           fixtures={dayOfFixtures}
-          click={id => this.handleClick(id)}
+          click={id => handleClick(id)}
           teamDetails={teamDetails}
           loading={isLoading}
           betTeamId={betTeamId}
-          addWagerTeam={this.addWagerTeam}
+          addWagerTeam={addWagerTeam}
           matchesBetOn={matchesBetOn}
         />
         <SubmitWager
-          checkProfit={this.checkProfit}
+          checkProfit={checkProfit}
           script={script}
-          handleChange={this.handleChange}
+          handleChange={handleChange}
           setOdds={setOdds}
           teamLogo={teamLogo}
           betTeamId={betTeamId}
@@ -258,7 +259,7 @@ export default class FixturesContainer extends React.Component {
           matchesBetOn={matchesBetOn}
           wagerAmount={wagerAmount}
           userTokens={userTokens}
-          handleSubmit={this.handleSubmit}
+          handleSubmit={handleSubmit}
         />
       </>
         );
