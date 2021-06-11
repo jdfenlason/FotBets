@@ -69,10 +69,11 @@ export default class FixturesContainer extends React.Component {
     const { fixtures } = this.state;
     const selectedDaytoUTC = zonedTimeToUtc(selectedDay);
     const formatSelected = format(selectedDaytoUTC, 'yyyy-MM-dd');
+    const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     const dayOfFixtures = fixtures.filter(fixtures => {
       const zonedDate = utcToZonedTime(
         fixtures.fixture.date,
-        'America/Los_Angeles'
+        zone
       );
       const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
       return formatUTCDate === formatSelected;
