@@ -2,19 +2,26 @@ import React from 'react';
 import axios from 'axios';
 import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
-import { makeBets, makeBetsScript } from './payouts';
+import SubmitWager from './submit-wager';
+import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
+import { makeBets, makeBetsScript } from '../lib/payouts';
+import DateStrip from './date-strip';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
     super(props);
+    const formatDay = format(new Date(), 'yyyy-MM-dd');
     this.state = {
-      fixturesList: [],
+      today: new Date(),
+      selectedDay: formatDay,
+      formatDay: formatDay,
+      fixtures: [],
       isLoading: true,
       toggleMatchDetails: false,
       activeId: '',
       teamDetails: [],
       wagerAmount: '',
       profitAmount: '',
-      userTokens: 1000,
+      userTokens: '',
       matchesBetOn: [],
       betTeamId: '',
       userId: 2,
@@ -22,13 +29,15 @@ export default class FixturesContainer extends React.Component {
       checkProfit: false,
       script: '',
       homeOdds: '',
-      awayOdds: ''
+      awayOdds: '',
+      dayOfFixtures: []
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addWagerTeam = this.addWagerTeam.bind(this);
     this.checkProfit = this.checkProfit.bind(this);
+    this.handleDateClick = this.handleDateClick.bind(this);
   }
 
   handleClick(id) {
@@ -40,42 +49,69 @@ export default class FixturesContainer extends React.Component {
   }
 
   componentDidMount() {
-    axios.request('/api/week-games/:date').then(response => {
-      const fixtures = response.data;
-      this.setState({
-        fixturesList: fixtures,
-        isLoading: false
-      });
-    });
     axios.get('/api/wager-input').then(response => {
       const pastBets = response.data;
       this.setState({
         matchesBetOn: pastBets
       });
     });
+    axios.get('/api/week-games/').then(response => {
+      const fixtures = response.data.fixtures;
+      this.setState({
+        fixtures: fixtures,
+        isLoading: false
+      });
+    });
   }
 
-  addWagerInput(newWager) {
-    const { fixtureId } = newWager.fixtureId;
-    const newArray = this.state.matchesBetOn.slice();
-    newArray.push(fixtureId);
-    axios.post('/api/wager-input', { newWager });
+  changeDate(dateObj) {
+    const { selectedDay } = dateObj;
+    const { fixtures } = this.state;
+    const selectedDaytoUTC = zonedTimeToUtc(selectedDay);
+    const formatSelected = format(selectedDaytoUTC, 'yyyy-MM-dd');
+    const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const dayOfFixtures = fixtures.filter(fixtures => {
+      const zonedDate = utcToZonedTime(
+        fixtures.fixture.date,
+        zone
+      );
+      const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
+      return formatUTCDate === formatSelected;
+    });
+    this.setState({
+      dayOfFixtures: dayOfFixtures,
+      isLoading: false,
+      selectedDay: selectedDay
+    });
   }
 
-  addWagerTeam(event, odds, id) {
+  handleDateClick(event) {
+    const id = event.target.closest('div').id;
+    this.setState({
+      selectedDay: id
+    });
+    const dateObj = {
+      selectedDay: id
+    };
+    this.changeDate(dateObj);
+  }
+
+  addWagerTeam(event, odds) {
+    const { id, src } = event.target;
     const checkBet = this.state.matchesBetOn.includes(id);
     if (!checkBet) {
       this.setState({
-        betTeamId: event.target.id,
-        teamLogo: event.target.src,
+        betTeamId: id,
+        teamLogo: src,
         setOdds: odds
       });
     }
   }
 
   checkProfit(props) {
-    const odds = this.state.setOdds;
-    const stake = this.state.wagerAmount;
+    const { setOdds, wagerAmount } = this.state;
+    const odds = setOdds;
+    const stake = wagerAmount;
     const script = makeBetsScript(stake, odds);
     this.setState({
       checkProfit: true,
@@ -83,19 +119,20 @@ export default class FixturesContainer extends React.Component {
     });
   }
 
-  handleSubmit(event) {
+  handleSubmit(props) {
     event.preventDefault();
-    event.target.reset();
     const stake = this.state.wagerAmount;
     const odds = this.state.setOdds;
+    this.props.handleTokenChange(stake);
     const profitAmount = makeBets(stake, odds);
+    const { userId, activeId, wagerAmount, teamLogo, betTeamId } = this.state;
     const newWager = {
-      userId: this.state.userId,
-      fixtureId: this.state.activeId,
-      wagerAmount: this.state.wagerAmount,
-      teamLogo: this.state.teamLogo,
+      userId: userId,
+      fixtureId: activeId,
+      wagerAmount: wagerAmount,
+      teamLogo: teamLogo,
       profitAmount: profitAmount,
-      betTeamId: this.state.betTeamId
+      betTeamId: betTeamId
     };
     const newArray = this.state.matchesBetOn.slice();
     newArray.push(this.state.activeId);
@@ -117,17 +154,18 @@ export default class FixturesContainer extends React.Component {
   }
 
   willFetch(id) {
-    const newArray = this.state.fixturesList.filter(fixtures => {
+    const newArray = this.state.fixtures.filter(fixtures => {
       return fixtures.fixture.id === id;
     });
+    const { fixture, league, teams } = newArray[0];
     const teamId = {
-      fixtureId: newArray[0].fixture.id,
-      leagueId: newArray[0].league.id,
-      currentSeason: newArray[0].league.season,
-      awayId: newArray[0].teams.away.id,
-      homeId: newArray[0].teams.home.id,
-      date: newArray[0].fixture.date.slice(0, 10),
-      utcDate: newArray[0].fixture.date
+      fixtureId: fixture.id,
+      leagueId: league.id,
+      currentSeason: league.season,
+      awayId: teams.away.id,
+      homeId: teams.home.id,
+      date: fixture.date.slice(0, 10),
+      utcDate: fixture.date
     };
 
     axios
@@ -135,11 +173,12 @@ export default class FixturesContainer extends React.Component {
         params: teamId
       })
       .then(response => {
+        const { teamDetails, homeOdds, awayOdds } = response.data[0];
         this.setState({
           isLoading: false,
-          teamDetails: response.data[0].teamDetails,
-          awayOdds: response.data[0].homeOdds,
-          homeOdds: response.data[0].awayOdds
+          teamDetails: teamDetails,
+          awayOdds: homeOdds,
+          homeOdds: awayOdds
         });
       })
       .catch(err => {
@@ -148,91 +187,81 @@ export default class FixturesContainer extends React.Component {
   }
 
   render() {
-    const value = this.state.wagerAmount;
-    const checkBet = this.state.matchesBetOn.includes(this.state.activeId);
-    if (!this.state.fixturesList.length) {
-      <NoMatchesToday />;
+    const {
+      toggleMatchDetails,
+      activeId,
+      dayOfFixtures,
+      matchesBetOn,
+      teamDetails,
+      isLoading,
+      wagerAmount,
+      betOn,
+      homeOdds,
+      awayOdds,
+      betTeamId,
+      teamLogo,
+      setOdds,
+      script,
+      today,
+      selectedDay,
+
+      formatDay
+    } = this.state;
+    const { handleDateClick, addWagerTeam, handleClick, checkProfit, handleChange, handleSubmit } = this;
+    const { userTokens } = this.props;
+    if (dayOfFixtures.length === 0) {
+      return (
+        <>
+          <DateStrip
+            handleDateClick={this.handleDateClick}
+            today={today}
+            selectedDay={selectedDay}
+            formatDay={formatDay}
+          />
+          <NoMatchesToday />
+        </>
+      );
     }
-    return this.state.isLoading
+    return isLoading
       ? (
       <p>isLoading...</p>
         )
       : (
       <>
-        <FixturesList
-          wagerAmount={this.state.wagerAmount}
-          homeOdds={this.state.homeOdds}
-          awayOdds={this.state.awayOdds}
-          betOn={this.state.betOn}
-          toggleMatchDetails={this.state.toggleMatchDetails}
-          activeId={this.state.activeId}
-          fixtures={this.state.fixturesList}
-          click={id => this.handleClick(id)}
-          teamDetails={this.state.teamDetails}
-          loading={this.state.isLoading}
-          betTeamId={this.betTeamId}
-          addWagerTeam={this.addWagerTeam}
-          matchesBetOn = {this.state.matchesBetOn}
+        <DateStrip
+          handleDateClick={handleDateClick}
+          today={today}
+          selectedDay={selectedDay}
+          formatDay={formatDay}
         />
-        <>
-          <div className={checkBet ? 'hidden' : ''}>
-            <div className={!this.state.betTeamId ? 'none' : ''}>
-              <div className="row column-full center">
-                <div className="outer-card column-full">
-                  <div className="match-card row center">
-                    <img
-                      className={'team-logo'}
-                      src={this.state.teamLogo}
-                      alt=""
-                    />
-                    <h4 className = 'sub-head'>Odds:</h4>
-                    <h4 className = 'sub-head'>{ this.state.setOdds}</h4>
-                    <div className="input-container column-full">
-                      <form
-                        onSubmit={this.handleSubmit}
-                        className="column-full"
-                      >
-                        <input
-                          className="wager-input"
-                          type="number"
-                          max={this.state.userTokens}
-                          required
-                          autoFocus
-                          value={value}
-                          placeholder="WAGER HERE"
-                          onChange={this.handleChange}
-                        />
-                        <div>
-                          <h4
-                            className={
-                              this.state.script === ''
-                                ? 'hidden'
-                                : 'row payout center'
-                            }
-                          >
-                            {this.state.script}
-                          </h4>
-                        </div>
-                        <div className="button-container row">
-                          <button className="enter-button " type="submit">
-                            Enter
-                          </button>
-                          <button
-                            onClick={this.checkProfit}
-                            className="enter-button"
-                            type="button"
-                          >
-                            Check Profit
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
+        <FixturesList
+          wagerAmount={wagerAmount}
+          homeOdds={homeOdds}
+          awayOdds={awayOdds}
+          betOn={betOn}
+          toggleMatchDetails={toggleMatchDetails}
+          activeId={activeId}
+          fixtures={dayOfFixtures}
+          click={id => handleClick(id)}
+          teamDetails={teamDetails}
+          loading={isLoading}
+          betTeamId={betTeamId}
+          addWagerTeam={addWagerTeam}
+          matchesBetOn={matchesBetOn}
+        />
+        <SubmitWager
+          checkProfit={checkProfit}
+          script={script}
+          handleChange={handleChange}
+          setOdds={setOdds}
+          teamLogo={teamLogo}
+          betTeamId={betTeamId}
+          activeId={activeId}
+          matchesBetOn={matchesBetOn}
+          wagerAmount={wagerAmount}
+          userTokens={userTokens}
+          handleSubmit={handleSubmit}
+        />
       </>
         );
   }

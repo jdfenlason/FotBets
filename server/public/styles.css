@@ -176,7 +176,7 @@ body {
   justify-content: center;
   text-align: center;
   align-items: center;
-  height: 100vh;
+  height: 50vh;
   width: 100%;
 }
 
@@ -270,4 +270,38 @@ input:focus::placeholder {
   display: flex;
   height: 100vh;
   flex-direction: column;
+}
+
+.day-container {
+  display: flex;
+  flex-basis: calc(100 / 7);
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+.date-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  margin: 0 0 0 5px;
+  width: 5rem;
+  height: 5rem;
+}
+
+.day-label {
+  font-size: 1.35em;
+  margin: 4px 0 0 0;
+}
+
+.date-label {
+  font-size: 1.5em;
+}
+
+.selected-date {
+  font-weight: bold;
+  height: 4rem;
+  background-color: #aeaeae;
+  border-radius: 50%;
+  border: 2px solid #aeaeae;
 }

@@ -5,23 +5,33 @@ import FixturesContainer from './fixtures-container';
 import Profile from './user-profile';
 
 const Home = props => {
+  const {
+    userTokens,
+    userName,
+    profileOn,
+    fixturesOn,
+    handleProfile,
+    handleFixtures,
+    handleTokenChange
+  } = props;
   return (
     <>
       <div className="container">
         <div className="header">
-          <Header userTokens={props.userTokens} />
+          <Header userTokens={userTokens} />
         </div>
         <div className="main">
-          <div className={!props.profileOn && props.fixturesOn ? 'hidden' : ''}>
-            <Profile userTokens={props.userTokens} userName={props.userName} />
+          <div className={!profileOn && fixturesOn ? 'hidden' : ''}>
+            <Profile userTokens={userTokens} userName={userName} />
           </div>
-          <div className={props.profileOn && !props.fixturesOn ? 'hidden' : ''}>
-            <FixturesContainer />
+          <div className={profileOn && !fixturesOn ? 'hidden' : ''}>
+            <FixturesContainer userTokens={userTokens} handleTokenChange = {handleTokenChange} />
           </div>
         </div>
         <div className="footer">
-          <Footer handleProfile={props.handleProfile}
-            handleFixtures = {props.handleFixtures}
+          <Footer
+            handleProfile={handleProfile}
+            handleFixtures={handleFixtures}
           />
         </div>
       </div>
