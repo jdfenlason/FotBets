@@ -10,7 +10,8 @@ export default class App extends React.Component {
       userTokens: '',
       userId: 2,
       profileOn: false,
-      fixturesOn: true
+      fixturesOn: true,
+      pastBets: []
     };
     this.handleProfile = this.handleProfile.bind(this);
     this.handleFixtures = this.handleFixtures.bind(this);
@@ -46,14 +47,20 @@ export default class App extends React.Component {
     axios.get('/api/user-profile', { params: userId }).then(response => {
       this.setState({
         userName: response.data.userName,
-        userTokens: response.data.tokenAmount,
+        userTokens: response.data.tokenAmount
+      });
+    });
+    axios.get('/api/user-profile/past-bets', { params: userId }).then(response => {
+      const userBets = response.data;
+      this.setState({
+        pastBets: userBets,
         isLoading: false
       });
     });
   }
 
   render() {
-    const { userName, userTokens, profileOn, fixturesOn, fixtures } = this.state;
+    const { userName, pastBets, userTokens, profileOn, fixturesOn, fixtures } = this.state;
     const { handleProfile, handleFixtures, handleTokenChange } = this;
     return (
       this.state.isLoading
@@ -66,6 +73,7 @@ export default class App extends React.Component {
              fixturesOn = {fixturesOn}
              fixtures = {fixtures}
              handleTokenChange ={handleTokenChange}
+             pastBets = {pastBets}
              />
     );
   }

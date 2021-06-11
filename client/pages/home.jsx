@@ -3,6 +3,7 @@ import Header from './header';
 import Footer from './footer';
 import FixturesContainer from './fixtures-container';
 import Profile from './user-profile';
+import PastBets from './past-bets';
 
 const Home = props => {
   const {
@@ -12,6 +13,7 @@ const Home = props => {
     fixturesOn,
     handleProfile,
     handleFixtures,
+    pastBets,
     handleTokenChange
   } = props;
   return (
@@ -21,9 +23,10 @@ const Home = props => {
           <Header userTokens={userTokens} />
         </div>
         <div className="main">
-          <div className={!profileOn && fixturesOn ? 'hidden' : ''}>
-            <Profile userTokens={userTokens} userName={userName} />
-          </div>
+          {/* <div className={!profileOn && fixturesOn ? 'hidden' : ''}> */}
+            <Profile pastBets = {pastBets} userTokens={userTokens} userName={userName} />
+            <PastBets pastBets = {pastBets}/>
+          {/* </div> */}
           <div className={profileOn && !fixturesOn ? 'hidden' : ''}>
             <FixturesContainer userTokens={userTokens} handleTokenChange = {handleTokenChange} />
           </div>

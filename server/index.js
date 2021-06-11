@@ -18,6 +18,23 @@ const db = new pg.Pool({
     rejectUnauthorized: false
   }
 });
+
+app.get('/api/user-profile/past-bets', (req, res, next) => {
+  const { userId } = req.query;
+  const sql = ` select *
+  From "wagerInputs"
+  where "userId" = $1
+  Order By
+  "createdAt" DESC
+  limit 3
+  `;
+  const params = [userId];
+  db.query(sql, params).then(result => {
+    const dbresult = result.rows;
+    res.json(dbresult);
+  }).catch(err => next(err));
+});
+
 app.get('/api/week-games', (req, res, next) => {
   const leagueId = 255;
   const [year, firstDay] = getNewWeek();
@@ -57,8 +74,9 @@ app.get('/api/week-games', (req, res, next) => {
 app.post('/api/wager-input', (req, res, next) => {
   const { userId, fixtureId, wagerAmount, profitAmount, betTeamId, teamLogo } =
   req.body.newWager;
+  const betResult = 'pending';
   const sql = `
-  insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "betTeamId", "teamLogo")
+  insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "betTeamId", "teamLogo", "betResult")
   values ($1, $2, $3, $4, $5, $6)
   `;
   const params = [
@@ -67,7 +85,8 @@ app.post('/api/wager-input', (req, res, next) => {
     wagerAmount,
     profitAmount,
     betTeamId,
-    teamLogo
+    teamLogo,
+    betResult
   ];
   db.query(sql, params)
     .then(result => {
