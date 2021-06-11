@@ -11,8 +11,8 @@ FotBets is a mobile app for fans of football(soccer) who want to play in an inte
 - PostgreSQL
 - Date-Fns 
 - API-Football
-# Current Features
 
+# Current Features
 - User can see fixture list
 - User can view match details for fixtures
 - User can scroll through past and future fixtures via date picker 
@@ -20,6 +20,12 @@ FotBets is a mobile app for fans of football(soccer) who want to play in an inte
 - User can see their profile 
 - User can see their current rank on the Leaderboard
 - User can look at their recent bets wagered 
+
+# Planned Features 
+- Users can sign in and sign out 
+- Users can create their own league to play against each other 
+- Users can communicate with one another in their league via chat 
+- Users can view current live scores for games that are happening currently 
 
 
 #####
