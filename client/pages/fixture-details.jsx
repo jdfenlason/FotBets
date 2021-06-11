@@ -1,5 +1,5 @@
 import React from 'react';
-import formatDate from './format-date';
+import { formatDate } from '../lib';
 
 const FixtureDetails = props => {
   const { activeId } = props;

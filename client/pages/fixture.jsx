@@ -1,5 +1,5 @@
 import React from 'react';
-import formatTime from './format-time';
+import { formatTime } from '../lib';
 const Fixture = props => {
   const { fixture } = props.fixtures;
   const { home, away } = props.fixtures.teams;

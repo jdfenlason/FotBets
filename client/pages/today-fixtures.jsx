@@ -1,5 +1,5 @@
 import React from 'react';
-import formatDate from './format-date';
+import { formatDate } from '../lib';
 const TodayFixtures = props => {
   const { selectedDay, formatDay } = props;
   if (formatDay === selectedDay) {

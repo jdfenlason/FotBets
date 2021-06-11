@@ -4,7 +4,7 @@ import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
 import SubmitWager from './submit-wager';
 import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
-import { makeBets, makeBetsScript } from './payouts';
+import { makeBets, makeBetsScript } from '../lib/payouts';
 import DateStrip from './date-strip';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
