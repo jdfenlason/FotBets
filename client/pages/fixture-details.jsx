@@ -3,37 +3,38 @@ import formatDate from './format-date';
 
 const FixtureDetails = props => {
   const { activeId } = props;
-  const { fixture, league } = props.fixtures;
+  const { name, round, logo } = props.fixtures.league;
+  const { id, venue, referee, date } = props.fixtures.fixture;
   return (
     <div
-      className={activeId === fixture.id ? '' : 'hidden'}
-      id={fixture.id}
+      className={activeId === id ? '' : 'hidden'}
+      id={id}
     >
       <div className="row column-full center fixture-card">
         <div className="outer-card column-full">
           <div className="match-card row center">
             <h2>Fixture Details</h2>
-            <h5 className="sub-head">{league.name}</h5>
-            <h5 className="sub-head">{league.round}</h5>
+            <h5 className="sub-head">{name}</h5>
+            <h5 className="sub-head">{round}</h5>
             <img
               className="small-logo"
-              src={league.logo}
+              src={logo}
               alt=""
             />
-            <h4>{formatDate(fixture.date)}</h4>
+            <h4>{formatDate(date)}</h4>
             <div className="sub-details column-full">
               <div className="location column-half">
                 <h3>Stadium:</h3>
                 <h5 className="sub-head">
-                  {fixture.venue.name}
+                  {venue.name}
                 </h5>
                 <h5 className="sub-head">
-                  {fixture.venue.city}
+                  {venue.city}
                 </h5>
               </div>
               <div className="location column-half ref">
                 <h3>Referee:</h3>
-                <h5 className="sub-head">{fixture.referee}</h5>
+                <h5 className="sub-head">{referee}</h5>
               </div>
             </div>
           </div>

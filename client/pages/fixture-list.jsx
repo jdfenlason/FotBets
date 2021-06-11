@@ -32,7 +32,7 @@ const FixtureList = props => {
       )
     : (
     <>
-      {props.fixtures.map(fixtures => {
+      {fixtures.map(fixtures => {
         const { id } = fixtures.fixture;
         return (
           <div
