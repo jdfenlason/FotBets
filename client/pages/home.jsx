@@ -16,7 +16,9 @@ const Home = props => {
     handleFixtures,
     pastBets,
     handleTokenChange,
-    handlePastBets
+    handlePastBets,
+    leaderboardOn,
+    handleLeaderboard
   } = props;
   return (
     <>
@@ -25,19 +27,42 @@ const Home = props => {
           <Header userTokens={userTokens} />
         </div>
         <div className="main">
-          <div className={!profileOn && fixturesOn ? 'hidden' : ''}>
+          <div
+            className={
+              leaderboardOn && profileOn && fixturesOn ? 'hidden' : ''
+            }
+          >
             <Leaderboard />
-            <Profile pastBets = {pastBets} userTokens={userTokens} userName={userName} />
-            <PastBets pastBets = {pastBets} handlePastBets = {handlePastBets}/>
           </div>
-          <div className={profileOn && !fixturesOn ? 'hidden' : ''}>
-            <FixturesContainer userTokens={userTokens} handleTokenChange = {handleTokenChange} handlePastBets = {handlePastBets} />
+          <div
+            className={
+              fixturesOn && !profileOn && !leaderboardOn ? 'hidden' : ''
+            }
+          >
+            <Profile
+              pastBets={pastBets}
+              userTokens={userTokens}
+              userName={userName}
+            />
+            <PastBets pastBets={pastBets} handlePastBets={handlePastBets} />
+          </div>
+          <div
+            className={
+              profileOn && !leaderboardOn && !fixturesOn ? 'hidden' : ''
+            }
+          >
+            <FixturesContainer
+              userTokens={userTokens}
+              handleTokenChange={handleTokenChange}
+              handlePastBets={handlePastBets}
+            />
           </div>
         </div>
         <div className="footer">
           <Footer
             handleProfile={handleProfile}
             handleFixtures={handleFixtures}
+            handleLeaderboard={handleLeaderboard}
           />
         </div>
       </div>

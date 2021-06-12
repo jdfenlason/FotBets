@@ -11,19 +11,22 @@ export default class App extends React.Component {
       userId: 2,
       profileOn: false,
       fixturesOn: true,
+      leaderboardOn: false,
       pastBets: []
     };
     this.handleProfile = this.handleProfile.bind(this);
     this.handleFixtures = this.handleFixtures.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
     this.handlePastBets = this.handlePastBets.bind(this);
+    this.handleLeaderboard = this.handleLeaderboard.bind(this);
   }
 
   handleProfile(event) {
-    this.setState(prevState => ({
+    this.setState({
       profileOn: true,
-      fixturesOn: false
-    }));
+      fixturesOn: false,
+      leaderboardOn: false
+    });
   }
 
   handlePastBets(newWager) {
@@ -41,10 +44,19 @@ export default class App extends React.Component {
   }
 
   handleFixtures(event) {
-    this.setState(prevState => ({
+    this.setState({
       profileOn: false,
-      fixturesOn: true
-    }));
+      fixturesOn: true,
+      leaderboardOn: false
+    });
+  }
+
+  handleLeaderboard(event) {
+    this.setState({
+      profileOn: false,
+      fixturesOn: false,
+      leaderboardOn: true
+    });
   }
 
   handleTokenChange(wagerAmount) {
@@ -75,8 +87,8 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { userName, pastBets, userTokens, profileOn, fixturesOn, fixtures } = this.state;
-    const { handleProfile, handlePastBets, handleFixtures, handleTokenChange } = this;
+    const { userName, pastBets, userTokens, profileOn, fixturesOn, fixtures, leaderboardOn } = this.state;
+    const { handleProfile, handlePastBets, handleFixtures, handleTokenChange, handleLeaderboard } = this;
     return (
       this.state.isLoading
         ? <p className='hidden'>isLoading</p>
@@ -90,6 +102,8 @@ export default class App extends React.Component {
              handleTokenChange ={handleTokenChange}
              pastBets = {pastBets}
              handlePastBets = {handlePastBets}
+             handleLeaderboard = {handleLeaderboard}
+             leaderboardOn = {leaderboardOn}
              />
     );
   }
