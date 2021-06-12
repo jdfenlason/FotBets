@@ -326,3 +326,15 @@ input:focus::placeholder {
   border-radius: 50%;
   border: 2px solid #aeaeae;
 }
+
+table {
+  border-collapse: collapse;
+}
+
+tr {
+  padding: 1rem 0.5rem;
+}
+
+tr:nth-child(even) {
+  background-color: #6c6c6c;
+}
