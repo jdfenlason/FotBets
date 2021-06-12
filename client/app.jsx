@@ -28,7 +28,7 @@ export default class App extends React.Component {
 
   handlePastBets(newWager) {
     const betResult = 'Pending';
-    const newArray = this.state.pastBets;
+    const newArray = this.state.pastBets.slice();
     const dateObj = new Date();
     const dateString = dateObj.toLocaleDateString();
     const date = dateString.slice(0, 4);
