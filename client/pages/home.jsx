@@ -4,6 +4,7 @@ import Footer from './footer';
 import FixturesContainer from './fixtures-container';
 import Profile from './user-profile';
 import PastBets from './past-bets';
+import Leaderboard from './leaderboard';
 
 const Home = props => {
   const {
@@ -25,6 +26,7 @@ const Home = props => {
         </div>
         <div className="main">
           <div className={!profileOn && fixturesOn ? 'hidden' : ''}>
+            <Leaderboard />
             <Profile pastBets = {pastBets} userTokens={userTokens} userName={userName} />
             <PastBets pastBets = {pastBets} handlePastBets = {handlePastBets}/>
           </div>

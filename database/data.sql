@@ -1,3 +1,15 @@
 insert into "users" ("userName","hashedPassword","tokenAmount")
-values ('admin', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1000),
-       ('JFen', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1000 )
+values ('admin', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 100),
+       ('JFen', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 7000),
+       ('Hulk', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1400),
+       ('Thor', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1000),
+       ('Loki', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1050),
+       ('George', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1500),
+       ('Odin', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1252),
+       ('Scooter', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1500),
+       ('Iron Man', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1030),
+       ('LongJohn', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1000),
+       ('Cosmo', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 2000),
+       ('Elmo', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 2050),
+       ('Phil', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1020),
+       ('Tommy', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1001)

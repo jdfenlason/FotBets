@@ -18,6 +18,19 @@ const db = new pg.Pool({
     rejectUnauthorized: false
   }
 });
+app.get('/api/leaderboard', (req, res, next) => {
+  const sql = `
+  select "userName", "tokenAmount"
+  From "users"
+  Order by
+  "tokenAmount" DESC
+  limit 10
+    `;
+  db.query(sql).then(result => {
+    const dbresult = result.rows;
+    res.json(dbresult);
+  }).catch(err => next(err));
+});
 
 app.get('/api/user-profile/past-bets', (req, res, next) => {
   const { userId } = req.query;
