@@ -105,6 +105,21 @@
   margin-top: 1rem;
 }
 
+.past-bets-container {
+  display: flex;
+  justify-content: space-evenly;
+  font-family: "lato", serif;
+}
+
+.bet-item {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.reset {
+  margin-bottom: 0;
+}
+
 .center {
   justify-content: center;
 }
@@ -163,6 +178,12 @@ h6 {
 .inner-card {
   display: flex;
   justify-content: space-between;
+}
+
+.bets-inner-card {
+  display: flex;
+  flex-direction: column;
+  font-family: "Abhaya Libre", serif;
 }
 
 body {

@@ -120,10 +120,11 @@ export default class FixturesContainer extends React.Component {
   }
 
   handleSubmit(props) {
+    const { handleTokenChange, handlePastBets } = this.props;
     event.preventDefault();
     const stake = this.state.wagerAmount;
     const odds = this.state.setOdds;
-    this.props.handleTokenChange(stake);
+    handleTokenChange(stake);
     const profitAmount = makeBets(stake, odds);
     const { userId, activeId, wagerAmount, teamLogo, betTeamId } = this.state;
     const newWager = {
@@ -134,6 +135,7 @@ export default class FixturesContainer extends React.Component {
       profitAmount: profitAmount,
       betTeamId: betTeamId
     };
+    handlePastBets(newWager);
     const newArray = this.state.matchesBetOn.slice();
     newArray.push(this.state.activeId);
     axios.post('/api/wager-input', { newWager });

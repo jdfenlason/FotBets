@@ -10,11 +10,13 @@ export default class App extends React.Component {
       userTokens: '',
       userId: 2,
       profileOn: false,
-      fixturesOn: true
+      fixturesOn: true,
+      pastBets: []
     };
     this.handleProfile = this.handleProfile.bind(this);
     this.handleFixtures = this.handleFixtures.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
+    this.handlePastBets = this.handlePastBets.bind(this);
   }
 
   handleProfile(event) {
@@ -22,6 +24,20 @@ export default class App extends React.Component {
       profileOn: true,
       fixturesOn: false
     }));
+  }
+
+  handlePastBets(newWager) {
+    const betResult = 'Pending';
+    const newArray = this.state.pastBets.slice();
+    const dateObj = new Date();
+    const dateString = dateObj.toLocaleDateString();
+    const date = dateString.slice(0, 4);
+    newWager.betResult = betResult;
+    newWager.date = date;
+    newArray.push(newWager);
+    this.setState({
+      pastBets: newArray
+    });
   }
 
   handleFixtures(event) {
@@ -46,15 +62,21 @@ export default class App extends React.Component {
     axios.get('/api/user-profile', { params: userId }).then(response => {
       this.setState({
         userName: response.data.userName,
-        userTokens: response.data.tokenAmount,
+        userTokens: response.data.tokenAmount
+      });
+    });
+    axios.get('/api/user-profile/past-bets', { params: userId }).then(response => {
+      const userBets = response.data;
+      this.setState({
+        pastBets: userBets,
         isLoading: false
       });
     });
   }
 
   render() {
-    const { userName, userTokens, profileOn, fixturesOn, fixtures } = this.state;
-    const { handleProfile, handleFixtures, handleTokenChange } = this;
+    const { userName, pastBets, userTokens, profileOn, fixturesOn, fixtures } = this.state;
+    const { handleProfile, handlePastBets, handleFixtures, handleTokenChange } = this;
     return (
       this.state.isLoading
         ? <p className='hidden'>isLoading</p>
@@ -66,6 +88,8 @@ export default class App extends React.Component {
              fixturesOn = {fixturesOn}
              fixtures = {fixtures}
              handleTokenChange ={handleTokenChange}
+             pastBets = {pastBets}
+             handlePastBets = {handlePastBets}
              />
     );
   }
