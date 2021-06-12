@@ -23,7 +23,7 @@ export default class Leaderboard extends React.Component {
     return (
       <div className="row column-full center">
         <div className="outer-card column-full">
-          <div className="match-card row center">
+          <div className="match-card column-half">
             <table>
               <thead>
                 <tr>

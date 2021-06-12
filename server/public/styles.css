@@ -322,19 +322,36 @@ input:focus::placeholder {
 .selected-date {
   font-weight: bold;
   height: 4rem;
-  background-color: #aeaeae;
+  background-color: #4c4c4c;
   border-radius: 50%;
   border: 2px solid #aeaeae;
 }
 
 table {
   border-collapse: collapse;
+  width: 100%;
+  padding: 1rem;
+  border-spacing: none;
+}
+
+th {
+  text-align: center;
+  font-family: "Abhaya Libre", serif;
+  font-size: 1.5em;
 }
 
 tr {
-  padding: 1rem 0.5rem;
+  padding-right: 0.5rem;
+  text-align: center;
+}
+
+td {
+  font-family: "lato", sans-serif;
+  padding: 0.5rem;
+  border: 0;
+  font-size: 1em;
 }
 
 tr:nth-child(even) {
-  background-color: #6c6c6c;
+  background-color: #4c4c4c;
 }
