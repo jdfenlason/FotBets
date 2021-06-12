@@ -10,12 +10,7 @@ const PastBets = props => {
 {pastBets.map((bets, index) => {
   const { teamLogo, wagerAmount, date, profitAmount, betResult } = bets;
   return (
-      <div
-        className="row column-full center fixture-card"
-        key={index}
-        id={props.id}
-      >
-        <div className="outer-card column-full">
+        <div className="outer-card column-full" key={index}>
           <div className="bets-inner-card column-full">
             <div className="past-bets-container">
               <div className = "bet-item">
@@ -45,7 +40,6 @@ const PastBets = props => {
             </div>
           </div>
         </div>
-      </div>
   );
 })}
   </>
