@@ -23,13 +23,15 @@ export default class Leaderboard extends React.Component {
     const { leaderboard } = this.state;
     return (
       <>
+      <div className = "input-container">
+
        <div className="fixture-date-heading">
         <h1>Leaderboard</h1>
       </div>
 
       <div className="row column-full">
         <div className="outer-card column-full">
-          <div className="match-card column-half">
+          <div className="column-half">
             <table>
               <thead>
                 <tr>
@@ -55,6 +57,7 @@ export default class Leaderboard extends React.Component {
           </div>
         </div>
       </div>
+                </div>
     </>
     );
 

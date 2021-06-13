@@ -2,7 +2,6 @@ import React from 'react';
 import Home from './pages/home';
 import axios from 'axios';
 import { parseRoute } from './lib';
-
 import Leaderboard from './pages/leaderboard';
 import Profile from './pages/user-profile';
 import PastBets from './pages/past-bets';

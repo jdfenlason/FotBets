@@ -338,6 +338,7 @@ th {
   text-align: center;
   font-family: "Abhaya Libre", serif;
   font-size: 1.5em;
+  background-color: #4c4c4c;
 }
 
 tr {
@@ -350,6 +351,7 @@ td {
   padding: 0.5rem;
   border: 0;
   font-size: 1em;
+  width: calc(100% / 3);
 }
 
 tr:nth-child(even) {
