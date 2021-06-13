@@ -19,9 +19,15 @@ export default class Leaderboard extends React.Component {
   }
 
   render() {
+
     const { leaderboard } = this.state;
     return (
-      <div className="row column-full center">
+      <>
+       <div className="fixture-date-heading">
+        <h1>Leaderboard</h1>
+      </div>
+
+      <div className="row column-full">
         <div className="outer-card column-full">
           <div className="match-card column-half">
             <table>
@@ -40,6 +46,7 @@ export default class Leaderboard extends React.Component {
                       <td>{index + 1}</td>
                       <td>{userName}</td>
                       <td>{tokenAmount.toLocaleString()}</td>
+
                     </tr>
                   );
                 })}
@@ -48,6 +55,8 @@ export default class Leaderboard extends React.Component {
           </div>
         </div>
       </div>
+    </>
     );
+
   }
 }

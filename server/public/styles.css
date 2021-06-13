@@ -329,9 +329,9 @@ input:focus::placeholder {
 
 table {
   border-collapse: collapse;
-  width: 100%;
   padding: 1rem;
   border-spacing: none;
+  width: 100%;
 }
 
 th {
