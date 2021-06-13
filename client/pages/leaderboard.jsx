@@ -39,7 +39,7 @@ export default class Leaderboard extends React.Component {
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{userName}</td>
-                      <td>{tokenAmount}</td>
+                      <td>{tokenAmount.toLocaleString()}</td>
                     </tr>
                   );
                 })}

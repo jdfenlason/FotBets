@@ -355,3 +355,7 @@ td {
 tr:nth-child(even) {
   background-color: #4c4c4c;
 }
+
+a {
+  color: inherit;
+}

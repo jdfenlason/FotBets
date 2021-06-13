@@ -42,7 +42,10 @@ const FixtureList = props => {
               props.click(id);
             }}
           >
+            <a href="">
+
             <Fixture fixtures={fixtures} />
+            </a>
             <FixtureDetails
               fixtures={fixtures}
               activeId={activeId}

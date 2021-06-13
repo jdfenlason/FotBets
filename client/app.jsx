@@ -1,6 +1,13 @@
 import React from 'react';
 import Home from './pages/home';
 import axios from 'axios';
+import { parseRoute } from './lib';
+
+import Leaderboard from './pages/leaderboard';
+import Profile from './pages/user-profile';
+import PastBets from './pages/past-bets';
+import Header from './pages/header';
+import Footer from './pages/footer';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -9,24 +16,11 @@ export default class App extends React.Component {
       userName: '',
       userTokens: '',
       userId: 2,
-      profileOn: false,
-      fixturesOn: true,
-      leaderboardOn: false,
-      pastBets: []
+      pastBets: [],
+      route: parseRoute(window.location.hash)
     };
-    this.handleProfile = this.handleProfile.bind(this);
-    this.handleFixtures = this.handleFixtures.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
     this.handlePastBets = this.handlePastBets.bind(this);
-    this.handleLeaderboard = this.handleLeaderboard.bind(this);
-  }
-
-  handleProfile(event) {
-    this.setState({
-      profileOn: true,
-      fixturesOn: false,
-      leaderboardOn: false
-    });
   }
 
   handlePastBets(newWager) {
@@ -43,22 +37,6 @@ export default class App extends React.Component {
     });
   }
 
-  handleFixtures(event) {
-    this.setState({
-      profileOn: false,
-      fixturesOn: true,
-      leaderboardOn: false
-    });
-  }
-
-  handleLeaderboard(event) {
-    this.setState({
-      profileOn: false,
-      fixturesOn: false,
-      leaderboardOn: true
-    });
-  }
-
   handleTokenChange(wagerAmount) {
     const currentTokenAmount = this.state.userTokens;
     const changeTokenAmount = currentTokenAmount - wagerAmount;
@@ -68,6 +46,12 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
+    window.addEventListener('hashchange', () => {
+      const newRoute = parseRoute(window.location.hash);
+      this.setState({
+        route: newRoute
+      });
+    });
     const userId = {
       userId: this.state.userId
     };
@@ -77,34 +61,75 @@ export default class App extends React.Component {
         userTokens: response.data.tokenAmount
       });
     });
-    axios.get('/api/user-profile/past-bets', { params: userId }).then(response => {
-      const userBets = response.data;
-      this.setState({
-        pastBets: userBets,
-        isLoading: false
+    axios
+      .get('/api/user-profile/past-bets', { params: userId })
+      .then(response => {
+        const userBets = response.data;
+        this.setState({
+          pastBets: userBets,
+          isLoading: false
+        });
       });
-    });
+  }
+
+  renderPage() {
+    const { route, userName, pastBets, userTokens } = this.state;
+    const {
+      handlePastBets,
+      handleTokenChange
+
+    } = this;
+    if (route.path === '') {
+      return (
+        <Home
+          userTokens={userTokens}
+          handleTokenChange={handleTokenChange}
+          handlePastBets={handlePastBets}
+        />
+      );
+    }
+    if (route.path === 'profile') {
+      return (
+        <>
+          <Profile
+            pastBets={pastBets}
+            userTokens={userTokens}
+            userName={userName}
+          />
+          <PastBets pastBets={pastBets} handlePastBets={handlePastBets} />
+        </>
+      );
+    }
+    if (route.path === 'leaderboard') {
+      return (
+        <Leaderboard/>
+      );
+    }
   }
 
   render() {
-    const { userName, pastBets, userTokens, profileOn, fixturesOn, fixtures, leaderboardOn } = this.state;
-    const { handleProfile, handlePastBets, handleFixtures, handleTokenChange, handleLeaderboard } = this;
-    return (
-      this.state.isLoading
-        ? <p className='hidden'>isLoading</p>
-        : <Home userName={userName}
-             userTokens={userTokens}
-             handleProfile ={handleProfile}
-             handleFixtures = {handleFixtures}
-             profileOn ={profileOn}
-             fixturesOn = {fixturesOn}
-             fixtures = {fixtures}
-             handleTokenChange ={handleTokenChange}
-             pastBets = {pastBets}
-             handlePastBets = {handlePastBets}
-             handleLeaderboard = {handleLeaderboard}
-             leaderboardOn = {leaderboardOn}
-             />
-    );
+    const { userTokens } = this.state;
+    const { handleProfile, handleFixtures, handleLeaderboard } = this;
+    return this.state.isLoading
+      ? (
+      <p className="hidden">isLoading</p>
+        )
+      : (
+      <>
+        <div className="container">
+          <div className="header">
+            <Header userTokens={userTokens} />
+          </div>
+          <div className="main">{this.renderPage()}</div>
+        <div className="footer">
+          <Footer
+            handleProfile={handleProfile}
+            handleFixtures={handleFixtures}
+            handleLeaderboard={handleLeaderboard}
+            />
+        </div>
+            </div>
+      </>
+        );
   }
 }
