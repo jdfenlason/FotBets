@@ -18,7 +18,6 @@ const db = new pg.Pool({
     rejectUnauthorized: false
   }
 });
-
 app.get('/api/leaderboard', (req, res, next) => {
   const sql = `
   select "userName", "tokenAmount"
@@ -51,7 +50,7 @@ app.get('/api/user-profile/past-bets', (req, res, next) => {
 
 app.get('/api/week-games', (req, res, next) => {
   const leagueId = 255;
-  const { year, firstDay } = getNewWeek();
+  const [year, firstDay] = getNewWeek();
   const sql = ` select *
   From "weekGames"
   where "leagueId" = $1
@@ -135,11 +134,7 @@ function getNewWeek() {
   const dayOfWeek = today.getDay();
   const daysSinceTuesday = dayOfWeek < 2 ? 2 - dayOfWeek - 7 : 2 - dayOfWeek;
   const firstDay = dateFns.addDays(today, daysSinceTuesday);
-  const newWeek = {
-    year: year,
-    firstDay: firstDay
-  };
-  return newWeek;
+  return [year, firstDay];
 }
 
 function getCurrentRound(currentYear, leagueId) {

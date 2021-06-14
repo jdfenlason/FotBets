@@ -91,9 +91,7 @@ export default class App extends React.Component {
             userTokens={userTokens}
             userName={userName}
           />
-
           <PastBets pastBets={pastBets} handlePastBets={handlePastBets} />
-
         </>
       );
     }
