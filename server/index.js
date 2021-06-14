@@ -19,10 +19,6 @@ const db = new pg.Pool({
   }
 });
 
-app.get('api/past-results', (req, res, next) => {
-
-});
-
 app.get('/api/leaderboard', (req, res, next) => {
   const sql = `
   select "userName", "tokenAmount"
