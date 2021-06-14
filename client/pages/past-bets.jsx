@@ -10,15 +10,16 @@ const PastBets = props => {
 {pastBets.map((bets, index) => {
   const { teamLogo, wagerAmount, date, profitAmount, betResult } = bets;
   return (
+
         <div className="outer-card" key={index}>
           <div className="bets-inner-card column-full">
             <div className="past-bets-container">
               <div className = "bet-item">
-                <h2>Date</h2>
-                <h3>{date}</h3>
+                <h3>Date</h3>
+                <h4>{date}</h4>
               </div>
               <div className = "bet-item">
-                <h2 className = "reset">Team</h2>
+                <h3 className = "reset">Team</h3>
                 <img
                   className="team-logo"
                   src={teamLogo}
@@ -26,20 +27,21 @@ const PastBets = props => {
                   />
                   </div>
               <div className = "bet-item">
-                <h2>Wager</h2>
-                <h3>{wagerAmount}</h3>
+                <h3>Wager</h3>
+                <h4>{wagerAmount}</h4>
               </div>
               <div className = "bet-item">
-                <h2>Result</h2>
-                <h3>{betResult}</h3>
+                <h3>Result</h3>
+                <h4>{betResult}</h4>
               </div>
               <div className = "bet-item">
-                <h2>+/-</h2>
-                <h3>{profitAmount}</h3>
+                <h3>+/-</h3>
+                <h4>{profitAmount}</h4>
               </div>
             </div>
           </div>
         </div>
+
   );
 })}
   </>
