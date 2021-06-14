@@ -3,7 +3,7 @@ const PastBets = props => {
   const { pastBets } = props;
   return (
 <>
-    <div className = "fixture-date-heading">
+    <div className = "central-heading">
         <h2>Latest Bets</h2>
     </div>
 
