@@ -108,7 +108,6 @@ export default class App extends React.Component {
 
   render() {
     const { userTokens } = this.state;
-    const { handleProfile, handleFixtures, handleLeaderboard } = this;
     return this.state.isLoading
       ? (
       <p className="hidden">isLoading</p>
@@ -122,9 +121,6 @@ export default class App extends React.Component {
           <div className="main">{this.renderPage()}</div>
         <div className="footer">
           <Footer
-            handleProfile={handleProfile}
-            handleFixtures={handleFixtures}
-            handleLeaderboard={handleLeaderboard}
             />
         </div>
             </div>
