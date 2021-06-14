@@ -1,5 +1,5 @@
 import React from 'react';
-import FixturesContainer from './fixtures-container';
+import FixturesContainer from '../components/fixtures-container';
 
 const Home = props => {
   const {
