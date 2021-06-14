@@ -73,11 +73,7 @@ export default class App extends React.Component {
 
   renderPage() {
     const { route, userName, pastBets, userTokens } = this.state;
-    const {
-      handlePastBets,
-      handleTokenChange
-
-    } = this;
+    const { handlePastBets, handleTokenChange } = this;
     if (route.path === '') {
       return (
         <Home
@@ -100,9 +96,7 @@ export default class App extends React.Component {
       );
     }
     if (route.path === 'leaderboard') {
-      return (
-        <Leaderboard/>
-      );
+      return <Leaderboard />;
     }
   }
 
@@ -119,11 +113,10 @@ export default class App extends React.Component {
             <Header userTokens={userTokens} />
           </div>
           <div className="main">{this.renderPage()}</div>
-        <div className="footer">
-          <Footer
-            />
+          <div className="footer">
+            <Footer />
+          </div>
         </div>
-            </div>
       </>
         );
   }

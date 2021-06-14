@@ -12,10 +12,7 @@ const WagerDetails = props => {
       )
     : (
     <>
-      <div
-        className={activeId === id ? '' : 'hidden'}
-        id={id}
-      >
+      <div className={activeId === id ? '' : 'hidden'} id={id}>
         <div className="row column-full center fixture-card">
           <div className="outer-card column-full">
             <div className="match-card row center">
@@ -28,13 +25,7 @@ const WagerDetails = props => {
                   <div className={!checkBet ? 'logo-button' : ''}>
                     <img
                       className="small-logo"
-                      onClick={() =>
-                        addWagerTeam(
-                          event,
-                          homeOdds,
-                          activeId
-                        )
-                      }
+                      onClick={() => addWagerTeam(event, homeOdds, activeId)}
                       id={home.id}
                       src={home.logo}
                       alt={home.name}
@@ -49,13 +40,7 @@ const WagerDetails = props => {
                   <h4>{away.name}</h4>
                   <div className={!checkBet ? 'logo-button' : ''}>
                     <img
-                      onClick={() =>
-                        addWagerTeam(
-                          event,
-                          awayOdds,
-                          activeId
-                        )
-                      }
+                      onClick={() => addWagerTeam(event, awayOdds, activeId)}
                       id={away.id}
                       className="small-logo"
                       src={away.logo}
