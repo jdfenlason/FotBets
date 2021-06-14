@@ -4,13 +4,13 @@ const TodayFixtures = props => {
   const { selectedDay, formatDay } = props;
   if (formatDay === selectedDay) {
     return (
-      <div className="fixture-date-heading">
+      <div className="central-heading ">
         <h1>Today&apos;s Fixtures</h1>
       </div>
     );
   } else {
     return (
-      <div className="fixture-date-heading">
+      <div className="central-heading ">
         <h1>{formatDate(selectedDay)}</h1>
       </div>
     );

@@ -169,7 +169,7 @@ h6 {
   margin: 0;
 }
 
-.fixture-date-heading {
+.central-heading {
   text-align: center;
   font-family: "Abhaya Libre", serif;
   margin-top: 1rem;
@@ -338,7 +338,7 @@ th {
   text-align: center;
   font-family: "Abhaya Libre", serif;
   font-size: 1.5em;
-  background-color: #4c4c4c;
+  background-color: #1b1b1b;
 }
 
 tr {
@@ -354,7 +354,7 @@ td {
   width: calc(100% / 3);
 }
 
-tr:nth-child(even) {
+tr:nth-child(odd) {
   background-color: #4c4c4c;
 }
 

@@ -25,7 +25,7 @@ export default class Leaderboard extends React.Component {
       <>
       <div className = "input-container">
 
-       <div className="fixture-date-heading">
+       <div className="central-heading">
         <h1>Leaderboard</h1>
       </div>
 
