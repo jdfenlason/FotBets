@@ -169,7 +169,7 @@ h6 {
   margin: 0;
 }
 
-.fixture-date-heading {
+.central-heading {
   text-align: center;
   font-family: "Abhaya Libre", serif;
   margin-top: 1rem;
@@ -322,7 +322,42 @@ input:focus::placeholder {
 .selected-date {
   font-weight: bold;
   height: 4rem;
-  background-color: #aeaeae;
-  border-radius: 50%;
+  background-color: #4c4c4c;
+  border-radius: 1rem;
   border: 2px solid #aeaeae;
+}
+
+table {
+  border-collapse: collapse;
+  padding: 1rem;
+  border-spacing: none;
+  width: 100%;
+}
+
+th {
+  text-align: center;
+  font-family: "Abhaya Libre", serif;
+  font-size: 1.5em;
+  background-color: #1b1b1b;
+}
+
+tr {
+  padding-right: 0.5rem;
+  text-align: center;
+}
+
+td {
+  font-family: "lato", sans-serif;
+  padding: 0.5rem;
+  border: 0;
+  font-size: 1em;
+  width: calc(100% / 3);
+}
+
+tr:nth-child(odd) {
+  background-color: #4c4c4c;
+}
+
+a {
+  color: inherit;
 }

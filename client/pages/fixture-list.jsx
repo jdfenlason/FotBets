@@ -48,7 +48,6 @@ const FixtureList = props => {
               activeId={activeId}
               matchesBetOn={matchesBetOn}
               toggleMatchDetails={toggleMatchDetails}
-
             />
             <WagerDetails
               fixtures={fixtures}

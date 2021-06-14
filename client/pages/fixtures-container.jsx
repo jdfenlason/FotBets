@@ -61,13 +61,14 @@ export default class FixturesContainer extends React.Component {
         fixtures: fixtures,
         isLoading: false
       });
+
+      this.changeDate(this.state.selectedDay);
     });
   }
 
-  changeDate(dateObj) {
-    const { selectedDay } = dateObj;
+  changeDate(dateString) {
     const { fixtures } = this.state;
-    const selectedDaytoUTC = zonedTimeToUtc(selectedDay);
+    const selectedDaytoUTC = zonedTimeToUtc(dateString);
     const formatSelected = format(selectedDaytoUTC, 'yyyy-MM-dd');
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     const dayOfFixtures = fixtures.filter(fixtures => {
@@ -81,7 +82,7 @@ export default class FixturesContainer extends React.Component {
     this.setState({
       dayOfFixtures: dayOfFixtures,
       isLoading: false,
-      selectedDay: selectedDay
+      selectedDay: dateString
     });
   }
 
@@ -90,10 +91,7 @@ export default class FixturesContainer extends React.Component {
     this.setState({
       selectedDay: id
     });
-    const dateObj = {
-      selectedDay: id
-    };
-    this.changeDate(dateObj);
+    this.changeDate(id);
   }
 
   addWagerTeam(event, odds) {
