@@ -18,6 +18,39 @@ const db = new pg.Pool({
     rejectUnauthorized: false
   }
 });
+app.get('/api/past-results', (req, res, next) => {
+  const leagueId = 255;
+  const { date } = req.query;
+  const sql = `select  "yesterdayGames"
+  From "pastResults"
+  where "date" = $1
+  `;
+  const params = [date];
+  db.query(sql, params)
+    .then(result => {
+      if (result.rows.length) {
+        return result.rows[0];
+      }
+      const formatDay = dateFns.format(date, 'yyyy-MM-dd');
+      getPastResults(leagueId, formatDay);
+    });
+});
+
+function getPastResults(leagueId, date) {
+  const { year } = getNewWeek();
+  const init = {
+    method: 'GET',
+    url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures',
+    params: { league: leagueId, date: date, season: year },
+    headers: {
+      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
+    }
+  };
+  return axios.request(init).then(response => {
+    return response.data.response;
+  });
+}
 
 app.get('/api/leaderboard', (req, res, next) => {
   const sql = `

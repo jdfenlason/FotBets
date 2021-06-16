@@ -7,7 +7,9 @@ const Header = props => {
       <div className="row">
         <div className="column-full">
           <div className="header-container">
+          <a href="">
             <h2>FotBets</h2>
+            </a>
             <div className = "inline">
               <i className="fas fa-coins tokens"></i>
               <h4>{userTokens.toLocaleString('en-US')}</h4>

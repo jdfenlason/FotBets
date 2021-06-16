@@ -295,9 +295,9 @@ input:focus::placeholder {
 
 .day-container {
   display: flex;
-  flex-basis: calc(100 / 7);
   justify-content: space-around;
   margin-top: 1rem;
+  padding-right: 0.5rem;
 }
 
 .date-item {
@@ -360,4 +360,5 @@ tr:nth-child(odd) {
 
 a {
   color: inherit;
+  text-decoration: none;
 }

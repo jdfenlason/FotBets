@@ -51,4 +51,10 @@ create table "wagerInputs" (
   "date" text not null,
   "createdAt" timestamptz(6) not null default now(),
   primary Key ("betId")
+);
+
+create table "pastResults" (
+  "date" text not null,
+  "leagueId" int not null,
+  "yesterdayGames" json
 )
