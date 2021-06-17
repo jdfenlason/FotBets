@@ -86,12 +86,13 @@ export default class FixturesContainer extends React.Component {
     });
   }
 
-  handleDateClick(event) {
+  handleDateClick(event, sendDate) {
     const id = event.target.closest('div').id;
     this.setState({
       selectedDay: id
     });
     this.changeDate(id);
+    axios.get('/api/past-results');
   }
 
   addWagerTeam(event, odds) {

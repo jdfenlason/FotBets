@@ -18,23 +18,6 @@ const db = new pg.Pool({
     rejectUnauthorized: false
   }
 });
-// app.get('/api/past-results', (req, res, next) => {
-//   const leagueId = 255;
-//   const { date } = req.query;
-//   const sql = `select  "yesterdayGames"
-//   From "pastResults"
-//   where "date" = $1
-//   `;
-//   const params = [date];
-//   db.query(sql, params)
-//     .then(result => {
-//       if (result.rows.length) {
-//         return result.rows[0];
-//       }
-//       const formatDay = dateFns.format(date, 'yyyy-MM-dd');
-//       getPastResults(leagueId, formatDay);
-//     });
-// });
 
 app.patch('/api/token-amount', (req, res, next) => {
   const { userId, changeTokenAmount } = req.body.params;
@@ -51,8 +34,25 @@ app.patch('/api/token-amount', (req, res, next) => {
 });
 
 app.get('/api/past-results', (req, res, next) => {
-  getPastResults();
+  const leagueId = 255;
+  const date = '06-16-2021';
+  const sql = `select  "yesterdayGames"
+  From "pastResults"
+  where "date" = $1
+  And "leagueId" = $2
+  `;
+  const params = [date, leagueId];
+  db.query(sql, params).then(result => {
+    if (result.rows.length) {
+      return result.rows[0];
+    }
 
+    const formatDay = dateFns.format(date, 'yyyy-MM-dd');
+    // console.log(formatDay);
+    getPastResults(leagueId, formatDay);
+  }).then(response => {
+    // console.log(response);
+  }).catch(err => (next(err)));
 });
 
 function getPastResults(leagueId, date) {

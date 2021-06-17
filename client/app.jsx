@@ -120,7 +120,7 @@ export default class App extends React.Component {
             <Header userTokens={userTokens} />
           </div>
           <div className="main">{this.renderPage()}</div>
-          <div className="footer">
+          <div className="">
             <Footer />
           </div>
         </div>

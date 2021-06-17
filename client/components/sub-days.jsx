@@ -4,14 +4,15 @@ const SubDays = props => {
   const { today, selectedDay, handleDateClick } = props;
   const dayNumbers = [3, 2, 1];
   return dayNumbers.map((daysNums, index) => {
-    const formatDay = format(subDays(today, daysNums), 'yyyy-MM-dd');
+    const sendDate = subDays(today, daysNums);
+    const formatDay = format(sendDate, 'yyyy-MM-dd');
     return (
       <div
         className={
           selectedDay === formatDay ? 'selected-date date-item' : 'date-item'
         }
         key={index}
-        onClick={() => handleDateClick(event)}
+        onClick={() => handleDateClick(event, sendDate)}
         id={formatDay}
       >
         <span className="day-label">
