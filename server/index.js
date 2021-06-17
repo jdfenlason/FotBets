@@ -18,22 +18,41 @@ const db = new pg.Pool({
     rejectUnauthorized: false
   }
 });
-app.get('/api/past-results', (req, res, next) => {
-  const leagueId = 255;
-  const { date } = req.query;
-  const sql = `select  "yesterdayGames"
-  From "pastResults"
-  where "date" = $1
+// app.get('/api/past-results', (req, res, next) => {
+//   const leagueId = 255;
+//   const { date } = req.query;
+//   const sql = `select  "yesterdayGames"
+//   From "pastResults"
+//   where "date" = $1
+//   `;
+//   const params = [date];
+//   db.query(sql, params)
+//     .then(result => {
+//       if (result.rows.length) {
+//         return result.rows[0];
+//       }
+//       const formatDay = dateFns.format(date, 'yyyy-MM-dd');
+//       getPastResults(leagueId, formatDay);
+//     });
+// });
+
+app.patch('/api/token-amount', (req, res, next) => {
+  const { userId, changeTokenAmount } = req.body.params;
+  const sql = `
+  update "users"
+  set "tokenAmount" = $1
+  where "userId" = $2
+  returning "tokenAmount"
   `;
-  const params = [date];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length) {
-        return result.rows[0];
-      }
-      const formatDay = dateFns.format(date, 'yyyy-MM-dd');
-      getPastResults(leagueId, formatDay);
-    });
+  const params = [changeTokenAmount, userId];
+  db.query(sql, params).then(result => {
+    res.json(result.rows[0]);
+  }).catch(err => (next(err)));
+});
+
+app.get('/api/past-results', (req, res, next) => {
+  getPastResults();
+
 });
 
 function getPastResults(leagueId, date) {

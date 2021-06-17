@@ -8,7 +8,10 @@ const Header = props => {
         <div className="column-full">
           <div className="header-container">
           <a href="">
-            <h2>FotBets</h2>
+
+              <span>
+            <h2>F
+              <i className='fas fa-futbol logoSize'></i>tBets</h2></span>
             </a>
             <div className = "inline">
               <i className="fas fa-coins tokens"></i>

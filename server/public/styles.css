@@ -362,3 +362,7 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+.logoSize {
+  font-size: 0.65em;
+}

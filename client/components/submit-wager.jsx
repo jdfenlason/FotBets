@@ -11,9 +11,9 @@ const SubmitWager = props => {
     teamLogo,
     betTeamId,
     activeId,
-    matchesBetOn
+    matchesBetOn,
+    userTokens
   } = props;
-  const { userTokens } = props.userTokens;
   const checkBet = matchesBetOn.includes(activeId);
   const value = wagerAmount;
   return (
