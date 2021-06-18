@@ -4,6 +4,7 @@ import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
 import SubmitWager from './submit-wager';
 import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
+import { isPast, parseISO } from 'date-fns';
 import { makeBets, makeBetsScript } from '../lib/payouts';
 import DateStrip from './date-strip';
 export default class FixturesContainer extends React.Component {
@@ -44,7 +45,8 @@ export default class FixturesContainer extends React.Component {
     this.willFetch(id);
     this.setState(prevState => ({
       toggleMatchDetails: !prevState.toggleMatchDetails,
-      activeId: id
+      activeId: id,
+      betId: ''
     }));
   }
 
@@ -61,21 +63,21 @@ export default class FixturesContainer extends React.Component {
         fixtures: fixtures,
         isLoading: false
       });
-
       this.changeDate(this.state.selectedDay);
     });
   }
 
   changeDate(dateString) {
-    const { fixtures } = this.state;
+    const { fixtures, formatDay } = this.state;
+    const isInThePast = isPast(parseISO(dateString));
+    if (isInThePast && dateString !== formatDay) {
+      this.pastFixtures(dateString);
+    }
     const selectedDaytoUTC = zonedTimeToUtc(dateString);
     const formatSelected = format(selectedDaytoUTC, 'yyyy-MM-dd');
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     const dayOfFixtures = fixtures.filter(fixtures => {
-      const zonedDate = utcToZonedTime(
-        fixtures.fixture.date,
-        zone
-      );
+      const zonedDate = utcToZonedTime(fixtures.fixture.date, zone);
       const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
       return formatUTCDate === formatSelected;
     });
@@ -92,7 +94,6 @@ export default class FixturesContainer extends React.Component {
       selectedDay: id
     });
     this.changeDate(id);
-    axios.get('/api/past-results');
   }
 
   addWagerTeam(event, odds) {
@@ -208,7 +209,14 @@ export default class FixturesContainer extends React.Component {
 
       formatDay
     } = this.state;
-    const { handleDateClick, addWagerTeam, handleClick, checkProfit, handleChange, handleSubmit } = this;
+    const {
+      handleDateClick,
+      addWagerTeam,
+      handleClick,
+      checkProfit,
+      handleChange,
+      handleSubmit
+    } = this;
     const { userTokens } = this.props;
     if (dayOfFixtures.length === 0) {
       return (

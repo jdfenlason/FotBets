@@ -33,27 +33,72 @@ app.patch('/api/token-amount', (req, res, next) => {
   }).catch(err => (next(err)));
 });
 
+// create function that grabs the result.rows.yesterdayGames and then creates an object that has the fixtureId and the winnerId if both false then game was draw. No betId to be sent.
+function getPastResultsWinners(pastFixtures) {
+  const mappedResults = pastFixtures.map(yesterdayGames => {
+    let winner;
+    if (yesterdayGames.teams.away.winner) {
+      winner = yesterdayGames.teams.away.id;
+    }
+    if (yesterdayGames.teams.home.winner) {
+      winner = yesterdayGames.teams.home.id;
+    } else {
+      winner = false;
+    }
+    const resultObj = {
+      fixturesId: yesterdayGames.fixture.id,
+      winningTeamId: winner
+    };
+    return resultObj;
+  });
+  return mappedResults;
+}
+
 app.get('/api/past-results', (req, res, next) => {
   const leagueId = 255;
-  const date = '06-16-2021';
+  const formatDay = getDateForResults();
   const sql = `select  "yesterdayGames"
   From "pastResults"
   where "date" = $1
   And "leagueId" = $2
   `;
-  const params = [date, leagueId];
+  const params = [formatDay[2], leagueId];
   db.query(sql, params).then(result => {
     if (result.rows.length) {
-      return result.rows[0];
+      getPastResultsWinners(result.rows[0].yesterdayGames);
+      return res.json(result.rows[0]);
     }
-
-    const formatDay = dateFns.format(date, 'yyyy-MM-dd');
-    // console.log(formatDay);
-    getPastResults(leagueId, formatDay);
-  }).then(response => {
-    // console.log(response);
-  }).catch(err => (next(err)));
+    return Promise.all([
+      getPastResults(leagueId, formatDay[0]),
+      getPastResults(leagueId, formatDay[1]),
+      getPastResults(leagueId, formatDay[2])
+    ]).then(pastResults => {
+      const flattenGames = pastResults.flat(1);
+      const jsonPastResults = JSON.stringify(flattenGames);
+      const params = [formatDay[2], leagueId, jsonPastResults];
+      const sql = `
+      insert into "pastResults" ("date", "leagueId", "yesterdayGames")
+      values ($1, $2, $3)
+      returning *
+    `;
+      db.query(sql, params).then(results => {
+        res.json(results.rows[0]);
+      });
+    });
+  })
+    .catch(err => (next(err)));
 });
+
+function getDateForResults() {
+  const today = new Date();
+  const dayNums = [3, 2, 1];
+  const newFormattedDays = dayNums.map(format => {
+    const subtract = dateFns.subDays(today, format);
+    const formatDay = dateFns.format(subtract, 'yyyy-MM-dd');
+    return formatDay;
+  });
+  return newFormattedDays;
+}
 
 function getPastResults(leagueId, date) {
   const { year } = getNewWeek();
@@ -164,6 +209,7 @@ app.post('/api/wager-input', (req, res, next) => {
     })
     .catch(err => next(err));
 });
+
 app.get('/api/wager-input', (req, res, next) => {
   const sql = `
   select "fixtureId"
@@ -176,6 +222,7 @@ app.get('/api/wager-input', (req, res, next) => {
         return fixturesId.fixtureId;
       }
       );
+
       res.json(gamesBetOn);
     })
     .catch(err => next(err));
