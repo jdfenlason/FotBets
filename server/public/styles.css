@@ -385,3 +385,14 @@ a {
   min-width: 60px;
   font-family: "Abhaya Libre", serif;
 }
+
+.columns-count {
+  display: flex;
+}
+
+.block {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  width: 50%;
+}

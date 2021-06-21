@@ -18,7 +18,7 @@ const SubmitWager = props => {
   const checkBet = matchesBetOn.includes(activeId);
   const value = wagerAmount;
   const active = (activeId === fixtures.fixture.id);
-  const showWagerLogo = (betTeamId.toString() === fixtures.teams.home.id || betTeamId.toString() === fixtures.teams.away.id.toString());
+  const showWagerLogo = (betTeamId === fixtures.teams.home.id.toString() || betTeamId === fixtures.teams.away.id.toString());
   return (
     <>
     <div className = {active ? '' : 'none'}>

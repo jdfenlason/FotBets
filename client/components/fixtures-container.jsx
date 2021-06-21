@@ -2,9 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
-
 import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
-
 import { makeBets, makeBetsScript } from '../lib/payouts';
 import DateStrip from './date-strip';
 export default class FixturesContainer extends React.Component {
@@ -72,10 +70,7 @@ export default class FixturesContainer extends React.Component {
     const formatSelected = format(selectedDaytoUTC, 'yyyy-MM-dd');
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     const dayOfFixtures = fixtures.filter(fixtures => {
-      const zonedDate = utcToZonedTime(
-        fixtures.fixture.date,
-        zone
-      );
+      const zonedDate = utcToZonedTime(fixtures.fixture.date, zone);
       const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
       return formatUTCDate === formatSelected;
     });
@@ -84,7 +79,6 @@ export default class FixturesContainer extends React.Component {
       isLoading: false,
       selectedDay: dateString
     });
-
   }
 
   handleDateClick(event, sendDate) {
@@ -106,7 +100,11 @@ export default class FixturesContainer extends React.Component {
         setOdds: odds
       });
     } else {
-      this.setState({ betTeamId: '', teamLogo: '', setOdds: '' });
+      this.setState({
+        betTeamId: '',
+        teamLogo: '',
+        setOdds: ''
+      });
     }
   }
 
@@ -210,7 +208,14 @@ export default class FixturesContainer extends React.Component {
 
       formatDay
     } = this.state;
-    const { handleDateClick, addWagerTeam, handleClick, checkProfit, handleChange, handleSubmit } = this;
+    const {
+      handleDateClick,
+      addWagerTeam,
+      handleClick,
+      checkProfit,
+      handleChange,
+      handleSubmit
+    } = this;
     const { userTokens } = this.props;
     if (dayOfFixtures.length === 0) {
       return (
@@ -221,8 +226,7 @@ export default class FixturesContainer extends React.Component {
             selectedDay={selectedDay}
             formatDay={formatDay}
           />
-          <NoMatchesToday selectedDay = {selectedDay}
-          />
+          <NoMatchesToday selectedDay={selectedDay} />
         </>
       );
     }
@@ -242,7 +246,6 @@ export default class FixturesContainer extends React.Component {
           wagerAmount={wagerAmount}
           homeOdds={homeOdds}
           awayOdds={awayOdds}
-
           toggleMatchDetails={toggleMatchDetails}
           activeId={activeId}
           fixtures={dayOfFixtures}
@@ -257,7 +260,6 @@ export default class FixturesContainer extends React.Component {
           handleChange={handleChange}
           setOdds={setOdds}
           teamLogo={teamLogo}
-
           userTokens={userTokens}
           handleSubmit={handleSubmit}
         />
