@@ -4,7 +4,7 @@ import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
 import SubmitWager from './submit-wager';
 import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
-import { isPast, parseISO } from 'date-fns';
+
 import { makeBets, makeBetsScript } from '../lib/payouts';
 import DateStrip from './date-strip';
 export default class FixturesContainer extends React.Component {
@@ -39,7 +39,6 @@ export default class FixturesContainer extends React.Component {
     this.addWagerTeam = this.addWagerTeam.bind(this);
     this.checkProfit = this.checkProfit.bind(this);
     this.handleDateClick = this.handleDateClick.bind(this);
-    this.pastFixtures = this.pastFixtures.bind(this);
   }
 
   handleClick(id) {
@@ -68,19 +67,8 @@ export default class FixturesContainer extends React.Component {
     });
   }
 
-  pastFixtures(dateString) {
-    axios.patch('api/past-results').then(response => {
-
-    });
-  }
-
   changeDate(dateString) {
-    const { fixtures, formatDay } = this.state;
-    const isInThePast = isPast(parseISO(dateString));
-    if (isInThePast && dateString !== formatDay) {
-
-      this.pastFixtures(dateString);
-    }
+    const { fixtures } = this.state;
     const selectedDaytoUTC = zonedTimeToUtc(dateString);
     const formatSelected = format(selectedDaytoUTC, 'yyyy-MM-dd');
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -231,7 +219,8 @@ export default class FixturesContainer extends React.Component {
             selectedDay={selectedDay}
             formatDay={formatDay}
           />
-          <NoMatchesToday />
+          <NoMatchesToday selectedDay = {selectedDay}
+          />
         </>
       );
     }
