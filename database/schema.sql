@@ -57,4 +57,12 @@ create table "pastResults" (
   "date" text not null,
   "leagueId" int not null,
   "yesterdayGames" json
+);
+
+create table "betValidation" (
+  "date" text not null,
+  "leagueId" int not null,
+  "fixtureId" int not null,
+  "betResult" text not null,
+  "winningTeamId" int not null
 )

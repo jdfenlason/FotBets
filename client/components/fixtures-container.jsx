@@ -39,6 +39,7 @@ export default class FixturesContainer extends React.Component {
     this.addWagerTeam = this.addWagerTeam.bind(this);
     this.checkProfit = this.checkProfit.bind(this);
     this.handleDateClick = this.handleDateClick.bind(this);
+    this.pastFixtures = this.pastFixtures.bind(this);
   }
 
   handleClick(id) {
@@ -67,17 +68,27 @@ export default class FixturesContainer extends React.Component {
     });
   }
 
+  pastFixtures(dateString) {
+    axios.patch('api/past-results').then(response => {
+
+    });
+  }
+
   changeDate(dateString) {
     const { fixtures, formatDay } = this.state;
     const isInThePast = isPast(parseISO(dateString));
     if (isInThePast && dateString !== formatDay) {
+
       this.pastFixtures(dateString);
     }
     const selectedDaytoUTC = zonedTimeToUtc(dateString);
     const formatSelected = format(selectedDaytoUTC, 'yyyy-MM-dd');
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     const dayOfFixtures = fixtures.filter(fixtures => {
-      const zonedDate = utcToZonedTime(fixtures.fixture.date, zone);
+      const zonedDate = utcToZonedTime(
+        fixtures.fixture.date,
+        zone
+      );
       const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
       return formatUTCDate === formatSelected;
     });
@@ -86,6 +97,7 @@ export default class FixturesContainer extends React.Component {
       isLoading: false,
       selectedDay: dateString
     });
+
   }
 
   handleDateClick(event, sendDate) {
@@ -209,14 +221,7 @@ export default class FixturesContainer extends React.Component {
 
       formatDay
     } = this.state;
-    const {
-      handleDateClick,
-      addWagerTeam,
-      handleClick,
-      checkProfit,
-      handleChange,
-      handleSubmit
-    } = this;
+    const { handleDateClick, addWagerTeam, handleClick, checkProfit, handleChange, handleSubmit } = this;
     const { userTokens } = this.props;
     if (dayOfFixtures.length === 0) {
       return (

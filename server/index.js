@@ -37,67 +37,93 @@ app.patch('/api/token-amount', (req, res, next) => {
 function getPastResultsWinners(pastFixtures) {
   const mappedResults = pastFixtures.map(yesterdayGames => {
     let winner;
+    let betResult;
     if (yesterdayGames.teams.away.winner) {
       winner = yesterdayGames.teams.away.id;
+      betResult = 'Won';
     }
     if (yesterdayGames.teams.home.winner) {
       winner = yesterdayGames.teams.home.id;
+      betResult = 'Won';
     } else {
-      winner = false;
+      winner = 0;
+      betResult = 'Lost';
     }
     const resultObj = {
-      fixturesId: yesterdayGames.fixture.id,
-      winningTeamId: winner
+      fixtureId: yesterdayGames.fixture.id,
+      winningTeamId: winner,
+      betResult: betResult
     };
     return resultObj;
   });
   return mappedResults;
 }
 
-app.get('/api/past-results', (req, res, next) => {
+app.get('/api/wager-input/bet-validation', (req, res, next) => {
   const leagueId = 255;
-  const formatDay = getDateForResults();
+  const { formatDay } = getDateForResults();
   const sql = `select  "yesterdayGames"
   From "pastResults"
   where "date" = $1
   And "leagueId" = $2
   `;
-  const params = [formatDay[2], leagueId];
+  const params = [formatDay, leagueId];
+  db.query(sql, params)
+    .then(result => {
+      const betValidation = getPastResultsWinners(
+        result.rows[0].yesterdayGames
+      );
+      const { fixtureId, winningTeamId, betResult } = betValidation;
+      const sql = `
+      insert into "betValidation" ("fixtureId", "winningTeamId", "betResult", "date", "leagueId")
+      values($1, $2, $3, $4, $5)
+          `;
+      const params = [fixtureId, winningTeamId, betResult, formatDay, leagueId];
+      db.query(sql, params).then(result => {
+        return result.rows;
+      });
+    })
+    .catch(err => next(err));
+});
+
+app.get('/api/past-results', (req, res, next) => {
+  const leagueId = 255;
+  const { formatDay, formatToday } = getDateForResults();
+  const sql = `select  "yesterdayGames"
+  From "pastResults"
+  where "date" = $1
+  And "leagueId" = $2
+  `;
+  const params = [formatDay, leagueId];
   db.query(sql, params).then(result => {
     if (result.rows.length) {
-      getPastResultsWinners(result.rows[0].yesterdayGames);
       return res.json(result.rows[0]);
     }
     return Promise.all([
-      getPastResults(leagueId, formatDay[0]),
-      getPastResults(leagueId, formatDay[1]),
-      getPastResults(leagueId, formatDay[2])
-    ]).then(pastResults => {
-      const flattenGames = pastResults.flat(1);
-      const jsonPastResults = JSON.stringify(flattenGames);
-      const params = [formatDay[2], leagueId, jsonPastResults];
-      const sql = `
+      getPastResults(leagueId, formatDay),
+      getPastResults(leagueId, formatToday)
+    ])
+      .then(pastResults => {
+        const jsonPastResults = JSON.stringify(pastResults);
+        const params = [formatDay, leagueId, jsonPastResults];
+        const sql = `
       insert into "pastResults" ("date", "leagueId", "yesterdayGames")
       values ($1, $2, $3)
       returning *
     `;
-      db.query(sql, params).then(results => {
-        res.json(results.rows[0]);
-      });
-    });
-  })
-    .catch(err => (next(err)));
+        db.query(sql, params).then(results => {
+          return res.json(results.rows);
+        });
+      })
+      .catch(err => (next(err)));
+  });
 });
-
 function getDateForResults() {
   const today = new Date();
-  const dayNums = [3, 2, 1];
-  const newFormattedDays = dayNums.map(format => {
-    const subtract = dateFns.subDays(today, format);
-    const formatDay = dateFns.format(subtract, 'yyyy-MM-dd');
-    return formatDay;
-  });
-  return newFormattedDays;
+  const subtractDay = dateFns.subDays(today, 1);
+  const formatDay = dateFns.format(subtractDay, 'yyyy-MM-dd');
+  const formatToday = dateFns.format(today, 'yyyy-MM-dd');
+  return { formatDay, formatToday };
 }
 
 function getPastResults(leagueId, date) {
@@ -105,7 +131,7 @@ function getPastResults(leagueId, date) {
   const init = {
     method: 'GET',
     url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures',
-    params: { league: leagueId, date: date, season: year },
+    params: { league: leagueId, date: date, season: year, status: 'FT' },
     headers: {
       'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
       'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
