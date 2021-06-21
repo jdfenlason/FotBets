@@ -4,7 +4,7 @@ import Fixture from './fixture';
 import WagerDetails from './wager-details';
 
 const FixtureList = props => {
-  const { toggleMatchDetails, activeId, teamDetails, loading, homeOdds, awayOdds, betOn, betId, addWagerTeam, matchesBetOn, fixtures } = props;
+  const { betTeamId, toggleMatchDetails, activeId, teamDetails, loading, homeOdds, awayOdds, betOn, betId, addWagerTeam, matchesBetOn, fixtures } = props;
   return !teamDetails.length
     ? (
     <>
@@ -61,6 +61,7 @@ const FixtureList = props => {
               addWagerTeam={addWagerTeam}
               matchesBetOn={matchesBetOn}
               toggleMatchDetails={toggleMatchDetails}
+              betTeamId = {betTeamId}
             />
           </div>
         );

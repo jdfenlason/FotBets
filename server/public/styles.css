@@ -224,6 +224,12 @@ body {
   z-index: 5;
 }
 
+.active {
+  background: #aeaeae;
+  opacity: 50%;
+  border-radius: 1.25rem;
+}
+
 .logo-button:hover {
   background: #aeaeae;
   opacity: 50%;

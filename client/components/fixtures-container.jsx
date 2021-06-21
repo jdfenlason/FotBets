@@ -209,7 +209,6 @@ export default class FixturesContainer extends React.Component {
       teamDetails,
       isLoading,
       wagerAmount,
-      betOn,
       homeOdds,
       awayOdds,
       betTeamId,
@@ -252,7 +251,7 @@ export default class FixturesContainer extends React.Component {
           wagerAmount={wagerAmount}
           homeOdds={homeOdds}
           awayOdds={awayOdds}
-          betOn={betOn}
+
           toggleMatchDetails={toggleMatchDetails}
           activeId={activeId}
           fixtures={dayOfFixtures}

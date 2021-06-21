@@ -1,11 +1,10 @@
 import React from 'react';
 
 const WagerDetails = props => {
-  const { activeId, homeOdds, awayOdds, matchesBetOn, addWagerTeam } = props;
+  const { activeId, homeOdds, awayOdds, matchesBetOn, addWagerTeam, betTeamId } = props;
   const { id } = props.fixtures.fixture;
   const { home, away } = props.fixtures.teams;
   const checkBet = matchesBetOn.includes(id);
-
   return props.loading
     ? (
     <p className="hidden">Loading</p>
@@ -23,13 +22,16 @@ const WagerDetails = props => {
                   <h4>{home.name}</h4>
 
                   <div className={!checkBet ? 'logo-button' : ''}>
+                    <div className = {betTeamId === home.id.toString() ? 'active logo-button' : ''}>
+
                     <img
                       className="small-logo"
                       onClick={() => addWagerTeam(event, homeOdds, activeId)}
                       id={home.id}
                       src={home.logo}
                       alt={home.name}
-                    />
+                      />
+                      </div>
                   </div>
                   <h3>Past Results:</h3>
                   <span className="sub-head">{props.teamDetails[0].form}</span>
@@ -39,13 +41,16 @@ const WagerDetails = props => {
                 <div className="location column-half margin-bottom">
                   <h4>{away.name}</h4>
                   <div className={!checkBet ? 'logo-button' : ''}>
+                        <div className = {betTeamId === away.id.toString() ? 'active logo-button' : ''}>
+
                     <img
                       onClick={() => addWagerTeam(event, awayOdds, activeId)}
                       id={away.id}
                       className="small-logo"
                       src={away.logo}
                       alt={away.name}
-                    />
+                      />
+                      </div>
                   </div>
                   <h3>Past Results:</h3>
                   <span className="sub-head">{props.teamDetails[1].form}</span>
