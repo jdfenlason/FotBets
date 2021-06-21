@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
-import SubmitWager from './submit-wager';
+
 import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
 import { makeBets, makeBetsScript } from '../lib/payouts';
@@ -45,8 +45,7 @@ export default class FixturesContainer extends React.Component {
     this.willFetch(id);
     this.setState(prevState => ({
       toggleMatchDetails: !prevState.toggleMatchDetails,
-      activeId: id,
-      betId: ''
+      activeId: id
     }));
   }
 
@@ -98,13 +97,16 @@ export default class FixturesContainer extends React.Component {
 
   addWagerTeam(event, odds) {
     const { id, src } = event.target;
-    const checkBet = this.state.matchesBetOn.includes(id);
+    const { activeId, matchesBetOn } = this.state;
+    const checkBet = matchesBetOn.includes(activeId);
     if (!checkBet) {
       this.setState({
         betTeamId: id,
         teamLogo: src,
         setOdds: odds
       });
+    } else {
+      this.setState({ betTeamId: '', teamLogo: '', setOdds: '' });
     }
   }
 
@@ -250,17 +252,12 @@ export default class FixturesContainer extends React.Component {
           betTeamId={betTeamId}
           addWagerTeam={addWagerTeam}
           matchesBetOn={matchesBetOn}
-        />
-        <SubmitWager
           checkProfit={checkProfit}
           script={script}
           handleChange={handleChange}
           setOdds={setOdds}
           teamLogo={teamLogo}
-          betTeamId={betTeamId}
-          activeId={activeId}
-          matchesBetOn={matchesBetOn}
-          wagerAmount={wagerAmount}
+
           userTokens={userTokens}
           handleSubmit={handleSubmit}
         />

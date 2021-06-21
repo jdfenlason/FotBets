@@ -2,9 +2,10 @@ import React from 'react';
 import FixtureDetails from './fixture-details';
 import Fixture from './fixture';
 import WagerDetails from './wager-details';
+import SubmitWager from './submit-wager';
 
 const FixtureList = props => {
-  const { betTeamId, toggleMatchDetails, activeId, teamDetails, loading, homeOdds, awayOdds, betOn, betId, addWagerTeam, matchesBetOn, fixtures } = props;
+  const { checkProfit, script, handleChange, setOdds, teamLogo, wagerAmount, userTokens, handleSubmit, betTeamId, toggleMatchDetails, activeId, teamDetails, loading, homeOdds, awayOdds, betOn, betId, addWagerTeam, matchesBetOn, fixtures } = props;
   return !teamDetails.length
     ? (
     <>
@@ -63,6 +64,20 @@ const FixtureList = props => {
               toggleMatchDetails={toggleMatchDetails}
               betTeamId = {betTeamId}
             />
+              <SubmitWager
+          checkProfit={checkProfit}
+          script={script}
+          handleChange={handleChange}
+          setOdds={setOdds}
+          teamLogo={teamLogo}
+          betTeamId={betTeamId}
+          activeId={activeId}
+          matchesBetOn={matchesBetOn}
+          wagerAmount={wagerAmount}
+          userTokens={userTokens}
+          handleSubmit={handleSubmit}
+          fixtures = {fixtures}
+        />
           </div>
         );
       })}

@@ -12,14 +12,18 @@ const SubmitWager = props => {
     betTeamId,
     activeId,
     matchesBetOn,
-    userTokens
+    userTokens,
+    fixtures
   } = props;
   const checkBet = matchesBetOn.includes(activeId);
   const value = wagerAmount;
+  const active = (activeId === fixtures.fixture.id);
+  const showWagerLogo = (betTeamId.toString() === fixtures.teams.home.id || betTeamId.toString() === fixtures.teams.away.id.toString());
   return (
     <>
-      <div className={checkBet ? 'hidden' : ''}>
-        <div className={!betTeamId ? 'none' : ''}>
+    <div className = {active ? '' : 'none'}>
+      <div className={checkBet ? 'none' : ''}>
+        <div className={!showWagerLogo ? 'none' : ''}>
           <div className="row column-full center">
             <div className="outer-card column-full">
               <div className="match-card row center">
@@ -68,6 +72,7 @@ const SubmitWager = props => {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </>
   );
