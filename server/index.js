@@ -33,19 +33,22 @@ app.patch('/api/token-amount', (req, res, next) => {
   }).catch(err => (next(err)));
 });
 
-// create function that grabs the result.rows.yesterdayGames and then creates an object that has the fixtureId and the winnerId if both false then game was draw. No betId to be sent.
 function getPastResultsWinners(pastFixtures) {
-  const mappedResults = pastFixtures.map(yesterdayGames => {
+  const flattenResults = pastFixtures.flat(1);
+  const mappedResults = flattenResults.map(yesterdayGames => {
     let winner;
     let betResult;
+
     if (yesterdayGames.teams.away.winner) {
       winner = yesterdayGames.teams.away.id;
       betResult = 'Won';
     }
     if (yesterdayGames.teams.home.winner) {
+
       winner = yesterdayGames.teams.home.id;
       betResult = 'Won';
-    } else {
+    }
+    if (!yesterdayGames.teams.home.winner && !yesterdayGames.teams.away.winner) {
       winner = 0;
       betResult = 'Lost';
     }
@@ -59,7 +62,7 @@ function getPastResultsWinners(pastFixtures) {
   return mappedResults;
 }
 
-app.get('/api/wager-input/bet-validation', (req, res, next) => {
+app.patch('/api/wager-input/bet-validation', (req, res, next) => {
   const leagueId = 255;
   const { formatDay } = getDateForResults();
   const sql = `select  "yesterdayGames"
@@ -73,17 +76,31 @@ app.get('/api/wager-input/bet-validation', (req, res, next) => {
       const betValidation = getPastResultsWinners(
         result.rows[0].yesterdayGames
       );
-      const { fixtureId, winningTeamId, betResult } = betValidation;
-      const sql = `
-      insert into "betValidation" ("fixtureId", "winningTeamId", "betResult", "date", "leagueId")
-      values($1, $2, $3, $4, $5)
-          `;
-      const params = [fixtureId, winningTeamId, betResult, formatDay, leagueId];
-      db.query(sql, params).then(result => {
-        return result.rows;
+      betValidation.map(betValidations => {
+        const { fixtureId, winningTeamId, betResult } = betValidations;
+        const sql = `
+        insert into "betValidation" ("fixtureId", "winningTeamId", "betResult", "date", "leagueId")
+        values($1, $2, $3, $4, $5)
+        returning *
+        `;
+        const params = [fixtureId, winningTeamId, betResult, formatDay, leagueId];
+        return db.query(sql, params).then(result => {
+          return result.rows;
+        });
       });
     })
     .catch(err => next(err));
+});
+
+app.get('/api/validation', (req, res, next) => {
+  const sql = `
+  Select *
+    From "wagerInputs" JOIN "betValidation"
+    ON "wagerInputs"."fixtureId" = "betValidation"."fixtureId"
+    `;
+  db.query(sql).then(results => {
+
+  }).catch(err => next(err));
 });
 
 app.get('/api/past-results', (req, res, next) => {
