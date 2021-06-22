@@ -31,7 +31,7 @@ export default class FixturesContainer extends React.Component {
       awayOdds: '',
       dayOfFixtures: []
     };
-    this.handleClick = this.handleClick.bind(this);
+    this.handleId = this.handleId.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addWagerTeam = this.addWagerTeam.bind(this);
@@ -39,12 +39,19 @@ export default class FixturesContainer extends React.Component {
     this.handleDateClick = this.handleDateClick.bind(this);
   }
 
-  handleClick(id) {
+  handleId(event) {
+    const id = Number(event.target.closest('div').id);
+    const { activeId } = this.state;
     this.willFetch(id);
-    this.setState(prevState => ({
-      toggleMatchDetails: !prevState.toggleMatchDetails,
-      activeId: id
-    }));
+    if (activeId !== id) {
+      this.setState({
+        activeId: id
+      });
+    } else {
+      this.setState({
+        activeId: ''
+      });
+    }
   }
 
   componentDidMount() {
@@ -211,7 +218,7 @@ export default class FixturesContainer extends React.Component {
     const {
       handleDateClick,
       addWagerTeam,
-      handleClick,
+      handleId,
       checkProfit,
       handleChange,
       handleSubmit
@@ -249,7 +256,7 @@ export default class FixturesContainer extends React.Component {
           toggleMatchDetails={toggleMatchDetails}
           activeId={activeId}
           fixtures={dayOfFixtures}
-          click={id => handleClick(id)}
+          handleId={handleId}
           teamDetails={teamDetails}
           loading={isLoading}
           betTeamId={betTeamId}

@@ -5,8 +5,8 @@ import WagerDetails from './wager-details';
 import SubmitWager from './submit-wager';
 import { useMediaQuery } from 'react-responsive';
 const FixtureList = props => {
-  const isDesktop = useMediaQuery({ minWidth: 1224 });
-  const { checkProfit, script, handleChange, setOdds, teamLogo, wagerAmount, userTokens, handleSubmit, betTeamId, toggleMatchDetails, activeId, teamDetails, loading, homeOdds, awayOdds, betOn, betId, addWagerTeam, matchesBetOn, fixtures } = props;
+  const isNotMobile = useMediaQuery({ minWidth: 900 });
+  const { handleId, checkProfit, script, handleChange, setOdds, teamLogo, wagerAmount, userTokens, handleSubmit, betTeamId, toggleMatchDetails, activeId, teamDetails, loading, homeOdds, awayOdds, betOn, betId, addWagerTeam, matchesBetOn, fixtures } = props;
   if (!teamDetails.length) {
     return (
       <>
@@ -16,24 +16,24 @@ const FixtureList = props => {
           <div
           key={id}
           id={id}
-          onClick={event => {
-            props.click(id);
-          }}
+onClick={() => {
+  handleId(event);
+}}
           >
             <Fixture
+             onClick={() => {
+               handleId(event);
+             }}
               fixtures={fixtures}
               toggleMatchDetails={toggleMatchDetails}
-              onClick={event => {
-                props.click(id);
-              }}
               />
-          </div>
+              </div>
         );
       })}
       </>
     );
   }
-  if (teamDetails.length && !isDesktop) {
+  if (teamDetails.length && !isNotMobile) {
     return (
     <>
       {fixtures.map(fixtures => {
@@ -42,16 +42,16 @@ const FixtureList = props => {
           <div
             key={id}
             id={id}
-            onClick={event => {
-              props.click(id);
+            onClick={() => {
+              handleId(event);
             }}
           >
-            <Fixture fixtures={fixtures} toggleMatchDetails = {toggleMatchDetails} />
+            <Fixture fixtures={fixtures} />
             <FixtureDetails
               fixtures={fixtures}
               activeId={activeId}
               matchesBetOn={matchesBetOn}
-              toggleMatchDetails={toggleMatchDetails}
+
             />
             <WagerDetails
               fixtures={fixtures}
@@ -64,7 +64,6 @@ const FixtureList = props => {
               betId={betId}
               addWagerTeam={addWagerTeam}
               matchesBetOn={matchesBetOn}
-              toggleMatchDetails={toggleMatchDetails}
               betTeamId = {betTeamId}
             />
               <SubmitWager
@@ -87,12 +86,11 @@ const FixtureList = props => {
     </>
     );
   }
-  if (isDesktop) {
+  if (isNotMobile) {
     return (
     <>
 
 <div className = "columns-count">
-
     <div className =
   " block">
       {fixtures.map(fixtures => {
@@ -101,10 +99,14 @@ const FixtureList = props => {
           <div
           key={id}
           id={id}
-          onClick={event => {
-            props.click(id);
-          }}>
-            <Fixture fixtures={fixtures} toggleMatchDetails = {toggleMatchDetails}/>
+          onClick={() => {
+            handleId(event);
+          }}
+          >
+            <Fixture onClick={() => {
+              handleId(event);
+            }}
+            fixtures={fixtures} toggleMatchDetails = {toggleMatchDetails}/>
           </div>
         );
       })}
@@ -116,15 +118,14 @@ const FixtureList = props => {
           <div
           key={id}
           id={id}
-          onClick={event => {
-            props.click(id);
-          }}
+
           >
             <FixtureDetails
               fixtures={fixtures}
               activeId={activeId}
               matchesBetOn={matchesBetOn}
               toggleMatchDetails={toggleMatchDetails}
+
               />
             <WagerDetails
               fixtures={fixtures}
