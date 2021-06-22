@@ -41,14 +41,15 @@ export default class FixturesContainer extends React.Component {
   handleId(event) {
     const id = Number(event.target.closest('div').id);
     const { activeId } = this.state;
-    this.willFetch(id);
+    this.getTeamDetails(id);
     if (activeId !== id) {
       this.setState({
         activeId: id
       });
     } else {
       this.setState({
-        activeId: ''
+        activeId: '',
+        isLoading: true
       });
     }
   }
@@ -83,7 +84,8 @@ export default class FixturesContainer extends React.Component {
     this.setState({
       dayOfFixtures: dayOfFixtures,
       isLoading: false,
-      selectedDay: dateString
+      selectedDay: dateString,
+      activeId: ''
     });
   }
 
@@ -161,7 +163,7 @@ export default class FixturesContainer extends React.Component {
     });
   }
 
-  willFetch(id) {
+  getTeamDetails(id) {
     const newArray = this.state.fixtures.filter(fixtures => {
       return fixtures.fixture.id === id;
     });
@@ -183,10 +185,10 @@ export default class FixturesContainer extends React.Component {
       .then(response => {
         const { teamDetails, homeOdds, awayOdds } = response.data[0];
         this.setState({
-          isLoading: false,
           teamDetails: teamDetails,
-          awayOdds: homeOdds,
-          homeOdds: awayOdds
+          awayOdds: awayOdds,
+          homeOdds: homeOdds,
+          isLoading: false
         });
       })
       .catch(err => {
@@ -266,6 +268,7 @@ export default class FixturesContainer extends React.Component {
           teamLogo={teamLogo}
           userTokens={userTokens}
           handleSubmit={handleSubmit}
+          today={today}
         />
       </>
         );

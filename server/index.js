@@ -342,7 +342,7 @@ app.get('/api/team-form', (req, res, next) => {
     .query(sql, params)
     .then(result => {
       if (result.rows.length) {
-        return result.rows;
+        return res.json(result.rows);
       }
       return Promise.all([
         getTeamStats(req.query, homeId),
@@ -351,11 +351,10 @@ app.get('/api/team-form', (req, res, next) => {
         const jsonTeamDetails = JSON.stringify(response);
         const awayOdds = randomOdds(1, 6, 2);
         const homeOdds = randomOdds(1, 4, 2);
-
         const sql = `
       insert into "teamForm" ("date", "leagueId", "fixtureId", "homeId", "homeOdds", "awayOdds", "awayId", "teamDetails")
       values ($1, $2, $3, $4, $5, $6, $7, $8)
-      returning "teamDetails"
+      returning "teamDetails", "awayOdds", "homeOdds"
       `;
         const params = [
           utcDate,
@@ -368,12 +367,9 @@ app.get('/api/team-form', (req, res, next) => {
           jsonTeamDetails
         ];
         return db.query(sql, params).then(result => {
-          return result.rows[0];
+          return res.json(result.rows[0]);
         });
       });
-    })
-    .then(teamDetails => {
-      return res.json(teamDetails);
     })
     .catch(err => next(err));
 });

@@ -7,6 +7,7 @@ import { useMediaQuery } from 'react-responsive';
 const FixtureList = props => {
   const isNotMobile = useMediaQuery({ minWidth: 900 });
   const {
+    today,
     handleId,
     checkProfit,
     script,
@@ -101,6 +102,7 @@ const FixtureList = props => {
                 userTokens={userTokens}
                 handleSubmit={handleSubmit}
                 fixtures={fixtures}
+                today ={today}
                 />
             </div>
           );
@@ -165,6 +167,7 @@ const FixtureList = props => {
                     userTokens={userTokens}
                     handleSubmit={handleSubmit}
                     fixtures={fixtures}
+                    today= {today}
                   />
                 </div>
               );
