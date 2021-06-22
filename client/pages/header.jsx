@@ -7,7 +7,12 @@ const Header = props => {
       <div className="row">
         <div className="column-full">
           <div className="header-container">
-            <h2>FotBets</h2>
+          <a href="">
+
+              <span>
+            <h2>F
+              <i className='fas fa-futbol logoSize'></i>tBets</h2></span>
+            </a>
             <div className = "inline">
               <i className="fas fa-coins tokens"></i>
               <h4>{userTokens.toLocaleString('en-US')}</h4>

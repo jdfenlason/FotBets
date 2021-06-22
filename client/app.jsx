@@ -36,11 +36,16 @@ export default class App extends React.Component {
     });
   }
 
-  handleTokenChange(wagerAmount) {
+  handleTokenChange(wagerAmounts) {
     const currentTokenAmount = this.state.userTokens;
-    const changeTokenAmount = currentTokenAmount - wagerAmount;
-    this.setState({
-      userTokens: changeTokenAmount
+    const changeTokenAmount = currentTokenAmount - wagerAmounts;
+    const wager = {
+      userId: this.state.userId,
+      changeTokenAmount: changeTokenAmount
+    };
+    axios.patch('/api/token-amount', { params: wager }).then(response => {
+      const newTokenAmount = response.data.tokenAmount;
+      this.setState({ userTokens: newTokenAmount });
     });
   }
 
@@ -115,7 +120,7 @@ export default class App extends React.Component {
             <Header userTokens={userTokens} />
           </div>
           <div className="main">{this.renderPage()}</div>
-          <div className="footer">
+          <div className="">
             <Footer />
           </div>
         </div>

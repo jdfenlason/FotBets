@@ -2,18 +2,29 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <div className="row footer">
+    <div className="row">
       <div className="column-full">
         <div className="footer-container">
-          <a href="#leaderboard">
-            <i className="fas fa-trophy size"></i>
-          </a>
-          <a href="">
-            <i className="fas fa-home size"></i>
-          </a>
-          <a href="#profile">
-            <i className="far fa-user-circle size"></i>
-          </a>
+          <div className="icon-nav">
+            <a href="#leaderboard">
+              <span>
+                <i className="fas fa-trophy size"></i>
+              </span>
+            </a>
+            <span className = "span-pad">Leaderboard</span>
+          </div>
+          <div className="icon-nav">
+            <a href="">
+              <i className="fas fa-home size"></i>
+            </a>
+              <span className = "span-pad">Home</span>
+          </div>
+          <div className="icon-nav">
+            <a href="#profile">
+              <i className="far fa-user-circle size"></i>
+            </a>
+              <span className = "span-pad">Profile</span>
+          </div>
         </div>
       </div>
     </div>

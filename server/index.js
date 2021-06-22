@@ -19,6 +19,146 @@ const db = new pg.Pool({
   }
 });
 
+app.patch('/api/token-amount', (req, res, next) => {
+  const { userId, changeTokenAmount } = req.body.params;
+  const sql = `
+  update "users"
+  set "tokenAmount" = $1
+  where "userId" = $2
+  returning "tokenAmount"
+  `;
+  const params = [changeTokenAmount, userId];
+  db.query(sql, params).then(result => {
+    res.json(result.rows[0]);
+  }).catch(err => (next(err)));
+});
+
+function getPastResultsWinners(pastFixtures) {
+  const flattenResults = pastFixtures.flat(1);
+  const mappedResults = flattenResults.map(yesterdayGames => {
+    let winner;
+    let betResult;
+
+    if (yesterdayGames.teams.away.winner) {
+      winner = yesterdayGames.teams.away.id;
+      betResult = 'Won';
+    }
+    if (yesterdayGames.teams.home.winner) {
+
+      winner = yesterdayGames.teams.home.id;
+      betResult = 'Won';
+    }
+    if (!yesterdayGames.teams.home.winner && !yesterdayGames.teams.away.winner) {
+      winner = 0;
+      betResult = 'Lost';
+    }
+    const resultObj = {
+      fixtureId: yesterdayGames.fixture.id,
+      winningTeamId: winner,
+      betResult: betResult
+    };
+    return resultObj;
+  });
+  return mappedResults;
+}
+
+app.patch('/api/wager-input/bet-validation', (req, res, next) => {
+  const leagueId = 255;
+  const { formatDay } = getDateForResults();
+  const sql = `select  "yesterdayGames"
+  From "pastResults"
+  where "date" = $1
+  And "leagueId" = $2
+  `;
+  const params = [formatDay, leagueId];
+  db.query(sql, params)
+    .then(result => {
+      const betValidation = getPastResultsWinners(
+        result.rows[0].yesterdayGames
+      );
+      betValidation.map(betValidations => {
+        const { fixtureId, winningTeamId, betResult } = betValidations;
+        const sql = `
+        insert into "betValidation" ("fixtureId", "winningTeamId", "betResult", "date", "leagueId")
+        values($1, $2, $3, $4, $5)
+        returning *
+        `;
+        const params = [fixtureId, winningTeamId, betResult, formatDay, leagueId];
+        return db.query(sql, params).then(result => {
+          return result.rows;
+        });
+      });
+    })
+    .catch(err => next(err));
+});
+
+app.get('/api/validation', (req, res, next) => {
+  const sql = `
+  Select *
+    From "wagerInputs" JOIN "betValidation"
+    ON "wagerInputs"."fixtureId" = "betValidation"."fixtureId"
+    `;
+  db.query(sql).then(results => {
+
+  }).catch(err => next(err));
+});
+
+app.get('/api/past-results', (req, res, next) => {
+  const leagueId = 255;
+  const { formatDay, formatToday } = getDateForResults();
+  const sql = `select  "yesterdayGames"
+  From "pastResults"
+  where "date" = $1
+  And "leagueId" = $2
+  `;
+  const params = [formatDay, leagueId];
+  db.query(sql, params).then(result => {
+    if (result.rows.length) {
+      return res.json(result.rows[0]);
+    }
+    return Promise.all([
+      getPastResults(leagueId, formatDay),
+      getPastResults(leagueId, formatToday)
+    ])
+      .then(pastResults => {
+        const jsonPastResults = JSON.stringify(pastResults);
+        const params = [formatDay, leagueId, jsonPastResults];
+        const sql = `
+      insert into "pastResults" ("date", "leagueId", "yesterdayGames")
+      values ($1, $2, $3)
+      returning *
+    `;
+        db.query(sql, params).then(results => {
+          return res.json(results.rows);
+        });
+      })
+      .catch(err => (next(err)));
+  });
+});
+function getDateForResults() {
+  const today = new Date();
+  const subtractDay = dateFns.subDays(today, 1);
+  const formatDay = dateFns.format(subtractDay, 'yyyy-MM-dd');
+  const formatToday = dateFns.format(today, 'yyyy-MM-dd');
+  return { formatDay, formatToday };
+}
+
+function getPastResults(leagueId, date) {
+  const { year } = getNewWeek();
+  const init = {
+    method: 'GET',
+    url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures',
+    params: { league: leagueId, date: date, season: year, status: 'FT' },
+    headers: {
+      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
+    }
+  };
+  return axios.request(init).then(response => {
+    return response.data.response;
+  });
+}
+
 app.get('/api/leaderboard', (req, res, next) => {
   const sql = `
   select "userName", "tokenAmount"
@@ -112,6 +252,7 @@ app.post('/api/wager-input', (req, res, next) => {
     })
     .catch(err => next(err));
 });
+
 app.get('/api/wager-input', (req, res, next) => {
   const sql = `
   select "fixtureId"
@@ -124,6 +265,7 @@ app.get('/api/wager-input', (req, res, next) => {
         return fixturesId.fixtureId;
       }
       );
+
       res.json(gamesBetOn);
     })
     .catch(err => next(err));

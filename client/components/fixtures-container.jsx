@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios';
 import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
-import SubmitWager from './submit-wager';
 import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { makeBets, makeBetsScript } from '../lib/payouts';
 import DateStrip from './date-strip';
@@ -16,7 +15,6 @@ export default class FixturesContainer extends React.Component {
       formatDay: formatDay,
       fixtures: [],
       isLoading: true,
-      toggleMatchDetails: false,
       activeId: '',
       teamDetails: [],
       wagerAmount: '',
@@ -32,7 +30,7 @@ export default class FixturesContainer extends React.Component {
       awayOdds: '',
       dayOfFixtures: []
     };
-    this.handleClick = this.handleClick.bind(this);
+    this.handleId = this.handleId.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addWagerTeam = this.addWagerTeam.bind(this);
@@ -40,12 +38,19 @@ export default class FixturesContainer extends React.Component {
     this.handleDateClick = this.handleDateClick.bind(this);
   }
 
-  handleClick(id) {
+  handleId(event) {
+    const id = Number(event.target.closest('div').id);
+    const { activeId } = this.state;
     this.willFetch(id);
-    this.setState(prevState => ({
-      toggleMatchDetails: !prevState.toggleMatchDetails,
-      activeId: id
-    }));
+    if (activeId !== id) {
+      this.setState({
+        activeId: id
+      });
+    } else {
+      this.setState({
+        activeId: ''
+      });
+    }
   }
 
   componentDidMount() {
@@ -61,7 +66,6 @@ export default class FixturesContainer extends React.Component {
         fixtures: fixtures,
         isLoading: false
       });
-
       this.changeDate(this.state.selectedDay);
     });
   }
@@ -72,10 +76,7 @@ export default class FixturesContainer extends React.Component {
     const formatSelected = format(selectedDaytoUTC, 'yyyy-MM-dd');
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     const dayOfFixtures = fixtures.filter(fixtures => {
-      const zonedDate = utcToZonedTime(
-        fixtures.fixture.date,
-        zone
-      );
+      const zonedDate = utcToZonedTime(fixtures.fixture.date, zone);
       const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
       return formatUTCDate === formatSelected;
     });
@@ -86,7 +87,7 @@ export default class FixturesContainer extends React.Component {
     });
   }
 
-  handleDateClick(event) {
+  handleDateClick(event, sendDate) {
     const id = event.target.closest('div').id;
     this.setState({
       selectedDay: id
@@ -96,12 +97,19 @@ export default class FixturesContainer extends React.Component {
 
   addWagerTeam(event, odds) {
     const { id, src } = event.target;
-    const checkBet = this.state.matchesBetOn.includes(id);
+    const { activeId, matchesBetOn } = this.state;
+    const checkBet = matchesBetOn.includes(activeId);
     if (!checkBet) {
       this.setState({
         betTeamId: id,
         teamLogo: src,
         setOdds: odds
+      });
+    } else {
+      this.setState({
+        betTeamId: '',
+        teamLogo: '',
+        setOdds: ''
       });
     }
   }
@@ -188,14 +196,12 @@ export default class FixturesContainer extends React.Component {
 
   render() {
     const {
-      toggleMatchDetails,
       activeId,
       dayOfFixtures,
       matchesBetOn,
       teamDetails,
       isLoading,
       wagerAmount,
-      betOn,
       homeOdds,
       awayOdds,
       betTeamId,
@@ -207,7 +213,14 @@ export default class FixturesContainer extends React.Component {
 
       formatDay
     } = this.state;
-    const { handleDateClick, addWagerTeam, handleClick, checkProfit, handleChange, handleSubmit } = this;
+    const {
+      handleDateClick,
+      addWagerTeam,
+      handleId,
+      checkProfit,
+      handleChange,
+      handleSubmit
+    } = this;
     const { userTokens } = this.props;
     if (dayOfFixtures.length === 0) {
       return (
@@ -218,7 +231,7 @@ export default class FixturesContainer extends React.Component {
             selectedDay={selectedDay}
             formatDay={formatDay}
           />
-          <NoMatchesToday />
+          <NoMatchesToday selectedDay={selectedDay} />
         </>
       );
     }
@@ -238,27 +251,19 @@ export default class FixturesContainer extends React.Component {
           wagerAmount={wagerAmount}
           homeOdds={homeOdds}
           awayOdds={awayOdds}
-          betOn={betOn}
-          toggleMatchDetails={toggleMatchDetails}
           activeId={activeId}
           fixtures={dayOfFixtures}
-          click={id => handleClick(id)}
+          handleId={handleId}
           teamDetails={teamDetails}
           loading={isLoading}
           betTeamId={betTeamId}
           addWagerTeam={addWagerTeam}
           matchesBetOn={matchesBetOn}
-        />
-        <SubmitWager
           checkProfit={checkProfit}
           script={script}
           handleChange={handleChange}
           setOdds={setOdds}
           teamLogo={teamLogo}
-          betTeamId={betTeamId}
-          activeId={activeId}
-          matchesBetOn={matchesBetOn}
-          wagerAmount={wagerAmount}
           userTokens={userTokens}
           handleSubmit={handleSubmit}
         />
