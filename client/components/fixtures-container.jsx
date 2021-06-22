@@ -15,7 +15,6 @@ export default class FixturesContainer extends React.Component {
       formatDay: formatDay,
       fixtures: [],
       isLoading: true,
-      toggleMatchDetails: false,
       activeId: '',
       teamDetails: [],
       wagerAmount: '',
@@ -197,7 +196,6 @@ export default class FixturesContainer extends React.Component {
 
   render() {
     const {
-      toggleMatchDetails,
       activeId,
       dayOfFixtures,
       matchesBetOn,
@@ -253,7 +251,6 @@ export default class FixturesContainer extends React.Component {
           wagerAmount={wagerAmount}
           homeOdds={homeOdds}
           awayOdds={awayOdds}
-          toggleMatchDetails={toggleMatchDetails}
           activeId={activeId}
           fixtures={dayOfFixtures}
           handleId={handleId}
