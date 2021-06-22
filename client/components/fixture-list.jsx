@@ -36,7 +36,7 @@ const FixtureList = props => {
           return (
             <div
               key={id}
-              id={id}
+
               onClick={() => {
                 handleId(event);
               }}
@@ -61,12 +61,14 @@ const FixtureList = props => {
           return (
             <div
               key={id}
-              id={id}
-              onClick={() => {
-                handleId(event);
-              }}
             >
-              <Fixture fixtures={fixtures} />
+              <div onClick={() => {
+                handleId(event);
+              }} >
+              <Fixture fixtures={fixtures} onClick={() => {
+                handleId(event);
+              }}/>
+              </div>
               <FixtureDetails
                 fixtures={fixtures}
                 activeId={activeId}
@@ -85,6 +87,7 @@ const FixtureList = props => {
                 matchesBetOn={matchesBetOn}
                 betTeamId={betTeamId}
               />
+
               <SubmitWager
                 checkProfit={checkProfit}
                 script={script}
@@ -98,7 +101,7 @@ const FixtureList = props => {
                 userTokens={userTokens}
                 handleSubmit={handleSubmit}
                 fixtures={fixtures}
-              />
+                />
             </div>
           );
         })}
@@ -115,26 +118,22 @@ const FixtureList = props => {
               return (
                 <div
                   key={id}
-                  id={id}
                   onClick={() => {
                     handleId(event);
                   }}
                 >
                   <Fixture
-                    onClick={() => {
-                      handleId(event);
-                    }}
                     fixtures={fixtures}
                   />
                 </div>
               );
             })}
           </div>
-          <div className={activeId ? ' block' : ''}>
+          <div className="block">
             {fixtures.map(fixtures => {
               const { id } = fixtures.fixture;
               return (
-                <div key={id} id={id}>
+                <div key={id} id={id} >
                   <FixtureDetails
                     fixtures={fixtures}
                     activeId={activeId}

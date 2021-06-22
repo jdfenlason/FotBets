@@ -11,7 +11,7 @@ const WagerDetails = props => {
       )
     : (
     <>
-      <div className={activeId === id ? '' : 'hidden'} id={id}>
+      <div className={activeId === id ? '' : 'hidden'} >
         <div className="row column-full center fixture-card">
           <div className="outer-card column-full">
             <div className="match-card row center">
