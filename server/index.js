@@ -146,19 +146,16 @@ app.get('/api/validation', (req, res, next) => {
   db.query(sql, params).then(result => {
     const betWin = 'Won';
     const date = '6/23';
-    const params = [date, betWin];
     const sql = `
     update "users"
-    Set "tokenAmount" = (
-        SELECT
-        "wagerInputs"."profitAmount"
-        WHERE "users"."userId" = "wagerInputs"."userId"
-        AND "wagerInputs"."date" = $1
-        AND "wagerInputs"."betResult" = $2
-        + "users"."tokenAmount")
-      FROM "wagerInputs"
-      returning "users"
+    Set "tokenAmount" = "users"."tokenAmount" + "wagerInputs"."profitAmount"
+    From "wagerInputs"
+    Where ("users"."userId" = "wagerInputs"."userId"
+    And "wagerInputs"."date" = $1
+    And "wagerInputs"."betResult" = $2)
+    returning "users.tokenAmount"
     `;
+    const params = [date, betWin];
     db.query(sql, params).then(result => {
       return res.json(result.rows);
     });
