@@ -22,7 +22,7 @@ export default class FixturesContainer extends React.Component {
       userTokens: '',
       matchesBetOn: [],
       betTeamId: '',
-      userId: 2,
+      userId: 1,
       setOdds: '',
       checkProfit: false,
       script: '',
@@ -55,7 +55,8 @@ export default class FixturesContainer extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('/api/wager-input').then(response => {
+    const { userId } = this.state;
+    axios.get('/api/wager-input', { userId }).then(response => {
       const pastBets = response.data;
       this.setState({
         matchesBetOn: pastBets
