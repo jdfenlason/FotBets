@@ -42,7 +42,7 @@ create table "wagerInputs" (
   "profitAmount" int not null,
   "betTeamId" int not null,
   "teamLogo" text not null,
-  "betResult" text not null,
+  "betResult" boolean not null,
   "date" text not null,
   "createdAt" timestamptz(6) not null default now(),
   primary Key ("betId")
@@ -58,6 +58,6 @@ create table "betValidation" (
   "date" text not null,
   "leagueId" int not null,
   "fixtureId" int not null,
-  "betResult" text not null,
+  "betResult" boolean not null,
   "winningTeamId" int not null
 )

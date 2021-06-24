@@ -6,7 +6,7 @@ const Fixture = props => {
   return (
 
     <div className="row column-full center fixture-card" >
-      <div className="outer-card column-full" id={fixture.id}>
+      <div className="outer-card shadow column-full" id={fixture.id}>
         <div className="inner-card column-full" id = {fixture.id}>
           <div className="team-container"id={fixture.id} >
             <div className="image-container" id={fixture.id} >
