@@ -7,6 +7,7 @@ import Profile from './pages/user-profile';
 import PastBets from './pages/past-bets';
 import Header from './pages/header';
 import Footer from './pages/footer';
+import { format } from 'date-fns';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -14,7 +15,7 @@ export default class App extends React.Component {
       isLoading: true,
       userName: '',
       userTokens: '',
-      userId: 1,
+      userId: 2,
       pastBets: [],
       route: parseRoute(window.location.hash)
     };
@@ -26,10 +27,9 @@ export default class App extends React.Component {
     const betResult = 'Pending';
     const newArray = this.state.pastBets.slice();
     const dateObj = new Date();
-    const dateString = dateObj.toLocaleDateString();
-    const date = dateString.slice(0, 4);
+    const formatDate = format(dateObj, 'yyyy-MM-dd');
     newWager.betResult = betResult;
-    newWager.date = date;
+    newWager.date = formatDate;
     newArray.push(newWager);
     this.setState({
       pastBets: newArray

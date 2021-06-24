@@ -117,20 +117,8 @@ app.get('/api/past-results', (req, res, next) => {
                 leagueId
               ];
               db.query(sql, params).then(result => {
-                return res.json(result.rows);
-
-              });
-            });
-          });
-        });
-      });
-    })
-    .catch(err => next(err));
-});
-
-app.get('/api/validation', (req, res, next) => {
-  const betLost = 'Lost';
-  const sql = `
+                const betLost = 'Lost';
+                const sql = `
   update "wagerInputs"
   Set "betResult" = (
     CASE WHEN "wagerInputs"."fixtureId" = "betValidation"."fixtureId"
@@ -142,11 +130,11 @@ app.get('/api/validation', (req, res, next) => {
   From "betValidation"
   returning "wagerInputs"."betResult"
   `;
-  const params = [betLost];
-  db.query(sql, params).then(result => {
-    const betWin = 'Won';
-    const date = '6/23';
-    const sql = `
+                const params = [betLost];
+                db.query(sql, params).then(result => {
+                  const betWin = 'Won';
+                  const { formatToday } = getDateForResults();
+                  const sql = `
     update "users"
     Set "tokenAmount" = "users"."tokenAmount" + "wagerInputs"."profitAmount"
     From "wagerInputs"
@@ -155,11 +143,18 @@ app.get('/api/validation', (req, res, next) => {
     And "wagerInputs"."betResult" = $2)
     returning "users.tokenAmount"
     `;
-    const params = [date, betWin];
-    db.query(sql, params).then(result => {
-      return res.json(result.rows);
-    });
-  }).catch(err => next(err));
+                  const params = [formatToday, betWin];
+                  db.query(sql, params).then(result => {
+                    return res.json(result.rows);
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    })
+    .catch(err => next(err));
 });
 
 function getDateForResults() {
@@ -221,7 +216,7 @@ app.get('/api/user-profile/past-bets', (req, res, next) => {
 });
 
 app.get('/api/week-games', (req, res, next) => {
-  const leagueId = 255;
+  const leagueId = 253;
   const { year, firstDay } = getNewWeek();
   const sql = ` select *
   From "weekGames"
@@ -260,9 +255,7 @@ app.post('/api/wager-input', (req, res, next) => {
   const { userId, fixtureId, wagerAmount, profitAmount, betTeamId, teamLogo } =
     req.body.newWager;
   const betResult = 'Pending';
-  const dateObj = new Date();
-  const dateString = dateObj.toLocaleDateString();
-  const date = dateString.slice(0, 4);
+  const { formatToday } = getDateForResults();
   const sql = `
   insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "betTeamId", "teamLogo", "betResult", "date")
   values ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -275,7 +268,7 @@ app.post('/api/wager-input', (req, res, next) => {
     betTeamId,
     teamLogo,
     betResult,
-    date
+    formatToday
   ];
   db.query(sql, params)
     .then(result => {
@@ -400,7 +393,7 @@ app.get('/api/team-form', (req, res, next) => {
           jsonTeamDetails
         ];
         return db.query(sql, params).then(result => {
-          return res.json(result.rows[0]);
+          return res.json(result.rows);
         });
       });
     })

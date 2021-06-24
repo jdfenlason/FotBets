@@ -29,7 +29,7 @@ const FixtureList = props => {
     matchesBetOn,
     fixtures
   } = props;
-  if (!teamDetails.length) {
+  if (!teamDetails || !teamDetails.length) {
     return (
       <>
         {fixtures.map(fixtures => {

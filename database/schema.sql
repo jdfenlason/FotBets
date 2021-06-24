@@ -34,11 +34,6 @@ create table "teamForm" (
   "teamDetails" json
 );
 
-create table "weekOdds" (
-  "date" text not null,
-  "oddsDetails" json not null
-);
-
 create table "wagerInputs" (
   "betId" serial,
   "userId"  int not null,
