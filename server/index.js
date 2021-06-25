@@ -22,10 +22,10 @@ const db = new pg.Pool({
 app.patch('/api/token-amount', (req, res, next) => {
   const { userId, changeTokenAmount } = req.body.params;
   const sql = `
-  update "users"
-  set "tokenAmount" = $1
-  where "userId" = $2
-  returning "tokenAmount"
+         update "users"
+         set "tokenAmount" = $1
+         where "userId" = $2
+         returning "tokenAmount"
   `;
   const params = [changeTokenAmount, userId];
   db.query(sql, params)
@@ -66,42 +66,38 @@ function getPastResultsWinners(pastFixtures) {
   return mappedResults;
 }
 
-// function getLeagueId(counter) {
-//   const leagueId = [255, 253];
-//   return leagueId[counter];
-// }
-
 app.get('/api/past-results', (req, res, next) => {
   const leagueId = 253;
   const { formatDay, formatToday } = getDateForResults();
-  const sql = `select  "yesterdayGames"
-  From "pastResults"
-  where "date" = $1
-  And "leagueId" = $2
+  const sql = `
+        select  "yesterdayGames"
+        From "pastResults"
+        where "date" = $1
+        And "leagueId" = $2
   `;
   const params = [formatDay, leagueId];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length) {
-        return res.json(result.rows[0]);
-      }
-      Promise.all([
-        getPastResults(leagueId, formatDay),
-        getPastResults(leagueId, formatToday)
-      ]).then(pastResults => {
+  db.query(sql, params).then(result => {
+    if (result.rows.length) {
+      return res.json(result.rows[0]);
+    }
+    Promise.all([
+      getPastResults(leagueId, formatDay),
+      getPastResults(leagueId, formatToday)
+    ])
+      .then(pastResults => {
         const jsonPastResults = JSON.stringify(pastResults);
         const params = [formatDay, leagueId, jsonPastResults];
         const sql = `
-      insert into "pastResults" ("date", "leagueId", "yesterdayGames")
-      values ($1, $2, $3)
-      returning *
-    `;
+              insert into "pastResults" ("date", "leagueId", "yesterdayGames")
+              values ($1, $2, $3)
+              returning *`;
         db.query(sql, params).then(result => {
           const { formatDay } = getDateForResults();
-          const sql = `select  "yesterdayGames"
-                       From "pastResults"
-                       where "date" = $1
-                       And "leagueId" = $2`;
+          const sql = `
+                select  "yesterdayGames"
+                From "pastResults"
+                where "date" = $1
+                And "leagueId" = $2`;
           const params = [formatDay, leagueId];
           db.query(sql, params).then(result => {
             const betValidation = getPastResultsWinners(
@@ -110,9 +106,8 @@ app.get('/api/past-results', (req, res, next) => {
             betValidation.forEach(betValidations => {
               const { fixtureId, winningTeamId, betResult } = betValidations;
               const sql = `
-        insert into "betValidation" ("fixtureId", "winningTeamId", "betResult", "date", "leagueId")
-        values($1, $2, $3, $4, $5)
-        `;
+                    insert into "betValidation" ("fixtureId", "winningTeamI"betResult", "date", "leagueId")
+                    values($1, $2, $3, $4, $5)`;
               const params = [
                 fixtureId,
                 winningTeamId,
@@ -122,46 +117,41 @@ app.get('/api/past-results', (req, res, next) => {
               ];
               db.query(sql, params).then(result => {
                 const sql = `
-  update "wagerInputs"
-  Set "betResult" = "betValidation"."betResult"
-  From "betValidation"
-  Where "wagerInputs"."fixtureId" = "betValidation"."fixtureId"
-  AND "wagerInputs"."betTeamId" = "betValidation"."winningTeamId"
-  returning "wagerInputs"."betResult"
-  `;
-                db.query(sql)
-                  .then(result => {
-                    const sql = `
-  with "cte_tokenAmount" as (
-    SELECT SUM("wagerInputs"."profitAmount") as "amountProfit"
-    From "wagerInputs", "users"
-    Where "users"."userId" = "wagerInputs"."userId"
-    And "wagerInputs"."betResult" = $1
-    And "wagerInputs"."date" = $2
-    )
-    update "users"
-    Set "tokenAmount" = "users"."tokenAmount" + "cte_tokenAmount"."amountProfit"
-    from "cte_tokenAmount", "wagerInputs"
-    where "users"."userId" = "wagerInputs"."userId"
-    And "wagerInputs"."betResult" = $1
-    And "wagerInputs"."date" = $2
-
-  returning "users"."tokenAmount", "cte_tokenAmount"."amountProfit", "wagerInputs"."profitAmount"
-  `;
-                    const { formatDay } = getDateForResults();
-                    const betResult = true;
-                    const params = [betResult, formatDay];
-                    db.query(sql, params).then(result => {
-                      return res.json(result.rows);
-                    });
+                      update "wagerInputs"
+                      Set "betResult" = "betValidation"."betResult"
+                      From "betValidation"
+                      Where "wagerInputs"."fixtureId" = "betValidation"."fixtureId"
+                      AND "wagerInputs"."betTeamId" = "betValidation"."winningTeamId"
+                      returning "wagerInputs"."betResult"`;
+                db.query(sql).then(result => {
+                  const sql = `
+                        with "cte_tokenAmount" as (
+                        SELECT SUM("wagerInputs"."profitAmount") as "amountProfit"
+                        From "wagerInputs", "users"
+                        Where "users"."userId" = "wagerInputs"."userId"
+                        And "wagerInputs"."betResult" = $1
+                        And "wagerInputs"."date" = $2)
+                        update "users"
+                        Set "tokenAmount" = "users"."tokenAmount" + "cte_tokenAmou"amountProfit"
+                        from "cte_tokenAmount", "wagerInputs"
+                        where "users"."userId" = "wagerInputs"."userId"
+                        And "wagerInputs"."betResult" = $1
+                        And "wagerInputs"."date" = $2
+                        returning "users"."tokenAmount", "cte_tokenAmount".        "amountProfit", "wagerInputs"."profitAmount"`;
+                  const { formatDay } = getDateForResults();
+                  const betResult = true;
+                  const params = [betResult, formatDay];
+                  db.query(sql, params).then(result => {
+                    return res.json(result.rows);
                   });
+                });
               });
             });
           });
         });
       })
-        .catch(err => next(err));
-    });
+      .catch(err => next(err));
+  });
 });
 function getDateForResults() {
   const today = new Date();
@@ -189,12 +179,11 @@ function getPastResults(leagueId, date) {
 
 app.get('/api/leaderboard', (req, res, next) => {
   const sql = `
-  select "userName", "tokenAmount"
-  From "users"
-  Order by
-  "tokenAmount" DESC
-  limit 10
-    `;
+              select "userName", "tokenAmount"
+              From "users"
+              Order by
+              "tokenAmount" DESC
+              limit 10`;
   db.query(sql)
     .then(result => {
       const dbresult = result.rows;
