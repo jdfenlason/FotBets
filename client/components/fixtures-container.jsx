@@ -240,7 +240,7 @@ export default class FixturesContainer extends React.Component {
     }
     return isLoading
       ? (
-      <p>isLoading...</p>
+      <p></p>
         )
       : (
       <>

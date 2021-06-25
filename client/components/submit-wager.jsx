@@ -48,6 +48,7 @@ const SubmitWager = props => {
             <div className="row column-full center">
               <div className="outer-card column-full">
                 <div className="match-card row center">
+                  <h2>Wager Slip</h2>
                   <img className={'team-logo'} src={teamLogo} alt="" />
                   <h4 className="sub-head">Odds:</h4>
                   <h4 className="sub-head">{setOdds}</h4>

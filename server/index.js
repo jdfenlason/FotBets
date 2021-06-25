@@ -35,37 +35,6 @@ app.patch('/api/token-amount', (req, res, next) => {
     .catch(err => next(err));
 });
 
-function getPastResultsWinners(pastFixtures) {
-  const flattenResults = pastFixtures.flat(1);
-  const mappedResults = flattenResults.map(yesterdayGames => {
-    let winner;
-    let betResult;
-
-    if (yesterdayGames.teams.away.winner) {
-      winner = yesterdayGames.teams.away.id;
-      betResult = true;
-    }
-    if (yesterdayGames.teams.home.winner) {
-      winner = yesterdayGames.teams.home.id;
-      betResult = true;
-    }
-    if (
-      !yesterdayGames.teams.home.winner &&
-      !yesterdayGames.teams.away.winner
-    ) {
-      winner = 0;
-      betResult = false;
-    }
-    const resultObj = {
-      fixtureId: yesterdayGames.fixture.id,
-      winningTeamId: winner,
-      betResult: betResult
-    };
-    return resultObj;
-  });
-  return mappedResults;
-}
-
 app.get('/api/past-results', (req, res, next) => {
   const leagueId = 253;
   const { formatDay, formatToday } = getDateForResults();
@@ -106,7 +75,7 @@ app.get('/api/past-results', (req, res, next) => {
             betValidation.forEach(betValidations => {
               const { fixtureId, winningTeamId, betResult } = betValidations;
               const sql = `
-                    insert into "betValidation" ("fixtureId", "winningTeamI"betResult", "date", "leagueId")
+                    insert into "betValidation" ("fixtureId", "winningTeam", "betResult", "date", "leagueId")
                     values($1, $2, $3, $4, $5)`;
               const params = [
                 fixtureId,
@@ -153,29 +122,6 @@ app.get('/api/past-results', (req, res, next) => {
       .catch(err => next(err));
   });
 });
-function getDateForResults() {
-  const today = new Date();
-  const subtractDay = dateFns.subDays(today, 1);
-  const formatDay = dateFns.format(subtractDay, 'yyyy-MM-dd');
-  const formatToday = dateFns.format(today, 'yyyy-MM-dd');
-  return { formatDay, formatToday };
-}
-
-function getPastResults(leagueId, date) {
-  const { year } = getNewWeek();
-  const init = {
-    method: 'GET',
-    url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures',
-    params: { league: leagueId, date: date, season: year, status: 'FT' },
-    headers: {
-      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
-      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
-    }
-  };
-  return axios.request(init).then(response => {
-    return response.data.response;
-  });
-}
 
 app.get('/api/leaderboard', (req, res, next) => {
   const sql = `
@@ -292,49 +238,6 @@ app.get('/api/wager-input', (req, res, next) => {
     .catch(err => next(err));
 });
 
-function getNewWeek() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const dayOfWeek = today.getDay();
-  const daysSinceTuesday = dayOfWeek < 2 ? 2 - dayOfWeek - 7 : 2 - dayOfWeek;
-  const firstDay = dateFns.addDays(today, daysSinceTuesday);
-  const newWeek = {
-    year: year,
-    firstDay: firstDay
-  };
-  return newWeek;
-}
-
-function getCurrentRound(currentYear, leagueId) {
-  const init = {
-    method: 'GET',
-    url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures/rounds',
-    params: { league: leagueId, season: currentYear, current: 'true' },
-    headers: {
-      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
-      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
-    }
-  };
-  return axios.request(init).then(response => {
-    return response.data.response.pop();
-  });
-}
-
-function getCurrentFixtures(round, currentSeason, leagueId) {
-  const init = {
-    method: 'GET',
-    url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures',
-    params: { league: leagueId, season: currentSeason, round: round },
-    headers: {
-      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
-      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
-    }
-  };
-  return axios.request(init).then(response => {
-    return response.data.response;
-  });
-}
-
 app.get('/api/user-profile', (req, res, next) => {
   const { userId } = req.query;
   const sql = `
@@ -395,9 +298,107 @@ app.get('/api/team-form', (req, res, next) => {
     .catch(err => next(err));
 });
 
+function getPastResultsWinners(pastFixtures) {
+  const flattenResults = pastFixtures.flat(1);
+  const mappedResults = flattenResults.map(yesterdayGames => {
+    let winner;
+    let betResult;
+
+    if (yesterdayGames.teams.away.winner) {
+      winner = yesterdayGames.teams.away.id;
+      betResult = true;
+    }
+    if (yesterdayGames.teams.home.winner) {
+      winner = yesterdayGames.teams.home.id;
+      betResult = true;
+    }
+    if (
+      !yesterdayGames.teams.home.winner &&
+      !yesterdayGames.teams.away.winner
+    ) {
+      winner = 0;
+      betResult = false;
+    }
+    const resultObj = {
+      fixtureId: yesterdayGames.fixture.id,
+      winningTeamId: winner,
+      betResult: betResult
+    };
+    return resultObj;
+  });
+  return mappedResults;
+}
+function getDateForResults() {
+  const today = new Date();
+  const subtractDay = dateFns.subDays(today, 1);
+  const formatDay = dateFns.format(subtractDay, 'yyyy-MM-dd');
+  const formatToday = dateFns.format(today, 'yyyy-MM-dd');
+  return { formatDay, formatToday };
+}
+
+function getNewWeek() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const dayOfWeek = today.getDay();
+  const daysSinceTuesday = dayOfWeek < 2 ? 2 - dayOfWeek - 7 : 2 - dayOfWeek;
+  const firstDay = dateFns.addDays(today, daysSinceTuesday);
+  const newWeek = {
+    year: year,
+    firstDay: firstDay
+  };
+  return newWeek;
+}
+
 const randomOdds = (min, max, decimalPlaces) => {
   return (Math.random() * (max - min) + min).toFixed(decimalPlaces) * 1;
 };
+
+function getPastResults(leagueId, date) {
+  const { year } = getNewWeek();
+  const init = {
+    method: 'GET',
+    url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures',
+    params: { league: leagueId, date: date, season: year, status: 'FT' },
+    headers: {
+      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
+    }
+  };
+  return axios.request(init).then(response => {
+    return response.data.response;
+  });
+}
+
+function getCurrentRound(currentYear, leagueId) {
+  const init = {
+    method: 'GET',
+    url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures/rounds',
+    params: { league: leagueId, season: currentYear, current: 'true' },
+    headers: {
+      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
+    }
+  };
+  return axios.request(init).then(response => {
+    return response.data.response.pop();
+  });
+}
+
+function getCurrentFixtures(round, currentSeason, leagueId) {
+  const init = {
+    method: 'GET',
+    url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures',
+    params: { league: leagueId, season: currentSeason, round: round },
+    headers: {
+      'x-rapidapi-key': process.env.API_FOOTBALL_API_KEY,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
+    }
+  };
+  return axios.request(init).then(response => {
+    return response.data.response;
+  });
+}
+
 function getTeamStats(obj, teamId) {
   const init = {
     method: 'GET',
