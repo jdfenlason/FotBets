@@ -403,3 +403,11 @@ a {
   flex-direction: column;
   width: 50%;
 }
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
