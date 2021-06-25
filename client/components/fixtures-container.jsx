@@ -225,7 +225,7 @@ export default class FixturesContainer extends React.Component {
       handleSubmit
     } = this;
     const { userTokens } = this.props;
-    if (dayOfFixtures.length === 0) {
+    if (!dayOfFixtures.length) {
       return (
         <>
           <DateStrip

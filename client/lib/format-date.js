@@ -6,4 +6,10 @@ const formatDate = props => {
   return gameDate;
 
 };
-export default formatDate;
+
+const formatPastResult = props => {
+  const dateParse = parseISO(props);
+  const dateFormat = format(dateParse, 'dd-MM-YYYY');
+  return dateFormat;
+};
+export { formatDate, formatPastResult };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatDate } from '../lib';
 const PastBets = props => {
   const { pastBets } = props;
 
@@ -9,9 +10,9 @@ const PastBets = props => {
       </div>
 
       {pastBets.map((bets, index) => {
-        let result;
         const { teamLogo, wagerAmount, date, profitAmount, betResult } = bets;
-        betResult === true ? (result = 'Won') : (result = 'Lost');
+        let result;
+        betResult ? (result = 'Won') : (result = 'Lost');
 
         return (
           <div className="outer-card" key={index}>
@@ -19,7 +20,7 @@ const PastBets = props => {
               <div className="past-bets-container">
                 <div className="bet-item">
                   <h3>Date</h3>
-                  <h4>{date}</h4>
+                  <h4>{formatDate(date)}</h4>
                 </div>
                 <div className="bet-item">
                   <h3 className="reset">Team</h3>
