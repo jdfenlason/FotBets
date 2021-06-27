@@ -74,6 +74,12 @@ export default class App extends React.Component {
           isLoading: false
         });
       });
+    // axios.get('api/bet-validation').then(response => {
+    //   console.log(response);
+    //   this.setState({
+    //     isLoading: false
+    //   });
+    // });
   }
 
   renderPage() {

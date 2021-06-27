@@ -12,17 +12,6 @@ create table "weekGames" (
     "fixtures"    json not null
 );
 
-create table "users" (
-  "userId"           serial,
-  "userName"         text    not null,
-  "hashedPassword"   text    not null,
-  "tokenAmount"   integer   not null,
-  "createdAt"   timestamptz(6) not null default now(),
-  "updatedAt"   timestamptz(6) not null default now(),
-  primary key ("userId"),
-  unique ("userName")
-);
-
 create table "teamForm" (
   "date" date not null,
   "leagueId" int not null,
@@ -33,6 +22,18 @@ create table "teamForm" (
   "awayOdds" numeric not null,
   "teamDetails" json
 );
+
+create table "users" (
+  "userId"           serial,
+  "userName"         text    not null,
+  "hashedPassword"   text    not null,
+  "tokenAmount"   int   not null,
+  "createdAt"   timestamptz(6) not null default now(),
+  "updatedAt"   timestamptz(6) not null default now(),
+  primary key ("userId"),
+  unique ("userName")
+);
+
 
 create table "wagerInputs" (
   "betId" serial,

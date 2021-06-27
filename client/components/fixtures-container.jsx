@@ -5,6 +5,7 @@ import NoMatchesToday from './no-matches-today';
 import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { makeBets, makeBetsScript } from '../lib/payouts';
 import DateStrip from './date-strip';
+import { isPast, parseISO, isToday } from 'date-fns';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -28,6 +29,7 @@ export default class FixturesContainer extends React.Component {
       script: '',
       homeOdds: '',
       awayOdds: '',
+      pastResults: [],
       dayOfFixtures: []
     };
     this.handleId = this.handleId.bind(this);
@@ -36,6 +38,7 @@ export default class FixturesContainer extends React.Component {
     this.addWagerTeam = this.addWagerTeam.bind(this);
     this.checkProfit = this.checkProfit.bind(this);
     this.handleDateClick = this.handleDateClick.bind(this);
+    this.getDayBeforeScores = this.getDayBeforeScores.bind(this);
   }
 
   handleId(event) {
@@ -65,10 +68,38 @@ export default class FixturesContainer extends React.Component {
     axios.get('/api/week-games/').then(response => {
       const fixtures = response.data.fixtures;
       this.setState({
-        fixtures: fixtures,
-        isLoading: false
+        fixtures: fixtures
       });
       this.changeDate(this.state.selectedDay);
+    });
+    const { selectedDay } = this.state;
+    axios.post('/api/scores', { selectedDay }).then(response => {
+      const pastResults = response.data.yesterdayGames;
+      this.setState({
+        pastResults: pastResults
+      });
+
+    });
+  }
+
+  getDayBeforeScores(dateString) {
+    const { pastResults } = this.state;
+    if (!pastResults.length) {
+      return;
+    }
+    const formatSelected = dateString;
+    const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const singleArrayFixtures = pastResults.reduce((utcFirstDay, utcSecondDay) => {
+      return utcFirstDay.concat(utcSecondDay);
+    });
+    const pastFixtures = singleArrayFixtures.filter(fixtures => {
+      const zonedDate = utcToZonedTime(fixtures.fixture.date, zone);
+      const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
+      return formatUTCDate === formatSelected;
+    });
+    this.setState({
+      pastResults: pastFixtures,
+      isLoading: false
     });
   }
 
@@ -77,6 +108,15 @@ export default class FixturesContainer extends React.Component {
     const selectedDaytoUTC = zonedTimeToUtc(dateString);
     const formatSelected = format(selectedDaytoUTC, 'yyyy-MM-dd');
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const isInPast = isPast(parseISO(formatSelected));
+    const isNotToday = !isToday(parseISO(formatSelected));
+    if (isInPast && isNotToday) {
+      this.setState({
+        activeId: '',
+        selectedDay: dateString
+      });
+      this.getDayBeforeScores(formatSelected);
+    }
     const dayOfFixtures = fixtures.filter(fixtures => {
       const zonedDate = utcToZonedTime(fixtures.fixture.date, zone);
       const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
@@ -135,14 +175,15 @@ export default class FixturesContainer extends React.Component {
     const odds = this.state.setOdds;
     handleTokenChange(stake);
     const profitAmount = makeBets(stake, odds);
-    const { userId, activeId, wagerAmount, teamLogo, betTeamId } = this.state;
+    const { userId, activeId, wagerAmount, teamLogo, betTeamId, selectedDay } = this.state;
     const newWager = {
       userId: userId,
       fixtureId: activeId,
       wagerAmount: wagerAmount,
       teamLogo: teamLogo,
       profitAmount: profitAmount,
-      betTeamId: betTeamId
+      betTeamId: betTeamId,
+      selectedDay: selectedDay
     };
     handlePastBets(newWager);
     const newArray = this.state.matchesBetOn.slice();
