@@ -53,6 +53,7 @@ const SubmitWager = props => {
                   <h4 className="sub-head">Odds:</h4>
                   <h4 className="sub-head">{setOdds}</h4>
                   <div className="input-container column-full">
+                    <label htmlFor="">WAGER:</label>
                     <form
                       onSubmit={() => handleSubmit(event)}
                       className="column-full"
@@ -64,7 +65,7 @@ const SubmitWager = props => {
                         required
                         autoFocus
                         value={value}
-                        placeholder="WAGER HERE"
+                        placeholder="1000"
                         onChange={handleChange}
                       />
                       <div>
