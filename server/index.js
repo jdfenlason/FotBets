@@ -47,7 +47,7 @@ app.patch('/api/bet-validation', (req, res, next) => {
   `;
   const params = [randomDate, yesterday, leagueId];
   db.query(sql, params).then(result => {
-    return res.json(result);
+    return res.json(result.rows);
   }).catch(err => next(err));
 });
 
@@ -121,8 +121,8 @@ app.post('/api/bet-validation', (req, res, next) => {
               return db.query(sql, params).then(result => {
                 const sql = `
                       update "wagerInputs"
-                      Set "betResult" = "betValidation"."betResult"
-                      AND "betEvaluated" = $1
+                      Set "betResult" = "betValidation"."betResult",
+                      "betEvaluated" = $1
                       From "betValidation"
                       Where "wagerInputs"."fixtureId" = "betValidation"."fixtureId"
                       AND "wagerInputs"."betTeamId" = "betValidation"."winningTeamId"
@@ -131,29 +131,29 @@ app.post('/api/bet-validation', (req, res, next) => {
                 const params = [betEvaluated];
                 return db.query(sql, params).then(result => {
                   const sql = `
-  update "users"
+ update "users"
   SET "tokenAmount" = "v"."amountProfit"
 
   FROM "wagerInputs", (
-    SELECT  "wagerInputs"."userId" as "idUser",
-    SUM("wagerInputs"."profitAmount" + "users"."tokenAmount") as "amountProfit"
+    SELECT "wagerInputs"."userId" as "idUser",
+    SUM("wagerInputs"."profitAmount" + "users"."tokenAmount") AS "amountProfit"
     from "wagerInputs", "users"
     where "wagerInputs"."userId" = "users"."userId"
     and "betResult" = $1
     And "date" = $2
-     group by "wagerInputs"."userId"
-  ) "v"
-  where "users"."userId" = "v"."idUser"
-    returning "users"."tokenAmount", "v"."idUser", "v"."amountProfit"
-                      `;
+    Group by "wagerInputs"."betId"
+    ) "v"
+    where "users"."userId" = "v"."idUser"
+    returning "users"."tokenAmount", "v"."idUser", "v"."amountProfit", "wagerInputs"."profitAmount"
+    `
+                      ;
                   const betResult = true;
                   const params = [betResult, yesterday];
-                  db.query(sql, params)
+                  return db.query(sql, params)
                     .then(result => {
                       return res.json(result.rows);
-                    })
-                    .catch(err => next(err));
-                }).catch(err => next(err));
+                    });
+                });
               });
             });
           });

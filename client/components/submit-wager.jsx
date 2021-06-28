@@ -65,7 +65,7 @@ const SubmitWager = props => {
                         required
                         autoFocus
                         value={value}
-                        placeholder="1000"
+                        placeholder="Wager Tokens"
                         onChange={handleChange}
                       />
                       <div>
