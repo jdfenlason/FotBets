@@ -7,6 +7,7 @@ import { useMediaQuery } from 'react-responsive';
 const FixtureList = props => {
   const isNotMobile = useMediaQuery({ minWidth: 900 });
   const {
+    today,
     handleId,
     checkProfit,
     script,
@@ -26,9 +27,10 @@ const FixtureList = props => {
     betId,
     addWagerTeam,
     matchesBetOn,
+    pastResults,
     fixtures
   } = props;
-  if (!teamDetails.length) {
+  if (!teamDetails || !teamDetails.length) {
     return (
       <>
         {fixtures.map(fixtures => {
@@ -46,6 +48,7 @@ const FixtureList = props => {
                   handleId(event);
                 }}
                 fixtures={fixtures}
+                pastResults={pastResults}
               />
             </div>
           );
@@ -65,7 +68,7 @@ const FixtureList = props => {
               <div onClick={() => {
                 handleId(event);
               }} >
-              <Fixture fixtures={fixtures} onClick={() => {
+              <Fixture fixtures={fixtures} pastResults={pastResults} onClick={() => {
                 handleId(event);
               }}/>
               </div>
@@ -101,6 +104,7 @@ const FixtureList = props => {
                 userTokens={userTokens}
                 handleSubmit={handleSubmit}
                 fixtures={fixtures}
+                today ={today}
                 />
             </div>
           );
@@ -165,6 +169,7 @@ const FixtureList = props => {
                     userTokens={userTokens}
                     handleSubmit={handleSubmit}
                     fixtures={fixtures}
+                    today= {today}
                   />
                 </div>
               );

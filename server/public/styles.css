@@ -72,10 +72,17 @@
   margin: 0.5rem;
   background-color: #1b1b1b;
   border-radius: 0.5rem;
-  box-shadow: 0 5px #1b1b1b;
   font-family: "Abhaya Libre", serif;
   font-weight: 700;
   padding: 0.5rem;
+}
+
+.shadow {
+  box-shadow: 0 5px #1b1b1b;
+}
+
+.shadow:hover {
+  box-shadow: 0 5px #f8f8f8;
 }
 
 .match-details {
@@ -157,8 +164,8 @@ h6 {
 
 .team-logo {
   margin-top: 1rem;
-  height: 75px;
-  width: 75px;
+  height: 3rem;
+  width: 3rem;
   object-fit: contain;
 }
 
@@ -252,7 +259,7 @@ body {
 }
 
 .enter-button:hover {
-  background-color: #aeaeae;
+  background-color: #535353;
   cursor: pointer;
 }
 
@@ -274,6 +281,7 @@ body {
   display: flex;
   flex-direction: column;
   text-align: center;
+  padding: 1.5rem;
 }
 
 .button-container {
@@ -395,4 +403,16 @@ a {
   flex-wrap: wrap;
   flex-direction: column;
   width: 50%;
+}
+
+.Won {
+  color: #549916;
+}
+
+.Lost {
+  color: #dd1900;
+}
+
+.Pending {
+  color: #f7f30a;
 }

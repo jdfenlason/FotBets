@@ -1,12 +1,14 @@
 import React from 'react';
 import { formatTime } from '../lib';
+import { useMediaQuery } from 'react-responsive';
 const Fixture = props => {
   const { fixture } = props.fixtures;
   const { home, away } = props.fixtures.teams;
+  const isNotMobile = useMediaQuery({ minWidth: 900 });
   return (
 
-    <div className="row column-full center fixture-card" >
-      <div className="outer-card column-full" id={fixture.id}>
+    <div className="row center fixture-card" >
+      <div className= {!isNotMobile ? 'outer-card shadow column-full' : 'outer-card shadow column-75' }id={fixture.id}>
         <div className="inner-card column-full" id = {fixture.id}>
           <div className="team-container"id={fixture.id} >
             <div className="image-container" id={fixture.id} >
