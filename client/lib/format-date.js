@@ -9,7 +9,7 @@ const formatDate = props => {
 
 const formatPastResult = props => {
   const dateParse = parseISO(props);
-  const dateFormat = format(dateParse, 'dd-MM-YYYY');
+  const dateFormat = format(dateParse, 'MM/dd/yy');
   return dateFormat;
 };
 export { formatDate, formatPastResult };

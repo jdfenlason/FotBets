@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatDate } from '../lib';
+import { formatPastResult } from '../lib';
 const PastBets = props => {
   const { pastBets } = props;
 
@@ -24,7 +24,7 @@ const PastBets = props => {
               <div className="past-bets-container">
                 <div className="bet-item">
                   <h3>Date</h3>
-                  <h4>{formatDate(date)}</h4>
+                  <h4>{formatPastResult(date)}</h4>
                 </div>
                 <div className="bet-item">
                   <h3 className="reset">Team</h3>
