@@ -10,9 +10,13 @@ const PastBets = props => {
       </div>
 
       {pastBets.map((bets, index) => {
-        const { teamLogo, wagerAmount, date, profitAmount, betResult } = bets;
+        const { teamLogo, wagerAmount, date, profitAmount, betResult, betEvaluated } = bets;
         let result;
-        betResult ? (result = 'Won') : (result = 'Lost');
+        if (!betEvaluated) {
+          result = 'Pending';
+        } else {
+          betResult ? (result = 'Won') : (result = 'Lost');
+        }
 
         return (
           <div className="outer-card" key={index}>
@@ -32,17 +36,17 @@ const PastBets = props => {
                 </div>
                 <div className="bet-item">
                   <h3>Wager</h3>
-                  <h4 className={betResult ? 'green' : 'red'}>
+                  <h4 className={result}>
                     {wagerAmount.toLocaleString()}
                   </h4>
                 </div>
                 <div className="bet-item">
                   <h3>Result</h3>
-                  <h4 className={betResult ? 'green' : 'red'}>{result}</h4>
+                  <h4 className={result}>{result}</h4>
                 </div>
                 <div className="bet-item">
-                  <h3>+/-</h3>
-                  <h4 className={betResult ? 'green' : 'red'}>
+                  <h3>Profit</h3>
+                  <h4 className={result}>
                     {profitAmount.toLocaleString()}
                   </h4>
                 </div>

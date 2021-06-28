@@ -46,6 +46,7 @@ create table "wagerInputs" (
   "betResult" boolean not null,
   "date" text not null,
   "createdAt" timestamptz(6) not null default now(),
+  "betEvaluated" boolean not null,
   primary Key ("betId")
 );
 

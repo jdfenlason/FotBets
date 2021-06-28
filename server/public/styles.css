@@ -405,10 +405,14 @@ a {
   width: 50%;
 }
 
-.green {
+.Won {
   color: #549916;
 }
 
-.red {
+.Lost {
   color: #dd1900;
+}
+
+.Pending {
+  color: #f7f30a;
 }
