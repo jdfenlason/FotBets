@@ -1,6 +1,6 @@
 import React from 'react';
 import AppContext from './lib/app-context';
-import TokenContext from './lib/token-context';
+// import TokenContext from './lib/token-context';
 import decodeToken from './lib/decode-token';
 import Auth from './pages/auth';
 import Home from './pages/home';
@@ -9,8 +9,9 @@ import { parseRoute } from './lib';
 import Leaderboard from './pages/leaderboard';
 import Profile from './pages/user-profile';
 import PastBets from './pages/past-bets';
-import Header from './pages/header';
-import Footer from './pages/footer';
+// import Header from './pages/header';
+// import Footer from './pages/footer';
+import FixturesContainer from './components/fixtures-container';
 import { format } from 'date-fns';
 export default class App extends React.Component {
   constructor(props) {
@@ -102,17 +103,23 @@ export default class App extends React.Component {
     const { path } = this.state.route;
     const { handlePastBets, handleTokenChange } = this;
     if (path === 'sign-in' || path === 'sign-out') {
-      return <Auth/>;
+      return <Auth />;
     }
-    if (path === '') {
+    if (path === 'fixtures') {
       return (
-        <Home
+        <FixturesContainer
           userTokens={userTokens}
           handleTokenChange={handleTokenChange}
           handlePastBets={handlePastBets}
         />
       );
     }
+    if (path === '') {
+      return (
+        <Home/>
+      );
+    }
+
     if (path === 'profile') {
       return (
         <>
@@ -133,26 +140,23 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { userTokens } = this.state;
     if (this.state.isAuthorizing) return null;
     const { user, route } = this.state;
     const { handleSignIn, handleSignOut } = this;
     const contextValue = { user, route, handleSignIn, handleSignOut };
     return (
         <AppContext.Provider value = {contextValue} >
-          <TokenContext.provider value = {userTokens}>
         <>
         <div className="container">
           <div className="header">
-            <Header/>
+            {/* <Header/> */}
           </div>
           <div className="main">{this.renderPage()}</div>
           <div className="">
-            <Footer />
+            {/* <Footer /> */}
           </div>
         </div>
       </>
-     </TokenContext.provider>
         </AppContext.Provider>
     );
   }

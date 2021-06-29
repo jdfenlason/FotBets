@@ -416,3 +416,17 @@ a {
 .Pending {
   color: #f7f30a;
 }
+
+.image-container {
+  height: 65px;
+  width: 65px;
+}
+
+.home-image {
+  object-fit: contain;
+  width: 10rem;
+}
+
+.align {
+  text-align: center;
+}

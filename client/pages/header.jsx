@@ -1,7 +1,6 @@
 import React from 'react';
-import AppContext from '../lib/app-context';
+import TokenContext from '../lib/token-context';
 const Header = props => {
-  const { userTokens } = props;
   return (
       <header>
       <div className="row">
@@ -15,7 +14,7 @@ const Header = props => {
             </a>
             <div className = "inline">
               <i className="fas fa-coins tokens"></i>
-              <h4>{userTokens.toLocaleString('en-US')}</h4>
+              {/* <h4>{userTokens.toLocaleString('en-US')}</h4> */}
             </div>
           </div>
         </div>
@@ -26,4 +25,4 @@ const Header = props => {
 };
 
 export default Header;
-Header.contextType = AppContext;
+Header.contextType = TokenContext;
