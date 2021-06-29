@@ -1,5 +1,6 @@
 import React from 'react';
 import AppContext from './lib/app-context';
+import TokenContext from './lib/token-context';
 import decodeToken from './lib/decode-token';
 import Auth from './pages/auth';
 import Home from './pages/home';
@@ -18,7 +19,7 @@ export default class App extends React.Component {
       isAuthorizing: true,
       userName: null,
       userTokens: null,
-      userId: null,
+      userId: 2,
       pastBets: [],
       route: parseRoute(window.location.hash)
     };
@@ -38,6 +39,24 @@ export default class App extends React.Component {
     const token = window.localStorage.getItem('react-context-jwt');
     const user = token ? decodeToken(token) : null;
     this.setState({ user, isAuthoritzing: false });
+    const userId = {
+      userId: this.state.userId
+    };
+    axios.get('/api/user-profile', { params: userId }).then(response => {
+      this.setState({
+        userName: response.data.userName,
+        userTokens: response.data.tokenAmount
+      });
+    });
+    axios
+      .get('/api/user-profile/past-bets', { params: userId })
+      .then(response => {
+        const userBets = response.data;
+        this.setState({
+          pastBets: userBets,
+          isLoading: false
+        });
+      });
 
   }
 
@@ -52,24 +71,6 @@ export default class App extends React.Component {
     this.setState({ user: null });
   }
 
-  // const userId = {
-  //   userId: this.state.userId
-  // };
-  // axios.get('/api/user-profile', { params: userId }).then(response => {
-  //   this.setState({
-  //     userName: response.data.userName,
-  //     userTokens: response.data.tokenAmount
-  //   });
-  // });
-  // axios
-  //   .get('/api/user-profile/past-bets', { params: userId })
-  //   .then(response => {
-  //     const userBets = response.data;
-  //     this.setState({
-  //       pastBets: userBets,
-  //       isLoading: false
-  //     });
-  //   });
   handlePastBets(newWager) {
     const betResult = 'Pending';
     const newArray = this.state.pastBets.slice();
@@ -138,11 +139,12 @@ export default class App extends React.Component {
     const { handleSignIn, handleSignOut } = this;
     const contextValue = { user, route, handleSignIn, handleSignOut };
     return (
-        <AppContext.Provider value = {contextValue}>
+        <AppContext.Provider value = {contextValue} >
+          <TokenContext.provider value = {userTokens}>
         <>
         <div className="container">
           <div className="header">
-            <Header userTokens={userTokens} />
+            <Header/>
           </div>
           <div className="main">{this.renderPage()}</div>
           <div className="">
@@ -150,6 +152,7 @@ export default class App extends React.Component {
           </div>
         </div>
       </>
+     </TokenContext.provider>
         </AppContext.Provider>
     );
   }
