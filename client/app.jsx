@@ -15,7 +15,7 @@ export default class App extends React.Component {
       isLoading: true,
       userName: '',
       userTokens: '',
-      userId: 1,
+      userId: 2,
       pastBets: [],
       route: parseRoute(window.location.hash)
     };

@@ -25,7 +25,7 @@ export default class FixturesContainer extends React.Component {
       userTokens: '',
       matchesBetOn: [],
       betTeamId: '',
-      userId: 1,
+      userId: 2,
       setOdds: '',
       checkProfit: false,
       script: '',
