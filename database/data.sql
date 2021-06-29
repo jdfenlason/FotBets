@@ -1,5 +1,5 @@
 insert into "users" ("userName","hashedPassword","tokenAmount")
-values ('admin', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 100),
+values ('admin', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1000),
        ('JFen', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 7000),
        ('Hulk', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1400),
        ('Thor', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1000),
