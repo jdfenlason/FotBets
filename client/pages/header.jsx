@@ -1,5 +1,5 @@
 import React from 'react';
-
+import AppContext from '../lib/app-context';
 const Header = props => {
   const { userTokens } = props;
   return (
@@ -26,3 +26,4 @@ const Header = props => {
 };
 
 export default Header;
+Header.contextType = AppContext;

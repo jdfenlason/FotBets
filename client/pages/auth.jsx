@@ -1,92 +1,37 @@
 import React from 'react';
+import Redirect from '../components/redirect';
+import AuthForm from '../components/auth-form';
+import AppContext from '../lib/app-context';
 
-export default class AuthForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: ''
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChange(event) {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    const { action } = this.props;
-    const req = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(this.state)
-    };
-    fetch(`/api/auth/${action}`, req)
-      .then(res => res.json())
-      .then(result => {
-        if (action === 'sign-up') {
-          window.location.hash = 'sign-in';
-        } else if (result.user && result.token) {
-          this.props.onSignIn(result);
-        }
-      });
-  }
-
+export default class AuthPage extends React.Component {
   render() {
-    const { action } = this.props;
-    const { handleChange, handleSubmit } = this;
-    const alternateActionHref = action === 'sign-up'
-      ? '#sign-in'
-      : '#sign-up';
-    const alternatActionText = action === 'sign-up'
-      ? 'Sign in instead'
-      : 'Register now';
-    const submitButtonText = action === 'sign-up'
-      ? 'Register'
-      : 'Log In';
+
+    const { user, route, handleSignIn } = this.context;
+
+    if (user) return <Redirect to="" />;
+
+    const weclomeMessage = route.path === 'sign-in'
+      ? 'Please sign in to continue'
+      : 'Create an account to get started!';
     return (
-      <form className="w-100" onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
-          <input
-            required
-            autoFocus
-            id="username"
-            type="text"
-            name="username"
-            onChange={handleChange}
-            className="form-control bg-light" />
+      <div className="row pt-5 align-items-center">
+        <div className="col-12 offset-0 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-xl-4 offset-xl-4">
+          <header className="text-center">
+            <h2 className="mb-2">
+              <i className="fas fa-bolt me-2" />
+              Awesome App
+            </h2>
+            <p className="text-muted mb-4">{ weclomeMessage }</p>
+          </header>
+          <div className="card p-3 ">
+            <AuthForm
+              key={route.path}
+              action={route.path}
+              onSignIn={handleSignIn} />
+          </div>
         </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            required
-            id="password"
-            type="password"
-            name="password"
-            onChange={handleChange}
-            className="form-control bg-light" />
-        </div>
-        <div className="d-flex justify-content-between align-items-center">
-          <small>
-            <a className="text-muted" href={alternateActionHref}>
-              { alternatActionText }
-            </a>
-          </small>
-          <button type="submit" className="btn btn-primary">
-            { submitButtonText }
-          </button>
-        </div>
-      </form>
+      </div>
     );
   }
 }
+AuthPage.contextType = AppContext;

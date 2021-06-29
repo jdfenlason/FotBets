@@ -25,7 +25,7 @@ export default class App extends React.Component {
     this.handleTokenChange = this.handleTokenChange.bind(this);
     this.handlePastBets = this.handlePastBets.bind(this);
     this.handleSignIn = this.handleSignIn.bind(this);
-    this.handleSignOut = this.handSignOut.bind(this);
+    this.handleSignOut = this.handleSignOut.bind(this);
   }
 
   componentDidMount() {
