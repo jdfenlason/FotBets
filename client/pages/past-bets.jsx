@@ -37,7 +37,7 @@ const PastBets = props => {
                 <div className="bet-item">
                   <h3>Wager</h3>
                   <h4 className={result}>
-                    {wagerAmount.toLocaleString()}
+                    {wagerAmount.toLocaleString('en-US')}
                   </h4>
                 </div>
                 <div className="bet-item">
@@ -47,7 +47,7 @@ const PastBets = props => {
                 <div className="bet-item">
                   <h3>Profit</h3>
                   <h4 className={result}>
-                    {profitAmount.toLocaleString()}
+                    {profitAmount.toLocaleString('en-US')}
                   </h4>
                 </div>
               </div>

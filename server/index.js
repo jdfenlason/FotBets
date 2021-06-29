@@ -55,7 +55,7 @@ app.get('/api/past-results', (req, res, next) => {
   const { dateString } = req.query;
   const plusOneDay = dateFns.addDays(dateFns.parseISO(dateString), 1);
   const utcDateFix = dateFns.format(plusOneDay, 'yyyy-MM-dd');
-  const leagueId = 253;
+  const leagueId = 255;
   const sql = `
         select  "yesterdayGames"
         From "pastResults"
@@ -70,7 +70,7 @@ app.get('/api/past-results', (req, res, next) => {
 });
 
 app.post('/api/bet-validation', (req, res, next) => {
-  const leagueId = 253;
+  const leagueId = 255;
   const { yesterday } = req.body;
   const formatToday = getDateForResults();
   const sql = `
@@ -197,7 +197,7 @@ app.get('/api/user-profile/past-bets', (req, res, next) => {
 });
 
 app.get('/api/week-games', (req, res, next) => {
-  const leagueId = 253;
+  const leagueId = 255;
   const { year, firstDay } = getNewWeek();
   const sql = ` select *
   From "weekGames"
