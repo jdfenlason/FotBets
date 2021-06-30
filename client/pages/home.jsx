@@ -16,7 +16,7 @@ const Home = props => {
 
             <div className="align message-row">
               <h3 className = {isNotMobile ? 'lg' : ''}>
-                An interactive competition against your friends to rack up the
+                An interactive competition against your friends to see who can rack up the
                 most tokens!
               </h3>
           </div>

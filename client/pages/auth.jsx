@@ -23,9 +23,9 @@ export default class AuthPage extends React.Component {
                 F<i className="fas fa-futbol logoSize"></i>tBets
               </h2>
             </span>
-            <p className="text-muted mb-4">{ weclomeMessage }</p>
+            <p className="">{ weclomeMessage }</p>
             </div>
-            <div className="input-container">
+            <div className="input-container index">
             <AuthForm
               key={route.path}
               action={route.path}

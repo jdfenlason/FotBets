@@ -45,7 +45,7 @@ export default class AuthForm extends React.Component {
       : '#sign-up';
     const alternatActionText = action === 'sign-up'
       ? 'Sign in instead'
-      : 'Register now';
+      : '';
     const submitButtonText = action === 'sign-up'
       ? 'Register'
       : 'Log In';
@@ -62,7 +62,7 @@ export default class AuthForm extends React.Component {
             type="text"
             name="username"
             onChange={handleChange}
-            className="" />
+            className="login-input" />
         </div>
         <div className="">
           <label htmlFor="password" className="form-label">
@@ -74,9 +74,9 @@ export default class AuthForm extends React.Component {
             type="password"
             name="password"
             onChange={handleChange}
-            className="" />
+            className="login-input" />
         </div>
-        <div className="d-flex justify-content-between align-items-center">
+        <div className="">
           <small>
             <a className="" href={alternateActionHref}>
               { alternatActionText }
