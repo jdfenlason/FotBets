@@ -1,6 +1,6 @@
 import React from 'react';
 import AppContext from './lib/app-context';
-// import TokenContext from './lib/token-context';
+
 import decodeToken from './lib/decode-token';
 import Auth from './pages/auth';
 import Home from './pages/home';
@@ -9,8 +9,8 @@ import { parseRoute } from './lib';
 import Leaderboard from './pages/leaderboard';
 import Profile from './pages/user-profile';
 import PastBets from './pages/past-bets';
-// import Header from './pages/header';
-// import Footer from './pages/footer';
+import Header from './pages/header';
+import Footer from './pages/footer';
 import FixturesContainer from './components/fixtures-container';
 import { format } from 'date-fns';
 export default class App extends React.Component {
@@ -107,11 +107,18 @@ export default class App extends React.Component {
     }
     if (path === 'fixtures') {
       return (
+        <>
+         <div className="header">
+
+        <Header/>
+         </div>
         <FixturesContainer
           userTokens={userTokens}
           handleTokenChange={handleTokenChange}
           handlePastBets={handlePastBets}
         />
+        <Footer/>
+        </>
       );
     }
     if (path === '') {
@@ -123,6 +130,10 @@ export default class App extends React.Component {
     if (path === 'profile') {
       return (
         <>
+         <div className="header">
+
+        <Header/>
+         </div>
           <Profile
             pastBets={pastBets}
             userTokens={userTokens}
@@ -130,12 +141,19 @@ export default class App extends React.Component {
           />
 
           <PastBets pastBets={pastBets} handlePastBets={handlePastBets} />
-
+        <Footer/>
         </>
       );
     }
     if (path === 'leaderboard') {
-      return <Leaderboard />;
+      return (
+        <> <div className="header">
+      <Header/>
+      </div>
+      <Leaderboard />;
+      <Footer/>
+      </>
+      );
     }
   }
 
@@ -148,13 +166,7 @@ export default class App extends React.Component {
         <AppContext.Provider value = {contextValue} >
         <>
         <div className="container">
-          <div className="header">
-            {/* <Header/> */}
-          </div>
           <div className="main">{this.renderPage()}</div>
-          <div className="">
-            {/* <Footer /> */}
-          </div>
         </div>
       </>
         </AppContext.Provider>

@@ -521,9 +521,3 @@ a {
   border: darkgrey 1px solid;
   color: black;
 }
-
-.justify {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
