@@ -271,6 +271,7 @@ body {
   color: #f8f8f8;
   background-color: #6c6c6c;
   text-align: center;
+  width: 12rem;
 }
 
 .wager-input::placeholder {
@@ -287,6 +288,7 @@ body {
 .button-container {
   display: flex;
   justify-content: center;
+  z-index: 10;
 }
 
 .payout {
@@ -417,11 +419,6 @@ a {
   color: #f7f30a;
 }
 
-.image-container {
-  height: 65px;
-  width: 65px;
-}
-
 .home-image {
   object-fit: contain;
   width: 10rem;
@@ -429,4 +426,53 @@ a {
 
 .align {
   text-align: center;
+  padding: 1.2rem;
+  z-index: 10;
+  line-height: 2.1rem;
+}
+
+.home-hero-image {
+  background-image: url(../images/bigger.jpeg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.title-row {
+  height: calc(100% / 3);
+}
+
+.message-row {
+  height: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.button-row {
+  height: calc(100% / 3);
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  color: white;
+  text-align: center;
+  z-index: 10;
+}
+
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+.large {
+  font-size: 2em;
 }

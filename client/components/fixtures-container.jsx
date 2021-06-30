@@ -82,7 +82,7 @@ export default class FixturesContainer extends React.Component {
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     axios.get('/api/past-results', { params: { dateString } }).then(response => {
       const pastResults = response.data.yesterdayGames;
-      if (!pastResults) {
+      if (!pastResults || !pastResults[0].length) {
         this.setState({
           pastResults: []
         });
@@ -188,6 +188,13 @@ export default class FixturesContainer extends React.Component {
     handleTokenChange(stake);
     const profitAmount = makeBets(stake, odds);
     const { userId, activeId, wagerAmount, teamLogo, betTeamId, selectedDay } = this.state;
+    if (wagerAmount <= 0) {
+      const script = 'Zero is not a valid wager amount!';
+      this.setState({
+        script: script
+      });
+      return;
+    }
     const newWager = {
       userId: userId,
       fixtureId: activeId,
