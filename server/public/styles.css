@@ -431,8 +431,11 @@ a {
   line-height: 2.1rem;
 }
 
-.home-hero-image {
+.home-bg {
   background-image: url(../images/bigger.jpeg);
+}
+
+.bg-image {
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -451,6 +454,7 @@ a {
   height: 50%;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .button-row {
@@ -475,4 +479,28 @@ a {
 
 .large {
   font-size: 2em;
+}
+
+.lg {
+  font-size: 1.5em;
+}
+
+.sign-buttons {
+  z-index: 10;
+  padding: 1rem;
+  margin: 1rem;
+  background-color: transparent;
+  font-size: 1em;
+  text-decoration: none;
+  color: #f8f8f8;
+  border: #f8f8f8 2px solid;
+  border-radius: 0.4rem;
+  width: 8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sign-buttons:hover {
+  background-color: #535353;
+  cursor: pointer;
 }
