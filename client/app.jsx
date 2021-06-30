@@ -112,7 +112,7 @@ export default class App extends React.Component {
             handleTokenChange={handleTokenChange}
             handlePastBets={handlePastBets}
           />
-          <Footer />
+
         </>
       );
     }
@@ -123,9 +123,7 @@ export default class App extends React.Component {
     if (path === 'profile') {
       return (
         <>
-          <div className="header">
-            <Header />
-          </div>
+
           <Profile
             pastBets={pastBets}
             userTokens={userTokens}
@@ -133,18 +131,14 @@ export default class App extends React.Component {
           />
 
           <PastBets pastBets={pastBets} handlePastBets={handlePastBets} />
-          <Footer />
+
         </>
       );
     }
     if (path === 'leaderboard') {
       return (
         <>
-          <div className="header">
-            <Header />
-          </div>
           <Leaderboard />;
-          <Footer />
         </>
       );
     }
@@ -159,12 +153,17 @@ export default class App extends React.Component {
     return (
       <AppContext.Provider value={contextValue}>
         <>
+        <div className ="container">
         <div className="header">
             <Header value = {contextValue} />
           </div>
           <div className="container">
             <div className="main">{this.renderPage()}</div>
           </div>
+          <div>
+             <Footer value= {contextValue}/>
+          </div>
+        </div>
         </>
       </AppContext.Provider>
     );

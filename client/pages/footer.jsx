@@ -1,7 +1,10 @@
 import React from 'react';
-
-const Footer = () => {
-  return (
+import AppContext from '../lib/app-context';
+export default class Footer extends React.Component {
+  render() {
+    const { path } = this.context.route;
+    if (path === 'sign-in' || path === 'sign-out' || path === '') return null;
+    return (
     <div className="row">
       <div className="column-full">
         <div className="footer-container">
@@ -28,6 +31,8 @@ const Footer = () => {
         </div>
       </div>
     </div>
-  );
-};
-export default Footer;
+    );
+  }
+}
+
+Footer.contextType = AppContext;
