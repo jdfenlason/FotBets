@@ -1,7 +1,10 @@
 import React from 'react';
-
-const Header = props => {
-  return (
+import AppContext from '../lib/app-context';
+export default class Header extends React.Component {
+  render() {
+    const { user, route } = this.context;
+    if (route.path === 'sign-in' || route.path === 'sign-out' || route.path === '') return null;
+    return (
       <header>
       <div className="row">
         <div className="column-full">
@@ -14,14 +17,14 @@ const Header = props => {
             </a>
             <div className = "inline">
               <i className="fas fa-coins tokens"></i>
-              {/* <h4>{userTokens.toLocaleString('en-US')}</h4> */}
+              <h4>{user.tokenAmount.toLocaleString('en-US')}</h4>
             </div>
           </div>
         </div>
       </div>
     </header>
 
-  );
-};
-
-export default Header;
+    );
+  }
+}
+Header.contextType = AppContext;

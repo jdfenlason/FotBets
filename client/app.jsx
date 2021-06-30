@@ -1,6 +1,6 @@
 import React from 'react';
 import AppContext from './lib/app-context';
-
+import Loading from './components/loading';
 import decodeToken from './lib/decode-token';
 import Auth from './pages/auth';
 import Home from './pages/home';
@@ -18,9 +18,9 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       isAuthorizing: false,
+      isLoading: true,
       username: null,
       userTokens: null,
-      userId: 2,
       pastBets: [],
       route: parseRoute(window.location.hash)
     };
@@ -107,9 +107,6 @@ export default class App extends React.Component {
     if (path === 'fixtures') {
       return (
         <>
-          <div className="header">
-            <Header />
-          </div>
           <FixturesContainer
             userTokens={userTokens}
             handleTokenChange={handleTokenChange}
@@ -155,12 +152,16 @@ export default class App extends React.Component {
 
   render() {
     if (this.state.isAuthorizing) return null;
+    if (this.state.isLoading) return <Loading/>;
     const { user, route } = this.state;
     const { handleSignIn, handleSignOut } = this;
     const contextValue = { user, route, handleSignIn, handleSignOut };
     return (
       <AppContext.Provider value={contextValue}>
         <>
+        <div className="header">
+            <Header value = {contextValue} />
+          </div>
           <div className="container">
             <div className="main">{this.renderPage()}</div>
           </div>
