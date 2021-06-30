@@ -50,8 +50,8 @@ export default class AuthForm extends React.Component {
       ? 'Register'
       : 'Log In';
     return (
-      <form className="w-100" onSubmit={handleSubmit}>
-        <div className="mb-3">
+      <form className="" onSubmit={handleSubmit}>
+        <div className="">
           <label htmlFor="username" className="form-label">
             Username
           </label>
@@ -62,9 +62,9 @@ export default class AuthForm extends React.Component {
             type="text"
             name="username"
             onChange={handleChange}
-            className="form-control bg-light" />
+            className="" />
         </div>
-        <div className="mb-3">
+        <div className="">
           <label htmlFor="password" className="form-label">
             Password
           </label>
@@ -74,15 +74,15 @@ export default class AuthForm extends React.Component {
             type="password"
             name="password"
             onChange={handleChange}
-            className="form-control bg-light" />
+            className="" />
         </div>
         <div className="d-flex justify-content-between align-items-center">
           <small>
-            <a className="text-muted" href={alternateActionHref}>
+            <a className="" href={alternateActionHref}>
               { alternatActionText }
             </a>
           </small>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="enter-button">
             { submitButtonText }
           </button>
         </div>

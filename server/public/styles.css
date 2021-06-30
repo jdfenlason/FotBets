@@ -435,6 +435,10 @@ a {
   background-image: url(../images/bigger.jpeg);
 }
 
+.sign-bg {
+  background-image: url(../images/fan.jpeg);
+}
+
 .bg-image {
   background-position: center center;
   background-repeat: no-repeat;
