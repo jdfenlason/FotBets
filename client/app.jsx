@@ -58,7 +58,6 @@ export default class App extends React.Component {
           isLoading: false
         });
       });
-
   }
 
   handleSignIn(result) {
@@ -102,38 +101,34 @@ export default class App extends React.Component {
     const { userName, pastBets, userTokens } = this.state;
     const { path } = this.state.route;
     const { handlePastBets, handleTokenChange } = this;
-    if (path === 'sign-in' || path === 'sign-out') {
+    if (path === 'sign-in' || path === 'sign-up') {
       return <Auth />;
     }
     if (path === 'fixtures') {
       return (
         <>
-         <div className="header">
-
-        <Header/>
-         </div>
-        <FixturesContainer
-          userTokens={userTokens}
-          handleTokenChange={handleTokenChange}
-          handlePastBets={handlePastBets}
-        />
-        <Footer/>
+          <div className="header">
+            <Header />
+          </div>
+          <FixturesContainer
+            userTokens={userTokens}
+            handleTokenChange={handleTokenChange}
+            handlePastBets={handlePastBets}
+          />
+          <Footer />
         </>
       );
     }
     if (path === '') {
-      return (
-        <Home/>
-      );
+      return <Home />;
     }
 
     if (path === 'profile') {
       return (
         <>
-         <div className="header">
-
-        <Header/>
-         </div>
+          <div className="header">
+            <Header />
+          </div>
           <Profile
             pastBets={pastBets}
             userTokens={userTokens}
@@ -141,18 +136,19 @@ export default class App extends React.Component {
           />
 
           <PastBets pastBets={pastBets} handlePastBets={handlePastBets} />
-        <Footer/>
+          <Footer />
         </>
       );
     }
     if (path === 'leaderboard') {
       return (
-        <> <div className="header">
-      <Header/>
-      </div>
-      <Leaderboard />;
-      <Footer/>
-      </>
+        <>
+          <div className="header">
+            <Header />
+          </div>
+          <Leaderboard />;
+          <Footer />
+        </>
       );
     }
   }
@@ -163,13 +159,13 @@ export default class App extends React.Component {
     const { handleSignIn, handleSignOut } = this;
     const contextValue = { user, route, handleSignIn, handleSignOut };
     return (
-        <AppContext.Provider value = {contextValue} >
+      <AppContext.Provider value={contextValue}>
         <>
-        <div className="container">
-          <div className="main">{this.renderPage()}</div>
-        </div>
-      </>
-        </AppContext.Provider>
+          <div className="container">
+            <div className="main">{this.renderPage()}</div>
+          </div>
+        </>
+      </AppContext.Provider>
     );
   }
 }

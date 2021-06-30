@@ -1,5 +1,5 @@
 import React from 'react';
-import TokenContext from '../lib/token-context';
+
 const Header = props => {
   return (
       <header>
@@ -25,4 +25,3 @@ const Header = props => {
 };
 
 export default Header;
-Header.contextType = TokenContext;

@@ -19,10 +19,11 @@ const Home = props => {
                 An interactive competition against your friends to see who can rack up the
                 most tokens!
               </h3>
+              <h4 className = {isNotMobile ? 'lg' : ''}>Make wagers on football matches from all across the world!</h4>
           </div>
         <div className="button-container row button-row">
           <a href="#sign-in">
-            <button className="sign-buttons " type="submit">
+            <button className="sign-buttons " type="button">
               Sign In
             </button>
           </a>
