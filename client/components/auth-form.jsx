@@ -1,5 +1,5 @@
 import React from 'react';
-
+import axios from 'axios';
 export default class AuthForm extends React.Component {
   constructor(props) {
     super(props);
@@ -19,22 +19,14 @@ export default class AuthForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const { action } = this.props;
-    const req = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(this.state)
-    };
-    fetch(`/api/auth/${action}`, req)
-      .then(res => res.json())
-      .then(result => {
-        if (action === 'sign-up') {
-          window.location.hash = 'sign-in';
-        } else if (result.user && result.token) {
-          this.props.onSignIn(result);
-        }
-      });
+    const { username, password } = this.state;
+    axios.post(`/api/auth/${action}`, { username, password }).then(response => {
+      if (action === 'sign-up') {
+        window.location.hash = 'sign-in';
+      } else if (response.data.user && response.data.token) {
+        this.props.onSignIn(response.data);
+      }
+    });
   }
 
   render() {

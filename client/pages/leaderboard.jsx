@@ -34,17 +34,17 @@ export default class Leaderboard extends React.Component {
                   <thead>
                     <tr>
                       <th>Rank</th>
-                      <th>UserName</th>
+                      <th>Username</th>
                       <th>Tokens</th>
                     </tr>
                   </thead>
                   <tbody>
                     {leaderboard.map((leaders, index) => {
-                      const { userName, tokenAmount } = leaders;
+                      const { username, tokenAmount } = leaders;
                       return (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{userName}</td>
+                          <td>{username}</td>
                           <td>{tokenAmount.toLocaleString()}</td>
                         </tr>
                       );

@@ -18,7 +18,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       isAuthorizing: false,
-      userName: null,
+      username: null,
       userTokens: null,
       userId: 2,
       pastBets: [],
@@ -45,7 +45,7 @@ export default class App extends React.Component {
     };
     axios.get('/api/user-profile', { params: userId }).then(response => {
       this.setState({
-        userName: response.data.userName,
+        username: response.data.username,
         userTokens: response.data.tokenAmount
       });
     });
@@ -98,7 +98,7 @@ export default class App extends React.Component {
   }
 
   renderPage() {
-    const { userName, pastBets, userTokens } = this.state;
+    const { username, pastBets, userTokens } = this.state;
     const { path } = this.state.route;
     const { handlePastBets, handleTokenChange } = this;
     if (path === 'sign-in' || path === 'sign-up') {
@@ -132,7 +132,7 @@ export default class App extends React.Component {
           <Profile
             pastBets={pastBets}
             userTokens={userTokens}
-            userName={userName}
+            username={username}
           />
 
           <PastBets pastBets={pastBets} handlePastBets={handlePastBets} />

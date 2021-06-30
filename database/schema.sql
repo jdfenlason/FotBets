@@ -25,13 +25,13 @@ create table "teamForm" (
 
 create table "users" (
   "userId"           serial,
-  "userName"         text    not null,
+  "username"         text    not null,
   "hashedPassword"   text    not null,
   "tokenAmount"   int   not null,
   "createdAt"   timestamptz(6) not null default now(),
   "updatedAt"   timestamptz(6) not null default now(),
   primary key ("userId"),
-  unique ("userName")
+  unique ("username")
 );
 
 

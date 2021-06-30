@@ -7,11 +7,14 @@ const Home = props => {
       <div className="overlay"></div>
       <div className="bg-image home-bg">
           <div className="title title-row">
+            <a href="#fixtures">
+
             <span className="large">
               <h2>
                 F<i className="fas fa-futbol logoSize"></i>tBets
               </h2>
             </span>
+            </a>
             </div>
 
             <div className="align message-row">

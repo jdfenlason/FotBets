@@ -23,6 +23,7 @@ const db = new pg.Pool({
 });
 app.post('/api/auth/sign-up', (req, res, next) => {
   const { username, password } = req.body;
+  const tokenAmount = 2000;
   if (!username || !password) {
     throw new ClientError(400, 'username and password are required fields');
   }
@@ -30,11 +31,11 @@ app.post('/api/auth/sign-up', (req, res, next) => {
     .hash(password)
     .then(hashedPassword => {
       const sql = `
-        insert into "users" ("username", "hashedPassword")
-        values ($1, $2)
-        returning "userId", "username", "createdAt"
+        insert into "users" ("username", "hashedPassword", "tokenAmount")
+        values ($1, $2, $3)
+        returning "userId", "username", "createdAt", "tokenAmount"
       `;
-      const params = [username, hashedPassword];
+      const params = [username, hashedPassword, tokenAmount];
       return db.query(sql, params);
     })
     .then(result => {
@@ -51,7 +52,8 @@ app.post('/api/auth/sign-in', (req, res, next) => {
   }
   const sql = `
     select "userId",
-           "hashedPassword"
+           "hashedPassword",
+           "tokenAmount"
       from "users"
      where "username" = $1
   `;
@@ -62,12 +64,12 @@ app.post('/api/auth/sign-in', (req, res, next) => {
       if (!user) {
         throw new ClientError(401, 'invalid login');
       }
-      const { userId, hashedPassword } = user;
+      const { userId, hashedPassword, tokenAmount } = user;
       return argon2.verify(hashedPassword, password).then(isMatching => {
         if (!isMatching) {
           throw new ClientError(401, 'invalid login');
         }
-        const payload = { userId, username };
+        const payload = { userId, username, tokenAmount };
         const token = jwt.sign(payload, process.env.TOKEN_SECRET);
         res.json({ token, user: payload });
       });
@@ -221,7 +223,7 @@ app.post('/api/bet-validation', (req, res, next) => {
 
 app.get('/api/leaderboard', (req, res, next) => {
   const sql = `
-              select "userName", "tokenAmount"
+              select "username", "tokenAmount"
               From "users"
               Order by
               "tokenAmount" DESC
@@ -338,7 +340,7 @@ app.get('/api/wager-input', (req, res, next) => {
 app.get('/api/user-profile', (req, res, next) => {
   const { userId } = req.query;
   const sql = `
-  select "tokenAmount", "userName"
+  select "tokenAmount", "username"
   From "users"
   where "userId" = $1
   `;

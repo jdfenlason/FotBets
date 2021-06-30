@@ -1,13 +1,13 @@
 import React from 'react';
 
 const Profile = props => {
-  const { userName, userTokens } = props;
+  const { username, userTokens } = props;
   return (
     <div className="row column-full center">
       <div className="outer-card column-full">
         <div className="match-card row center">
           <div>
-            <h1>{userName}</h1>
+            <h1>{username}</h1>
           </div>
           <div className = "token-amount-container">
           <h3>Your current Token amount is:</h3>

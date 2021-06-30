@@ -18,11 +18,13 @@ export default class AuthPage extends React.Component {
       <div className="overlay"></div>
       <div className="bg-image sign-bg">
           <div className="title title-row">
+
             <span className="large">
               <h2>
                 F<i className="fas fa-futbol logoSize"></i>tBets
               </h2>
             </span>
+
             <p className="">{ weclomeMessage }</p>
             </div>
             <div className="input-container index">
