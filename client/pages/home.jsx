@@ -24,6 +24,7 @@ const Home = props => {
                 most tokens!
               </h3>
               <h4 className = {isNotMobile ? 'lg' : ''}>Make wagers on football matches from all across the world!</h4>
+              <h4 className = {isNotMobile ? 'lg' : ''}>ALL BETS ARE FINAL!</h4>
           </div>
         <div className="button-container row button-row">
           <a href="#fixtures">

@@ -9,7 +9,9 @@ export default class AuthPage extends React.Component {
     const { user, route, handleSignIn } = this.context;
 
     if (user) return <Redirect to="home" />;
-
+    if (route.path === '') {
+      route.path = 'sign-up';
+    }
     const weclomeMessage = route.path === 'sign-in'
       ? 'Please sign in to continue'
       : 'Create an account to get started!';

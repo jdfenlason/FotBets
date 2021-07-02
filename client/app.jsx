@@ -105,8 +105,10 @@ export default class App extends React.Component {
     const { pastBets } = this.state;
     const { path } = this.state.route;
     const { handlePastBets, handleTokenChange, handleSignOut } = this;
-
-    if (path === 'sign-in' || path === 'sign-up' || path === '') {
+    if (path === '') {
+      return <Auth />;
+    }
+    if (path === 'sign-in' || path === 'sign-up') {
       return <Auth />;
     }
     if (path === 'fixtures') {
