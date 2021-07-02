@@ -221,6 +221,25 @@ app.post('/api/bet-validation', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.get('/api/leaderboard/rank', (req, res, next) => {
+  const { tokenAmount } = req.query;
+
+  const sql = `
+              Select (count ("userId") + 1) as rank
+              From "users"
+              where "tokenAmount" < $1
+
+              `;
+  const params = [tokenAmount];
+  db.query(sql, params)
+    .then(result => {
+      const dbresult = result.rows;
+
+      res.json(dbresult);
+    })
+    .catch(err => next(err));
+});
+
 app.get('/api/leaderboard', (req, res, next) => {
   const sql = `
               select "username", "tokenAmount"
