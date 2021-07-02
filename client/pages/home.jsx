@@ -1,6 +1,7 @@
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
 const Home = props => {
+  const { handleSignOut } = props;
   const isNotMobile = useMediaQuery({ minWidth: 900 });
   return (
     <>
@@ -25,14 +26,14 @@ const Home = props => {
               <h4 className = {isNotMobile ? 'lg' : ''}>Make wagers on football matches from all across the world!</h4>
           </div>
         <div className="button-container row button-row">
-          <a href="#sign-in">
+          <a href="#fixtures">
             <button className="sign-buttons " type="button">
-              Sign In
+              Enter
             </button>
           </a>
-          <a href="#sign-up">
-            <button className="sign-buttons" type="button">
-              Sign Up
+          <a href="#sign-in">
+            <button className="sign-buttons" type="button" onClick={() => handleSignOut()}>
+              Sign Out
             </button>
           </a>
         </div>

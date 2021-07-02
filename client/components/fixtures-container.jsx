@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import AppContext from '../lib/app-context';
 import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
 import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
@@ -22,10 +23,8 @@ export default class FixturesContainer extends React.Component {
       teamDetails: [],
       wagerAmount: '',
       profitAmount: '',
-      userTokens: '',
       matchesBetOn: [],
       betTeamId: '',
-      userId: 1,
       setOdds: '',
       checkProfit: false,
       script: '',
@@ -60,7 +59,7 @@ export default class FixturesContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { userId } = this.state;
+    const { userId } = this.context.user;
     axios.get('/api/wager-input', { userId }).then(response => {
       const pastBets = response.data;
       this.setState({
@@ -76,6 +75,7 @@ export default class FixturesContainer extends React.Component {
     });
     const { yesterday } = this.state;
     axios.post('/api/bet-validation', { yesterday });
+
   }
 
   getDayBeforeScores(dateString) {
@@ -181,13 +181,14 @@ export default class FixturesContainer extends React.Component {
   }
 
   handleSubmit(props) {
-    const { handleTokenChange, handlePastBets } = this.props;
+    const { handleTokenChange, handlePastBets } = this.context;
     event.preventDefault();
     const stake = this.state.wagerAmount;
     const odds = this.state.setOdds;
     handleTokenChange(stake);
     const profitAmount = makeBets(stake, odds);
-    const { userId, activeId, wagerAmount, teamLogo, betTeamId, selectedDay } = this.state;
+    const { userId } = this.context.user;
+    const { activeId, wagerAmount, teamLogo, betTeamId, selectedDay } = this.state;
     if (wagerAmount <= 0) {
       const script = 'Zero is not a valid wager amount!';
       this.setState({
@@ -285,7 +286,8 @@ export default class FixturesContainer extends React.Component {
       handleChange,
       handleSubmit
     } = this;
-    const { userTokens } = this.props;
+    const { tokenAmount } = this.context.user;
+    const userTokens = tokenAmount;
     if (!dayOfFixtures.length) {
       return (
         <>
@@ -294,7 +296,7 @@ export default class FixturesContainer extends React.Component {
             today={today}
             selectedDay={selectedDay}
             formatDay={formatDay}
-          />
+        />
           <NoMatchesToday selectedDay={selectedDay} />
         </>
       );
@@ -328,12 +330,13 @@ export default class FixturesContainer extends React.Component {
           handleChange={handleChange}
           setOdds={setOdds}
           teamLogo={teamLogo}
-          userTokens={userTokens}
           handleSubmit={handleSubmit}
           today={today}
           pastResults= {pastResults}
+          userTokens = {userTokens}
         />
       </>
         );
   }
 }
+FixturesContainer.contextType = AppContext;

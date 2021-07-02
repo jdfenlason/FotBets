@@ -1,8 +1,9 @@
 import React from 'react';
-
-const Profile = props => {
-  const { username, userTokens } = props;
-  return (
+import AppContext from '../lib/app-context';
+export default class Profile extends React.Component {
+  render() {
+    const { username, tokenAmount } = this.context.user;
+    return (
     <div className="row column-full center">
       <div className="outer-card column-full">
         <div className="match-card row center">
@@ -13,7 +14,7 @@ const Profile = props => {
           <h3>Your current Token amount is:</h3>
             <h2>
               <i className="fas fa-coins tokens"></i>
-              {userTokens.toLocaleString('en-US')}
+              {tokenAmount.toLocaleString('en-US')}
             </h2>
           </div>
           <div className = "token-amount-container">
@@ -23,7 +24,7 @@ const Profile = props => {
         </div>
       </div>
     </div>
-  );
-};
-
-export default Profile;
+    );
+  }
+}
+Profile.contextType = AppContext;

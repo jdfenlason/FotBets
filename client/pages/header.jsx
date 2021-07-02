@@ -2,15 +2,15 @@ import React from 'react';
 import AppContext from '../lib/app-context';
 export default class Header extends React.Component {
   render() {
-    const { user, route } = this.context;
-    if (route.path === 'sign-in' || route.path === 'sign-out' || route.path === '') return null;
+    const { user } = this.context;
+    const { path } = this.context.route;
+    if (path === 'sign-in' || path === 'sign-up' || path === 'home' || path === '') return null;
     return (
       <header>
       <div className="row">
         <div className="column-full">
           <div className="header-container">
-          <a href="">
-
+          <a href="#home">
               <span>
             <h2>F
               <i className='fas fa-futbol logoSize'></i>tBets</h2></span>

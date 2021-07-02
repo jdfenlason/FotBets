@@ -19,11 +19,13 @@ export default class App extends React.Component {
     this.state = {
       isAuthorizing: false,
       isLoading: true,
-      username: null,
-      userTokens: null,
+      user: null,
       pastBets: [],
+      userId: null,
+      tokenAmount: '',
       route: parseRoute(window.location.hash)
     };
+
     this.handleTokenChange = this.handleTokenChange.bind(this);
     this.handlePastBets = this.handlePastBets.bind(this);
     this.handleSignIn = this.handleSignIn.bind(this);
@@ -40,15 +42,13 @@ export default class App extends React.Component {
     const token = window.localStorage.getItem('react-context-jwt');
     const user = token ? decodeToken(token) : null;
     this.setState({ user, isAuthoritzing: false });
+    this.getPastBets();
+  }
+
+  getPastBets() {
     const userId = {
       userId: this.state.userId
     };
-    axios.get('/api/user-profile', { params: userId }).then(response => {
-      this.setState({
-        username: response.data.username,
-        userTokens: response.data.tokenAmount
-      });
-    });
     axios
       .get('/api/user-profile/past-bets', { params: userId })
       .then(response => {
@@ -63,12 +63,14 @@ export default class App extends React.Component {
   handleSignIn(result) {
     const { user, token } = result;
     window.localStorage.setItem('react-context-jwt', token);
-    this.setState({ user });
+    const { userId, tokenAmount } = user;
+    this.setState({ user, userId, tokenAmount });
+    this.getPastBets();
   }
 
   handleSignOut() {
-    window.localStorage.setItem('react-context-jwt');
-    this.setState({ user: null });
+    window.localStorage.removeItem('react-context-jwt');
+    this.setState({ user: null, userId: null, tokenAmount: null });
   }
 
   handlePastBets(newWager) {
@@ -85,7 +87,8 @@ export default class App extends React.Component {
   }
 
   handleTokenChange(wagerAmounts) {
-    const currentTokenAmount = this.state.userTokens;
+    const { tokenAmount } = this.state.user;
+    const currentTokenAmount = tokenAmount;
     const changeTokenAmount = currentTokenAmount - wagerAmounts;
     const wager = {
       userId: this.state.userId,
@@ -93,22 +96,23 @@ export default class App extends React.Component {
     };
     axios.patch('/api/token-amount', { params: wager }).then(response => {
       const newTokenAmount = response.data.tokenAmount;
-      this.setState({ userTokens: newTokenAmount });
-    });
+      this.setState({ tokenAmount: newTokenAmount });
+    }
+    );
   }
 
   renderPage() {
-    const { username, pastBets, userTokens } = this.state;
+    const { pastBets } = this.state;
     const { path } = this.state.route;
-    const { handlePastBets, handleTokenChange } = this;
-    if (path === 'sign-in' || path === 'sign-up') {
+    const { handlePastBets, handleTokenChange, handleSignOut } = this;
+
+    if (path === 'sign-in' || path === 'sign-up' || path === '') {
       return <Auth />;
     }
     if (path === 'fixtures') {
       return (
         <>
           <FixturesContainer
-            userTokens={userTokens}
             handleTokenChange={handleTokenChange}
             handlePastBets={handlePastBets}
           />
@@ -116,8 +120,8 @@ export default class App extends React.Component {
         </>
       );
     }
-    if (path === '') {
-      return <Home />;
+    if (path === 'home') {
+      return <Home handleSignOut={handleSignOut}/>;
     }
 
     if (path === 'profile') {
@@ -126,8 +130,6 @@ export default class App extends React.Component {
 
           <Profile
             pastBets={pastBets}
-            userTokens={userTokens}
-            username={username}
           />
 
           <PastBets pastBets={pastBets} handlePastBets={handlePastBets} />
@@ -148,8 +150,8 @@ export default class App extends React.Component {
     if (this.state.isAuthorizing) return null;
     if (this.state.isLoading) return <Loading/>;
     const { user, route } = this.state;
-    const { handleSignIn, handleSignOut } = this;
-    const contextValue = { user, route, handleSignIn, handleSignOut };
+    const { handleSignIn, handleSignOut, handlePastBets, handleTokenChange } = this;
+    const contextValue = { user, route, handleSignIn, handleSignOut, handlePastBets, handleTokenChange };
     return (
       <AppContext.Provider value={contextValue}>
         <>
@@ -157,9 +159,8 @@ export default class App extends React.Component {
         <div className="header">
             <Header value = {contextValue} />
           </div>
-          <div className="container">
             <div className="main">{this.renderPage()}</div>
-          </div>
+
           <div>
              <Footer value= {contextValue}/>
           </div>
