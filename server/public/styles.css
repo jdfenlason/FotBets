@@ -522,7 +522,7 @@ a {
   opacity: 75%;
   border-radius: 0.4rem;
   border: #5e5e5e 1px solid;
-  color: black;
+  color: #1b1b1b;
   cursor: text;
 }
 
@@ -559,4 +559,14 @@ label {
 .center-button {
   text-align: center;
   padding: 0 6rem;
+}
+
+.font-heading {
+  font-family: "Abhaya Libre", serif;
+  margin-bottom: 0;
+}
+
+.font-secondary {
+  font-family: "Lato", sans-serif;
+  list-style-type: disc;
 }

@@ -65,7 +65,12 @@ export default class AuthForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const { action } = this.props;
-    const { username, password } = this.state;
+    const { errorUser, errorReq, errorMatch, username, password } = this.state;
+    if (errorUser || errorReq || errorMatch) {
+      this.handleCredentials();
+      return;
+    }
+
     axios.post(`/api/auth/${action}`, { username, password }).then(response => {
       if (action === 'sign-up') {
         window.location.hash = 'sign-in';
@@ -79,10 +84,10 @@ export default class AuthForm extends React.Component {
     const { action } = this.props;
     if (action === 'sign-up') {
       return (
-      <div>
-        <h4>Password Requirements</h4>
-        <ul>
-          <li>8 or more characters</li>
+      <div className="row center ">
+        <h3 className= "font-heading">Password Requirements</h3>
+        <ul className="font-secondary">
+          <li>Eight or more characters</li>
           <li>One or more capital letters</li>
           <li>One or more numbers</li>
           <li>One or more special characters</li>
