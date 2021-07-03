@@ -4,6 +4,7 @@ import AuthForm from '../components/auth-form';
 import AppContext from '../lib/app-context';
 
 export default class AuthPage extends React.Component {
+
   render() {
 
     const { user, route, handleSignIn } = this.context;
@@ -15,6 +16,12 @@ export default class AuthPage extends React.Component {
     const weclomeMessage = route.path === 'sign-in'
       ? 'Please sign in to continue'
       : 'Create an account to get started!';
+    const alternateActionText = route.path === 'sign-up'
+      ? 'Sign in instead'
+      : 'Create an Account';
+    const alternateActionHref = route.path === 'sign-up'
+      ? '#sign-in'
+      : '#sign-up';
     return (
       <>
       <div className="overlay"></div>
@@ -26,17 +33,19 @@ export default class AuthPage extends React.Component {
                 F<i className="fas fa-futbol logoSize"></i>tBets
               </h2>
             </span>
-
             <p className="">{ weclomeMessage }</p>
+
+            <a className="change-auth" href={alternateActionHref}>
+              {` or ${alternateActionText}`}
+            </a>
             </div>
-            <div className="input-container index">
+            <div className="auth index">
             <AuthForm
               key={route.path}
               action={route.path}
               onSignIn={handleSignIn} />
               </div>
           </div>
-
 </>
     );
   }

@@ -272,6 +272,7 @@ body {
   background-color: #6c6c6c;
   text-align: center;
   width: 12rem;
+  font-family: "Lato", sans-serif;
 }
 
 .wager-input::placeholder {
@@ -471,6 +472,7 @@ a {
   color: white;
   text-align: center;
   z-index: 10;
+  font-family: "Abhaya Libre", sans-serif;
 }
 
 .overlay {
@@ -519,6 +521,42 @@ a {
   margin: 0.5rem;
   opacity: 75%;
   border-radius: 0.4rem;
-  border: darkgrey 1px solid;
+  border: #5e5e5e 1px solid;
   color: black;
+  cursor: text;
+}
+
+.login-input:hover {
+  border: #f7f30a 2px solid;
+  cursor: pointer;
+}
+
+.change-auth:hover {
+  color: #aeaeae;
+  cursor: pointer;
+}
+
+.valid-icon {
+  color: #549916;
+}
+
+.invalid-icon,
+.invalid-text {
+  color: #dd1900;
+}
+
+label {
+  font-family: "Abhaya Libre", serif;
+}
+
+.auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.center-button {
+  text-align: center;
+  padding: 0 6rem;
 }
