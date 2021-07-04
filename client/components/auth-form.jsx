@@ -12,7 +12,8 @@ export default class AuthForm extends React.Component {
       errorUser: '',
       errorReq: '',
       errorMatch: '',
-      errorLogin: ''
+      errorLogin: '',
+      script: ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,7 +28,7 @@ export default class AuthForm extends React.Component {
       });
     } else if (password.length >= 8 && !checkPassword(password)) {
       this.setState({
-        passwordIcon: 'invalid-icon fas fa-times', errorReq: 'Password doesn\'t meet the requirements'
+        passwordIcon: 'invalid-icon fas fa-times', errorReq: 'Password does not meet the requirements'
       });
     } else if (password.length >= 8) {
       this.setState({
@@ -59,7 +60,12 @@ export default class AuthForm extends React.Component {
 
   handleChange(event) {
     const { name, value } = event.target;
-    this.setState({ [name]: value });
+    const { action } = this.props;
+    if (action === 'sign-up') {
+      this.setState({ [name]: value }, this.handleCreds);
+    } else {
+      this.setState({ [name]: value });
+    }
   }
 
   handleSubmit(event) {
@@ -67,17 +73,26 @@ export default class AuthForm extends React.Component {
     const { action } = this.props;
     const { errorUser, errorReq, errorMatch, username, password } = this.state;
     if (errorUser || errorReq || errorMatch) {
-      this.handleCredentials();
+      this.handleCreds();
       return;
     }
 
     axios.post(`/api/auth/${action}`, { username, password }).then(response => {
       if (action === 'sign-up') {
+        if (response.data === 230505) {
+          this.setState({ errorUser: 'Please select new username' });
+        }
+        this.setState({ script: 'Account has been successfully registered' });
         window.location.hash = 'sign-in';
       } else if (response.data.user && response.data.token) {
+        this.setState({ script: '' });
         this.props.onSignIn(response.data);
       }
-    });
+    }).catch(err => {
+      this.setState({ errorLogin: 'Invalid username or password' });
+      console.error(err);
+    }
+    );
   }
 
   passwordReq() {
@@ -99,9 +114,24 @@ export default class AuthForm extends React.Component {
     }
   }
 
+  signUpMessage() {
+    const { action } = this.props;
+    const { script } = this.state;
+    if (action === 'sign-in' && script !== '') {
+      return (
+        <div className="row center ">
+        <h3 className= "font-heading">{script}</h3>
+      </div>
+      );
+    } else {
+      return null;
+    }
+  }
+
   render() {
     const { action } = this.props;
     const { handleChange, handleSubmit } = this;
+    const { errorLogin, usernameIcon, passwordIcon } = this.state;
     const submitButtonText = action === 'sign-up'
       ? 'Register'
       : 'Log In';
@@ -116,10 +146,15 @@ export default class AuthForm extends React.Component {
             required
             autoFocus
             id="username"
+            min="4"
             type="text"
             name="username"
             onChange={handleChange}
             className="login-input" />
+            <i className = {usernameIcon}></i>
+           <p>
+             {this.state.errorUser}
+             </p>
         </div>
         <div>
           <label htmlFor="password" >
@@ -129,9 +164,15 @@ export default class AuthForm extends React.Component {
             required
             id="password"
             type="password"
+            min="8"
+            max="16"
             name="password"
             onChange={handleChange}
             className="login-input" />
+            <i className = {passwordIcon}></i>
+            <p>
+              {this.state.errorReq}
+            </p>
         </div>
         <div className ="center-button">
           <button type="submit" className="enter-button ">
@@ -139,7 +180,13 @@ export default class AuthForm extends React.Component {
           </button>
         </div>
       </form>
+      {
+        errorLogin
+          ? <span className = "">{errorLogin}</span>
+          : null
+      }
       {this.passwordReq()}
+      {this.signUpMessage()}
       </>
     );
   }

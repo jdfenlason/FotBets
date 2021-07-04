@@ -40,9 +40,15 @@ app.post('/api/auth/sign-up', (req, res, next) => {
     })
     .then(result => {
       const [user] = result.rows;
-      res.status(201).json(user);
+      res.json(user);
     })
-    .catch(err => next(err));
+    .catch(err => {
+      if (err.code === '23505') {
+        res.send(err.code);
+      } else {
+        next(err);
+      }
+    });
 });
 
 app.post('/api/auth/sign-in', (req, res, next) => {
@@ -207,16 +213,18 @@ app.post('/api/bet-validation', (req, res, next) => {
                       ;
                   const betResult = true;
                   const params = [betResult, yesterday];
-                  return db.query(sql, params)
+                  return db
+                    .query(sql, params)
                     .then(result => {
                       return res.json(result.rows);
-                    });
-                });
-              });
-            });
-          });
-        });
-      });
+                    })
+                    .catch(err => next(err));
+                }).catch(err => next(err));
+              }).catch(err => next(err));
+            }).catch(err => next(err));
+          }).catch(err => next(err));
+        }).catch(err => next(err));
+      }).catch(err => next(err));
   })
     .catch(err => next(err));
 });
