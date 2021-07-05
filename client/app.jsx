@@ -11,6 +11,7 @@ import Profile from './pages/user-profile';
 import PastBets from './pages/past-bets';
 import Header from './pages/header';
 import Footer from './pages/footer';
+import Error from './components/error';
 import FixturesContainer from './components/fixtures-container';
 import { format } from 'date-fns';
 export default class App extends React.Component {
@@ -23,6 +24,7 @@ export default class App extends React.Component {
       pastBets: [],
       userId: null,
       tokenAmount: '',
+      networkError: false,
       route: parseRoute(window.location.hash)
     };
 
@@ -58,7 +60,7 @@ export default class App extends React.Component {
           isLoading: false
         });
       }).catch(err => {
-        this.state({ networkError: true });
+        this.setState({ networkError: true });
         console.error(err);
       });
   }
@@ -155,9 +157,10 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { isAuthorizing, isLoading } = this.state;
+    const { isAuthorizing, isLoading, networkError } = this.state;
     if (isAuthorizing) return null;
     if (isLoading) return <Loading/>;
+    if (networkError) return <Error/>;
     const { user, route } = this.state;
     const { handleSignIn, handleSignOut, handlePastBets, handleTokenChange } = this;
     const contextValue = { user, route, handleSignIn, handleSignOut, handlePastBets, handleTokenChange };

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Loading from './loading';
 const WagerDetails = props => {
   const { activeId, homeOdds, awayOdds, matchesBetOn, addWagerTeam, betTeamId } = props;
   const { id } = props.fixtures.fixture;
@@ -7,7 +7,7 @@ const WagerDetails = props => {
   const checkBet = matchesBetOn.includes(id);
   return props.loading
     ? (
-    <p className="hidden">Loading</p>
+    <Loading/>
       )
     : (
     <>
@@ -65,7 +65,7 @@ const WagerDetails = props => {
           </div>
         </div>
       </div>
-    </>
+      </>
       );
 };
 export default WagerDetails;

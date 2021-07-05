@@ -22,7 +22,7 @@ export default class Leaderboard extends React.Component {
       });
     })
       .catch(err => {
-        this.state({ networkError: true });
+        this.setState({ networkError: true });
         console.error(err);
       });
   }

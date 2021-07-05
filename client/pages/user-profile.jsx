@@ -2,12 +2,14 @@ import React from 'react';
 import AppContext from '../lib/app-context';
 import axios from 'axios';
 import Loading from '../components/loading';
+import Error from '../components/error';
 export default class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       rank: '',
-      isLoading: true
+      isLoading: true,
+      networkError: false
     };
   }
 
@@ -17,16 +19,19 @@ export default class Profile extends React.Component {
       const { rank } = response.data[0];
       this.setState({ rank, isLoading: false });
     }).catch(err => {
-      this.state({ networkError: true });
       console.error(err);
+      this.setState({ networkError: true, isLoading: false });
     });
   }
 
   render() {
     const { username, tokenAmount } = this.context.user;
-    const { rank, isLoading } = this.state;
+    const { rank, isLoading, networkError } = this.state;
     if (isLoading) {
       <Loading/>;
+    }
+    if (networkError) {
+      <Error/>;
     }
     return (
     <div className="row column-full center">

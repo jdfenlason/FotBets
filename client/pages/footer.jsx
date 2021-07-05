@@ -9,14 +9,6 @@ export default class Footer extends React.Component {
       <div className="column-full">
         <div className="footer-container">
           <div className="icon-nav">
-            <a href="#leaderboard">
-              <span>
-                <i className="fas fa-trophy size"></i>
-              </span>
-            </a>
-            <span className = "span-pad">Leaderboard</span>
-          </div>
-          <div className="icon-nav">
             <a href="#home">
               <i className="fas fa-home size"></i>
             </a>
@@ -30,6 +22,14 @@ export default class Footer extends React.Component {
               </span>
             </a>
               <span className = "span-pad">Fixtures</span>
+          </div>
+          <div className="icon-nav">
+            <a href="#leaderboard">
+              <span>
+                <i className="fas fa-trophy size"></i>
+              </span>
+            </a>
+            <span className = "span-pad">Leaderboard</span>
           </div>
 
           <div className="icon-nav">

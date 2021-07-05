@@ -69,7 +69,7 @@ export default class FixturesContainer extends React.Component {
         matchesBetOn: pastBets
       });
     }).catch(err => {
-      this.state({ networkError: true });
+      this.setState({ networkError: true });
       console.error(err);
     });
     axios.get('/api/week-games/').then(response => {
@@ -79,12 +79,12 @@ export default class FixturesContainer extends React.Component {
       });
       this.changeDate(this.state.selectedDay);
     }).catch(err => {
-      this.state({ networkError: true });
+      this.setState({ networkError: true });
       console.error(err);
     });
     const { yesterday } = this.state;
     axios.post('/api/bet-validation', { yesterday }).catch(err => {
-      this.state({ networkError: true });
+      this.setState({ networkError: true });
       console.error(err);
     });
 

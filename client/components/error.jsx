@@ -23,7 +23,7 @@ export default class Error extends React.Component {
     }
     return <div className="error-box" onClick={this.handleClick}>
       <div className="network-error">
-Uh oh! There seems to be an issue with your connection. Please check that your network is online and try again.
+ There is an issue with your connection. Please check that your network is online and try again.
       </div>
       </div>;
   }
