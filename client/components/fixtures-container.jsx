@@ -7,6 +7,7 @@ import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { makeBets, makeBetsScript } from '../lib/payouts';
 import DateStrip from './date-strip';
 import { isPast, parseISO, isToday, subDays } from 'date-fns';
+import Loading from './loading';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -31,7 +32,8 @@ export default class FixturesContainer extends React.Component {
       homeOdds: '',
       awayOdds: '',
       pastResults: [],
-      dayOfFixtures: []
+      dayOfFixtures: [],
+      networkError: false
     };
     this.handleId = this.handleId.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -65,6 +67,9 @@ export default class FixturesContainer extends React.Component {
       this.setState({
         matchesBetOn: pastBets
       });
+    }).catch(err => {
+      this.state({ networkError: true });
+      console.error(err);
     });
     axios.get('/api/week-games/').then(response => {
       const fixtures = response.data.fixtures;
@@ -72,9 +77,15 @@ export default class FixturesContainer extends React.Component {
         fixtures: fixtures
       });
       this.changeDate(this.state.selectedDay);
+    }).catch(err => {
+      this.state({ networkError: true });
+      console.error(err);
     });
     const { yesterday } = this.state;
-    axios.post('/api/bet-validation', { yesterday });
+    axios.post('/api/bet-validation', { yesterday }).catch(err => {
+      this.state({ networkError: true });
+      console.error(err);
+    });
 
   }
 
@@ -255,7 +266,9 @@ export default class FixturesContainer extends React.Component {
         });
       })
       .catch(err => {
+        this.state({ networkError: true });
         console.error(err);
+
       });
   }
 
@@ -303,7 +316,7 @@ export default class FixturesContainer extends React.Component {
     }
     return isLoading
       ? (
-      <p></p>
+      <Loading/>
         )
       : (
       <>
@@ -335,7 +348,7 @@ export default class FixturesContainer extends React.Component {
           pastResults= {pastResults}
           userTokens = {userTokens}
         />
-      </>
+  </>
         );
   }
 }

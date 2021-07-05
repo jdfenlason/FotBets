@@ -14,6 +14,9 @@ export default class Profile extends React.Component {
     axios.get('/api/leaderboard/rank', { params: { username, userId, tokenAmount } }).then(response => {
       const { rank } = response.data[0];
       this.setState({ rank });
+    }).catch(err => {
+      this.state({ networkError: true });
+      console.error(err);
     });
   }
 

@@ -41,7 +41,7 @@ export default class App extends React.Component {
     });
     const token = window.localStorage.getItem('react-context-jwt');
     const user = token ? decodeToken(token) : null;
-    this.setState({ user, isAuthoritzing: false });
+    this.setState({ user, isAuthorizing: false });
     this.getPastBets();
   }
 
@@ -57,6 +57,9 @@ export default class App extends React.Component {
           pastBets: userBets,
           isLoading: false
         });
+      }).catch(err => {
+        this.state({ networkError: true });
+        console.error(err);
       });
   }
 
@@ -98,7 +101,10 @@ export default class App extends React.Component {
       const newTokenAmount = response.data.tokenAmount;
       this.setState({ tokenAmount: newTokenAmount });
     }
-    );
+    ).catch(err => {
+      this.state({ networkError: true });
+      console.error(err);
+    });
   }
 
   renderPage() {
@@ -142,15 +148,16 @@ export default class App extends React.Component {
     if (path === 'leaderboard') {
       return (
         <>
-          <Leaderboard />;
+          <Leaderboard />
         </>
       );
     }
   }
 
   render() {
-    if (this.state.isAuthorizing) return null;
-    if (this.state.isLoading) return <Loading/>;
+    const { isAuthorizing, isLoading } = this.state;
+    if (isAuthorizing) return null;
+    if (isLoading) return <Loading/>;
     const { user, route } = this.state;
     const { handleSignIn, handleSignOut, handlePastBets, handleTokenChange } = this;
     const contextValue = { user, route, handleSignIn, handleSignOut, handlePastBets, handleTokenChange };

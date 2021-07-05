@@ -1,11 +1,14 @@
 import React from 'react';
 import axios from 'axios';
+import Loading from '../components/loading';
 
 export default class Leaderboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      leaderboard: []
+      leaderboard: [],
+      networkError: false,
+      isLoading: true
     };
   }
 
@@ -13,15 +16,22 @@ export default class Leaderboard extends React.Component {
     axios.get('/api/leaderboard').then(response => {
       const leaders = response.data;
       this.setState({
-        leaderboard: leaders
+        leaderboard: leaders,
+        isLoading: false
       });
-    });
+    })
+      .catch(err => {
+        this.state({ networkError: true });
+        console.error(err);
+      });
   }
 
   render() {
-    const { leaderboard } = this.state;
-    return (
-      <>
+
+    const { leaderboard, isLoading } = this.state;
+    return isLoading
+      ? <Loading/>
+      : <>
         <div className="input-container">
           <div className="central-heading">
             <h1>Leaderboard</h1>
@@ -55,7 +65,7 @@ export default class Leaderboard extends React.Component {
             </div>
           </div>
         </div>
-      </>
-    );
+        </>;
+
   }
 }

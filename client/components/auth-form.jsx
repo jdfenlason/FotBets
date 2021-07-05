@@ -11,7 +11,6 @@ export default class AuthForm extends React.Component {
       passwordIcon: 'hidden',
       errorUser: '',
       errorReq: '',
-      errorMatch: '',
       errorLogin: '',
       script: ''
     };
@@ -71,8 +70,8 @@ export default class AuthForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const { action } = this.props;
-    const { errorUser, errorReq, errorMatch, username, password } = this.state;
-    if (errorUser || errorReq || errorMatch) {
+    const { errorUser, errorReq, username, password } = this.state;
+    if (errorUser || errorReq) {
       this.handleCreds();
       return;
     }
@@ -89,7 +88,11 @@ export default class AuthForm extends React.Component {
         this.props.onSignIn(response.data);
       }
     }).catch(err => {
-      this.setState({ errorLogin: 'Invalid username or password' });
+      this.setState({
+        errorLogin: 'Invalid username or password',
+        username: '',
+        password: ''
+      });
       console.error(err);
     }
     );
@@ -99,7 +102,7 @@ export default class AuthForm extends React.Component {
     const { action } = this.props;
     if (action === 'sign-up') {
       return (
-      <div className="row center ">
+      <div className="row kick-off-container ">
         <h3 className= "font-heading">Password Requirements</h3>
         <ul className="font-secondary">
           <li>Eight or more characters</li>
@@ -169,7 +172,8 @@ export default class AuthForm extends React.Component {
             name="password"
             onChange={handleChange}
             className="login-input" />
-            <i className = {passwordIcon}></i>
+            <i className = {passwordIcon}>
+            </i>
             <p>
               {this.state.errorReq}
             </p>
@@ -182,7 +186,7 @@ export default class AuthForm extends React.Component {
       </form>
       {
         errorLogin
-          ? <span className = "">{errorLogin}</span>
+          ? <span className = "Lost">{errorLogin}</span>
           : null
       }
       {this.passwordReq()}

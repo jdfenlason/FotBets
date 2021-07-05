@@ -212,11 +212,40 @@ body {
   width: 100%;
 }
 
-.loading {
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
+.loader,
+.loader::before,
+.loader::after {
+  border-radius: 50%;
+  width: 2.5em;
+  height: 2.5em;
+  animation: load7 1.25s infinite ease-in-out;
+  animation-fill-mode: both;
+}
+
+.loader {
+  color: #3f72af;
+  font-size: 10px;
+  margin: 0.5rem auto 2.5rem auto;
+  position: relative;
+  text-indent: -9999em;
+  transform: translateZ(0);
+  animation-delay: -0.25s;
+}
+
+.loader::before,
+.loader::after {
+  content: '';
+  position: absolute;
+  top: 0;
+}
+
+.loader::before {
+  left: -3.5em;
+  animation-delay: -0.25s;
+}
+
+.loader::after {
+  left: 3.5em;
 }
 
 .margin-bottom {
