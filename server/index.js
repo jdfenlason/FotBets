@@ -235,7 +235,7 @@ app.get('/api/leaderboard/rank', (req, res, next) => {
   const sql = `
               Select (count ("userId") + 1) as rank
               From "users"
-              where "tokenAmount" < $1
+              where "tokenAmount" > $1
 
               `;
   const params = [tokenAmount];

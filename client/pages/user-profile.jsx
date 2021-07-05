@@ -1,11 +1,13 @@
 import React from 'react';
 import AppContext from '../lib/app-context';
 import axios from 'axios';
+import Loading from '../components/loading';
 export default class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rank: ''
+      rank: '',
+      isLoading: true
     };
   }
 
@@ -13,7 +15,7 @@ export default class Profile extends React.Component {
     const { username, userId, tokenAmount } = this.context.user;
     axios.get('/api/leaderboard/rank', { params: { username, userId, tokenAmount } }).then(response => {
       const { rank } = response.data[0];
-      this.setState({ rank });
+      this.setState({ rank, isLoading: false });
     }).catch(err => {
       this.state({ networkError: true });
       console.error(err);
@@ -22,7 +24,10 @@ export default class Profile extends React.Component {
 
   render() {
     const { username, tokenAmount } = this.context.user;
-    const { rank } = this.state;
+    const { rank, isLoading } = this.state;
+    if (isLoading) {
+      <Loading/>;
+    }
     return (
     <div className="row column-full center">
       <div className="outer-card column-full">
@@ -47,4 +52,5 @@ export default class Profile extends React.Component {
     );
   }
 }
+
 Profile.contextType = AppContext;

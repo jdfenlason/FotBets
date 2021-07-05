@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Loading from '../components/loading';
+import Error from '../components/error';
 
 export default class Leaderboard extends React.Component {
   constructor(props) {
@@ -27,8 +28,10 @@ export default class Leaderboard extends React.Component {
   }
 
   render() {
-
-    const { leaderboard, isLoading } = this.state;
+    const { leaderboard, isLoading, networkError } = this.state;
+    if (networkError) {
+      return <Error/>;
+    }
     return isLoading
       ? <Loading/>
       : <>

@@ -8,6 +8,7 @@ import { makeBets, makeBetsScript } from '../lib/payouts';
 import DateStrip from './date-strip';
 import { isPast, parseISO, isToday, subDays } from 'date-fns';
 import Loading from './loading';
+import Error from './error';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -289,6 +290,7 @@ export default class FixturesContainer extends React.Component {
       today,
       selectedDay,
       pastResults,
+      networkError,
       formatDay
     } = this.state;
     const {
@@ -301,6 +303,9 @@ export default class FixturesContainer extends React.Component {
     } = this;
     const { tokenAmount } = this.context.user;
     const userTokens = tokenAmount;
+    if (networkError) {
+      return <Error/>;
+    }
     if (!dayOfFixtures.length) {
       return (
         <>
