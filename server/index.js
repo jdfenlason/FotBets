@@ -78,9 +78,9 @@ app.post('/api/auth/sign-in', (req, res, next) => {
         const payload = { userId, username, tokenAmount };
         const token = jwt.sign(payload, process.env.TOKEN_SECRET);
         res.json({ token, user: payload });
-      });
+      }).catch(err => res.send(err));
     })
-    .catch(err => next(err));
+    .catch(err => res.send(err));
 });
 
 app.patch('/api/token-amount', (req, res, next) => {
@@ -217,14 +217,13 @@ app.post('/api/bet-validation', (req, res, next) => {
                     .query(sql, params)
                     .then(result => {
                       return res.json(result.rows);
-                    })
-                    .catch(err => next(err));
-                }).catch(err => next(err));
-              }).catch(err => next(err));
-            }).catch(err => next(err));
-          }).catch(err => next(err));
-        }).catch(err => next(err));
-      }).catch(err => next(err));
+                    });
+                });
+              });
+            });
+          });
+        });
+      });
   })
     .catch(err => next(err));
 });
@@ -543,9 +542,9 @@ function getTeamStats(obj, teamId) {
   });
 }
 
-app.use(staticMiddleware);
-
 app.use(errorMiddleware);
+
+app.use(staticMiddleware);
 
 app.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
