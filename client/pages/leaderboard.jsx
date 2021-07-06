@@ -1,11 +1,15 @@
 import React from 'react';
 import axios from 'axios';
+import Loading from '../components/loading';
+import Error from '../components/error';
 
 export default class Leaderboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      leaderboard: []
+      leaderboard: [],
+      networkError: false,
+      isLoading: true
     };
   }
 
@@ -13,15 +17,24 @@ export default class Leaderboard extends React.Component {
     axios.get('/api/leaderboard').then(response => {
       const leaders = response.data;
       this.setState({
-        leaderboard: leaders
+        leaderboard: leaders,
+        isLoading: false
       });
-    });
+    })
+      .catch(err => {
+        this.setState({ networkError: true });
+        console.error(err);
+      });
   }
 
   render() {
-    const { leaderboard } = this.state;
-    return (
-      <>
+    const { leaderboard, isLoading, networkError } = this.state;
+    if (networkError) {
+      return <Error/>;
+    }
+    return isLoading
+      ? <Loading/>
+      : <>
         <div className="input-container">
           <div className="central-heading">
             <h1>Leaderboard</h1>
@@ -34,17 +47,17 @@ export default class Leaderboard extends React.Component {
                   <thead>
                     <tr>
                       <th>Rank</th>
-                      <th>UserName</th>
+                      <th>Username</th>
                       <th>Tokens</th>
                     </tr>
                   </thead>
                   <tbody>
                     {leaderboard.map((leaders, index) => {
-                      const { userName, tokenAmount } = leaders;
+                      const { username, tokenAmount } = leaders;
                       return (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{userName}</td>
+                          <td>{username}</td>
                           <td>{tokenAmount.toLocaleString()}</td>
                         </tr>
                       );
@@ -55,7 +68,7 @@ export default class Leaderboard extends React.Component {
             </div>
           </div>
         </div>
-      </>
-    );
+        </>;
+
   }
 }

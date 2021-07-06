@@ -3,6 +3,9 @@ require('dotenv/config');
 const express = require('express');
 const errorMiddleware = require('./error-middleware');
 const staticMiddleware = require('./static-middleware');
+const argon2 = require('argon2');
+const ClientError = require('./client-error');
+const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const pg = require('pg');
 const app = express();
@@ -17,6 +20,67 @@ const db = new pg.Pool({
   ssl: {
     rejectUnauthorized: false
   }
+});
+app.post('/api/auth/sign-up', (req, res, next) => {
+  const { username, password } = req.body;
+  const tokenAmount = 2000;
+  if (!username || !password) {
+    throw new ClientError(400, 'username and password are required fields');
+  }
+  argon2
+    .hash(password)
+    .then(hashedPassword => {
+      const sql = `
+        insert into "users" ("username", "hashedPassword", "tokenAmount")
+        values ($1, $2, $3)
+        returning "userId", "username", "createdAt", "tokenAmount"
+      `;
+      const params = [username, hashedPassword, tokenAmount];
+      return db.query(sql, params);
+    })
+    .then(result => {
+      const [user] = result.rows;
+      res.json(user);
+    })
+    .catch(err => {
+      if (err.code === '23505') {
+        res.send(err.code);
+      } else {
+        next(err);
+      }
+    });
+});
+
+app.post('/api/auth/sign-in', (req, res, next) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    throw new ClientError(401, 'invalid login');
+  }
+  const sql = `
+    select "userId",
+           "hashedPassword",
+           "tokenAmount"
+      from "users"
+     where "username" = $1
+  `;
+  const params = [username];
+  db.query(sql, params)
+    .then(result => {
+      const [user] = result.rows;
+      if (!user) {
+        throw new ClientError(401, 'invalid login');
+      }
+      const { userId, hashedPassword, tokenAmount } = user;
+      return argon2.verify(hashedPassword, password).then(isMatching => {
+        if (!isMatching) {
+          throw new ClientError(401, 'invalid login');
+        }
+        const payload = { userId, username, tokenAmount };
+        const token = jwt.sign(payload, process.env.TOKEN_SECRET);
+        res.json({ token, user: payload });
+      });
+    })
+    .catch(err => next(err));
 });
 
 app.patch('/api/token-amount', (req, res, next) => {
@@ -149,23 +213,44 @@ app.post('/api/bet-validation', (req, res, next) => {
                       ;
                   const betResult = true;
                   const params = [betResult, yesterday];
-                  return db.query(sql, params)
+                  return db
+                    .query(sql, params)
                     .then(result => {
                       return res.json(result.rows);
-                    });
-                });
-              });
-            });
-          });
-        });
-      });
+                    })
+                    .catch(err => next(err));
+                }).catch(err => next(err));
+              }).catch(err => next(err));
+            }).catch(err => next(err));
+          }).catch(err => next(err));
+        }).catch(err => next(err));
+      }).catch(err => next(err));
   })
+    .catch(err => next(err));
+});
+
+app.get('/api/leaderboard/rank', (req, res, next) => {
+  const { tokenAmount } = req.query;
+
+  const sql = `
+              Select (count ("userId") + 1) as rank
+              From "users"
+              where "tokenAmount" > $1
+
+              `;
+  const params = [tokenAmount];
+  db.query(sql, params)
+    .then(result => {
+      const dbresult = result.rows;
+
+      res.json(dbresult);
+    })
     .catch(err => next(err));
 });
 
 app.get('/api/leaderboard', (req, res, next) => {
   const sql = `
-              select "userName", "tokenAmount"
+              select "username", "tokenAmount"
               From "users"
               Order by
               "tokenAmount" DESC
@@ -282,7 +367,7 @@ app.get('/api/wager-input', (req, res, next) => {
 app.get('/api/user-profile', (req, res, next) => {
   const { userId } = req.query;
   const sql = `
-  select "tokenAmount", "userName"
+  select "tokenAmount", "username"
   From "users"
   where "userId" = $1
   `;

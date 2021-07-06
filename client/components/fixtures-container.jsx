@@ -1,11 +1,14 @@
 import React from 'react';
 import axios from 'axios';
+import AppContext from '../lib/app-context';
 import FixturesList from './fixture-list';
 import NoMatchesToday from './no-matches-today';
 import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { makeBets, makeBetsScript } from '../lib/payouts';
 import DateStrip from './date-strip';
 import { isPast, parseISO, isToday, subDays } from 'date-fns';
+import Loading from './loading';
+import Error from './error';
 export default class FixturesContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -22,17 +25,16 @@ export default class FixturesContainer extends React.Component {
       teamDetails: [],
       wagerAmount: '',
       profitAmount: '',
-      userTokens: '',
       matchesBetOn: [],
       betTeamId: '',
-      userId: 2,
       setOdds: '',
       checkProfit: false,
       script: '',
       homeOdds: '',
       awayOdds: '',
       pastResults: [],
-      dayOfFixtures: []
+      dayOfFixtures: [],
+      networkError: false
     };
     this.handleId = this.handleId.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -60,12 +62,15 @@ export default class FixturesContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { userId } = this.state;
+    const { userId } = this.context.user;
     axios.get('/api/wager-input', { userId }).then(response => {
       const pastBets = response.data;
       this.setState({
         matchesBetOn: pastBets
       });
+    }).catch(err => {
+      this.setState({ networkError: true });
+      console.error(err);
     });
     axios.get('/api/week-games/').then(response => {
       const fixtures = response.data.fixtures;
@@ -73,16 +78,23 @@ export default class FixturesContainer extends React.Component {
         fixtures: fixtures
       });
       this.changeDate(this.state.selectedDay);
+    }).catch(err => {
+      this.setState({ networkError: true });
+      console.error(err);
     });
     const { yesterday } = this.state;
-    axios.post('/api/bet-validation', { yesterday });
+    axios.post('/api/bet-validation', { yesterday }).catch(err => {
+      this.setState({ networkError: true });
+      console.error(err);
+    });
+
   }
 
   getDayBeforeScores(dateString) {
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     axios.get('/api/past-results', { params: { dateString } }).then(response => {
       const pastResults = response.data.yesterdayGames;
-      if (!pastResults) {
+      if (!pastResults || !pastResults[0].length) {
         this.setState({
           pastResults: []
         });
@@ -181,13 +193,21 @@ export default class FixturesContainer extends React.Component {
   }
 
   handleSubmit(props) {
-    const { handleTokenChange, handlePastBets } = this.props;
+    const { handleTokenChange, handlePastBets } = this.context;
     event.preventDefault();
     const stake = this.state.wagerAmount;
     const odds = this.state.setOdds;
     handleTokenChange(stake);
     const profitAmount = makeBets(stake, odds);
-    const { userId, activeId, wagerAmount, teamLogo, betTeamId, selectedDay } = this.state;
+    const { userId } = this.context.user;
+    const { activeId, wagerAmount, teamLogo, betTeamId, selectedDay } = this.state;
+    if (wagerAmount <= 0) {
+      const script = 'Zero is not a valid wager amount!';
+      this.setState({
+        script: script
+      });
+      return;
+    }
     const newWager = {
       userId: userId,
       fixtureId: activeId,
@@ -247,7 +267,9 @@ export default class FixturesContainer extends React.Component {
         });
       })
       .catch(err => {
+        this.state({ networkError: true });
         console.error(err);
+
       });
   }
 
@@ -268,6 +290,7 @@ export default class FixturesContainer extends React.Component {
       today,
       selectedDay,
       pastResults,
+      networkError,
       formatDay
     } = this.state;
     const {
@@ -278,7 +301,11 @@ export default class FixturesContainer extends React.Component {
       handleChange,
       handleSubmit
     } = this;
-    const { userTokens } = this.props;
+    const { tokenAmount } = this.context.user;
+    const userTokens = tokenAmount;
+    if (networkError) {
+      return <Error/>;
+    }
     if (!dayOfFixtures.length) {
       return (
         <>
@@ -287,14 +314,14 @@ export default class FixturesContainer extends React.Component {
             today={today}
             selectedDay={selectedDay}
             formatDay={formatDay}
-          />
+        />
           <NoMatchesToday selectedDay={selectedDay} />
         </>
       );
     }
     return isLoading
       ? (
-      <p></p>
+      <Loading/>
         )
       : (
       <>
@@ -321,12 +348,13 @@ export default class FixturesContainer extends React.Component {
           handleChange={handleChange}
           setOdds={setOdds}
           teamLogo={teamLogo}
-          userTokens={userTokens}
           handleSubmit={handleSubmit}
           today={today}
           pastResults= {pastResults}
+          userTokens = {userTokens}
         />
-      </>
+  </>
         );
   }
 }
+FixturesContainer.contextType = AppContext;

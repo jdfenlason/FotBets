@@ -62,6 +62,7 @@ const SubmitWager = props => {
                         className="wager-input"
                         type="number"
                         max={userTokens}
+                        min= "0"
                         required
                         autoFocus
                         value={value}

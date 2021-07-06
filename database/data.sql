@@ -1,15 +1,16 @@
-insert into "users" ("userName","hashedPassword","tokenAmount")
-values ('admin', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 100),
-       ('JFen', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 7000),
-       ('Hulk', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1400),
-       ('Thor', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1000),
-       ('Loki', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1050),
-       ('George', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1500),
-       ('Odin', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1252),
-       ('Scooter', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1500),
-       ('Iron Man', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1030),
-       ('LongJohn', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1000),
-       ('Cosmo', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 2000),
-       ('Elmo', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 2050),
-       ('Phil', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvoMQ6dKwoh0dJhurWA', 1020),
-       ('Tommy', '1$h7icQD/xZr8akZsX+hNA0A$h68atJWyjvunAwNOpSpMfg9sPvokl7j7lj7ljljljlSA', 1001)
+-- Dummy data for leaderboard feature NOT ACTUAL USERS OR PASSWORDS 
+insert into "users" ("username","hashedPassword","tokenAmount")
+values ('admin', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1000),
+       ('JFen',  '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 7000),
+       ('Hulk', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1400),
+       ('Thor',  '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1000),
+       ('Loki', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1050),
+       ('George',  '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1500),
+       ('Odin', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1252),
+       ('Scooter', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1500),
+       ('Iron Man', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1030),
+       ('LongJohn', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1000),
+       ('Cosmo', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 2000),
+       ('Elmo', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 2050),
+       ('Phil', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1020),
+       ('Tommy', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1001)

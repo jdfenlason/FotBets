@@ -1,10 +1,28 @@
 import React from 'react';
-
-const Footer = () => {
-  return (
+import AppContext from '../lib/app-context';
+export default class Footer extends React.Component {
+  render() {
+    const { path } = this.context.route;
+    if (path === 'sign-in' || path === 'sign-up' || path === 'home' || path === '') return null;
+    return (
     <div className="row">
       <div className="column-full">
         <div className="footer-container">
+          <div className="icon-nav">
+            <a href="#home">
+              <i className="fas fa-home size"></i>
+            </a>
+              <span className = "span-pad">Home</span>
+          </div>
+
+ <div className="icon-nav">
+            <a href="#fixtures">
+            <span>
+                <i className="fas fa-calendar-alt size"></i>
+              </span>
+            </a>
+              <span className = "span-pad">Fixtures</span>
+          </div>
           <div className="icon-nav">
             <a href="#leaderboard">
               <span>
@@ -13,12 +31,7 @@ const Footer = () => {
             </a>
             <span className = "span-pad">Leaderboard</span>
           </div>
-          <div className="icon-nav">
-            <a href="">
-              <i className="fas fa-home size"></i>
-            </a>
-              <span className = "span-pad">Home</span>
-          </div>
+
           <div className="icon-nav">
             <a href="#profile">
               <i className="far fa-user-circle size"></i>
@@ -28,6 +41,8 @@ const Footer = () => {
         </div>
       </div>
     </div>
-  );
-};
-export default Footer;
+    );
+  }
+}
+
+Footer.contextType = AppContext;
