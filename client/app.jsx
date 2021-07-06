@@ -20,7 +20,10 @@ export default class App extends React.Component {
     this.state = {
       isAuthorizing: false,
       isLoading: true,
+
       user: null,
+     
+    
       pastBets: [],
       userId: null,
       tokenAmount: '',
