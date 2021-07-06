@@ -155,7 +155,7 @@ export default class AuthForm extends React.Component {
             onChange={handleChange}
             className="login-input" />
             <i className = {usernameIcon}></i>
-           <p>
+           <p className = "text-center">
              {this.state.errorUser}
              </p>
         </div>
@@ -174,7 +174,7 @@ export default class AuthForm extends React.Component {
             className="login-input" />
             <i className = {passwordIcon}>
             </i>
-            <p>
+            <p className= "text-center">
               {this.state.errorReq}
             </p>
         </div>
