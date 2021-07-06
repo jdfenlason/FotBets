@@ -267,9 +267,8 @@ export default class FixturesContainer extends React.Component {
         });
       })
       .catch(err => {
-        this.state({ networkError: true });
+        this.setState({ networkError: true });
         console.error(err);
-
       });
   }
 

@@ -679,3 +679,8 @@ label {
     box-shadow: 0 2.5em 0 0;
   }
 }
+
+.team-form {
+  width: 3rem;
+  margin: auto;
+}

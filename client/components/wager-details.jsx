@@ -1,10 +1,14 @@
 import React from 'react';
 import Loading from './loading';
+import TeamResults from './team-results';
+import { teamResultsFormat } from '../lib';
 const WagerDetails = props => {
   const { activeId, homeOdds, awayOdds, matchesBetOn, addWagerTeam, betTeamId } = props;
   const { id } = props.fixtures.fixture;
   const { home, away } = props.fixtures.teams;
   const checkBet = matchesBetOn.includes(id);
+  const homeImageArray = teamResultsFormat(props.teamDetails[0].form);
+  const awayImageArray = teamResultsFormat(props.teamDetails[1].form);
   return props.loading
     ? (
     <Loading/>
@@ -34,7 +38,7 @@ const WagerDetails = props => {
                       </div>
                   </div>
                   <h3>Past Results:</h3>
-                  <span className="sub-head">{props.teamDetails[0].form}</span>
+                  <TeamResults teamForm = {homeImageArray}/>
                   <h3>Odds:</h3>
                   <h4 className="sub-head">{homeOdds}</h4>
                 </div>
@@ -53,7 +57,9 @@ const WagerDetails = props => {
                       </div>
                   </div>
                   <h3>Past Results:</h3>
-                  <span className="sub-head">{props.teamDetails[1].form}</span>
+                  <TeamResults teamForm = {awayImageArray}
+
+                  />
                   <h3>Odds:</h3>
                   <h4 className="sub-head">{awayOdds}</h4>
                 </div>

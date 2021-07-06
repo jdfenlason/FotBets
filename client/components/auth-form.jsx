@@ -77,25 +77,20 @@ export default class AuthForm extends React.Component {
     }
 
     axios.post(`/api/auth/${action}`, { username, password }).then(response => {
-      if (action === 'sign-up') {
-        if (response.data === 230505) {
-          this.setState({ errorUser: 'Please select new username' });
+      if (response.data === 23505) {
+        this.setState({ errorUser: 'Please select new username' });
+      } else {
+        if (action === 'sign-up') {
+          window.location.hash = 'sign-in';
+          this.setState({ script: 'Account has been successfully registered' });
+        } else if (response.data.user && response.data.token) {
+          this.setState({ script: '' });
+          this.props.onSignIn(response.data);
+        } else {
+          this.setState({ errorLogin: 'Invalid Login Credentials' });
         }
-        this.setState({ script: 'Account has been successfully registered' });
-        window.location.hash = 'sign-in';
-      } else if (response.data.user && response.data.token) {
-        this.setState({ script: '' });
-        this.props.onSignIn(response.data);
       }
-    }).catch(err => {
-      this.setState({
-        errorLogin: 'Invalid username or password',
-        username: '',
-        password: ''
-      });
-      console.error(err);
-    }
-    );
+    });
   }
 
   passwordReq() {
@@ -134,7 +129,7 @@ export default class AuthForm extends React.Component {
   render() {
     const { action } = this.props;
     const { handleChange, handleSubmit } = this;
-    const { errorLogin, usernameIcon, passwordIcon } = this.state;
+    const { errorLogin, usernameIcon, passwordIcon, errorUser, errorReq } = this.state;
     const submitButtonText = action === 'sign-up'
       ? 'Register'
       : 'Log In';
@@ -156,7 +151,7 @@ export default class AuthForm extends React.Component {
             className="login-input" />
             <i className = {usernameIcon}></i>
            <p className = "text-center">
-             {this.state.errorUser}
+             {errorUser}
              </p>
         </div>
         <div>
@@ -175,7 +170,7 @@ export default class AuthForm extends React.Component {
             <i className = {passwordIcon}>
             </i>
             <p className= "text-center">
-              {this.state.errorReq}
+              {errorReq}
             </p>
         </div>
         <div className ="center-button">
