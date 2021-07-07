@@ -11,7 +11,7 @@ export default class AuthPage extends React.Component {
 
     if (user) return <Redirect to="home" />;
     if (route.path === '') {
-      route.path = 'sign-up';
+      route.path = 'sign-in';
     }
     const weclomeMessage = route.path === 'sign-in'
       ? 'Please sign in to continue'
