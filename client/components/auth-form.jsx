@@ -5,8 +5,8 @@ export default class AuthForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      password: '',
+      username: 'guest',
+      password: 'guest',
       usernameIcon: 'hidden',
       passwordIcon: 'hidden',
       errorUser: '',
@@ -17,6 +17,14 @@ export default class AuthForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCreds = this.handleCreds.bind(this);
+  }
+
+  handleDemo() {
+    if (window.location.hash === 'sign-in') {
+      return 'guest';
+    } else {
+      return event.target.value;
+    }
   }
 
   handleCreds() {
@@ -127,6 +135,21 @@ export default class AuthForm extends React.Component {
   }
 
   render() {
+    const demoUsername = value => {
+      if (window.location.hash === '#sign-in' || window.location.hash === '') {
+        return this.state.username;
+      } else {
+        return value;
+      }
+    };
+    const demoPassword = value => {
+      if (window.location.hash === '#sign-in' || window.location.hash === '') {
+        return this.state.password;
+      } else {
+        return value;
+      }
+    };
+
     const { action } = this.props;
     const { handleChange, handleSubmit } = this;
     const { errorLogin, usernameIcon, passwordIcon, errorUser, errorReq } = this.state;
@@ -147,6 +170,7 @@ export default class AuthForm extends React.Component {
             min="4"
             type="text"
             name="username"
+            value= {demoUsername(this.value)}
             onChange={handleChange}
             className="login-input" />
             <i className = {usernameIcon}></i>
@@ -164,6 +188,7 @@ export default class AuthForm extends React.Component {
             type="password"
             min="8"
             max="16"
+            value = {demoPassword(this.value)}
             name="password"
             onChange={handleChange}
             className="login-input" />
