@@ -43,15 +43,20 @@ export default class App extends React.Component {
     });
     const token = window.localStorage.getItem('react-context-jwt');
     const user = token ? decodeToken(token) : null;
-    this.setState({ user, userId: user.userId, isAuthorizing: false });
-    this.getTokenAmount(user);
+    this.setState({ user, isAuthorizing: false });
+    if (user) {
+      this.getTokenAmount(user);
+    }
+    if (!user) {
+      this.setState({ isLoading: false });
+    }
   }
 
   getTokenAmount(user) {
     const { userId } = user;
     axios.get('/api/user-profile', { params: { userId } }).then(response => {
       const getTokenAmount = response.data.tokenAmount;
-      this.setState({ tokenAmount: getTokenAmount, isLoading: false });
+      this.setState({ tokenAmount: getTokenAmount, userId, isLoading: false });
     }).catch(err => {
       this.setState({ isLoading: false, networkError: true });
       console.error(err);
