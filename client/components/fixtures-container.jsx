@@ -63,7 +63,7 @@ export default class FixturesContainer extends React.Component {
 
   componentDidMount() {
     const { userId } = this.context.user;
-    axios.get('/api/wager-input', { userId }).then(response => {
+    axios.get('/api/wager-input', { params: { userId } }).then(response => {
       const pastBets = response.data;
       this.setState({
         matchesBetOn: pastBets
@@ -196,7 +196,7 @@ export default class FixturesContainer extends React.Component {
   }
 
   handleSubmit(props) {
-    const { handleTokenChange, handlePastBets } = this.context;
+    const { handleTokenChange } = this.context;
     event.preventDefault();
     const stake = this.state.wagerAmount;
     const odds = this.state.setOdds;
@@ -221,7 +221,7 @@ export default class FixturesContainer extends React.Component {
       selectedDay: selectedDay,
       betEvaluated: false
     };
-    handlePastBets(newWager);
+    // handlePastBets(newWager);
     const newArray = this.state.matchesBetOn.slice();
     newArray.push(this.state.activeId);
     axios.post('/api/wager-input', { newWager }).catch(err => {

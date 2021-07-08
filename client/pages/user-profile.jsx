@@ -9,26 +9,37 @@ export default class Profile extends React.Component {
     this.state = {
       rank: '',
       isLoading: true,
-      networkError: false
+      networkError: false,
+      tokenAmount: null
     };
+    this.getLeaderBoard = this.getLeaderBoard.bind(this);
   }
 
   componentDidMount() {
-    const { handleNetworkError } = this.props;
-    const { username, userId, tokenAmount } = this.context.user;
-    axios.get('/api/leaderboard/rank', { params: { username, userId, tokenAmount } }).then(response => {
+    const { userId } = this.context.user;
+    axios.get('/api/user-profile', { params: { userId } }).then(response => {
+      const getTokenAmount = response.data.tokenAmount;
+      this.setState({ tokenAmount: getTokenAmount });
+      this.getLeaderBoard(getTokenAmount);
+    }).catch(err => {
+      this.setState({ isLoading: false, networkError: true });
+      console.error(err);
+    });
+  }
+
+  getLeaderBoard(tokenAmount) {
+    axios.get('/api/leaderboard/rank', { params: { tokenAmount } }).then(response => {
       const { rank } = response.data[0];
       this.setState({ rank, isLoading: false });
     }).catch(err => {
       this.setState({ isLoading: false, networkError: true });
-      handleNetworkError(true);
       console.error(err);
     });
   }
 
   render() {
-    const { username, tokenAmount } = this.context.user;
-    const { rank, isLoading, networkError } = this.state;
+    const { username } = this.context.user;
+    const { rank, isLoading, networkError, tokenAmount } = this.state;
     if (networkError) {
       return <Error/>;
     }

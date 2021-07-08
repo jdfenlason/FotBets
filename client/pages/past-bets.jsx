@@ -2,6 +2,7 @@ import React from 'react';
 import Loading from '../components/loading';
 import { formatPastResult } from '../lib';
 import axios from 'axios';
+import AppContext from '../lib/app-context';
 import Error from '../components/error';
 export default class PastBets extends React.Component {
   constructor(props) {
@@ -14,9 +15,9 @@ export default class PastBets extends React.Component {
   }
 
   componentDidMount(props) {
-    const { userId } = this.props;
+    const { userId } = this.context.user;
     axios
-      .get('/api/user-profile/past-bets', { params: userId })
+      .get('/api/user-profile/past-bets', { params: { userId } })
       .then(response => {
         const userBets = response.data;
         this.setState({
@@ -93,3 +94,4 @@ export default class PastBets extends React.Component {
     );
   }
 }
+PastBets.contextType = AppContext;

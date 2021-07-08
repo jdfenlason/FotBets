@@ -1,8 +1,8 @@
 import React from 'react';
 import AppContext from '../lib/app-context';
 export default class Header extends React.Component {
-  render() {
-    const { user } = this.context;
+  render(props) {
+    const { tokenAmount } = this.props;
     const { path } = this.context.route;
     if (path === 'sign-in' || path === 'sign-up' || path === 'home' || path === '') return null;
     return (
@@ -17,7 +17,7 @@ export default class Header extends React.Component {
             </a>
             <div className = "inline">
               <i className="fas fa-coins tokens"></i>
-              <h4>{user.tokenAmount.toLocaleString('en-US')}</h4>
+              <h4>{tokenAmount.toLocaleString('en-US')}</h4>
             </div>
           </div>
         </div>

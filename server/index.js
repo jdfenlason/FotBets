@@ -230,7 +230,6 @@ app.post('/api/bet-validation', (req, res, next) => {
 
 app.get('/api/leaderboard/rank', (req, res, next) => {
   const { tokenAmount } = req.query;
-
   const sql = `
               Select (count ("userId") + 1) as rank
               From "users"
