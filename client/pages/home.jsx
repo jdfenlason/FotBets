@@ -1,8 +1,14 @@
 import React from 'react';
+import Redirect from '../components/redirect';
 import { useMediaQuery } from 'react-responsive';
 const Home = props => {
   const { handleSignOut, netWorkError } = props;
   const isNotMobile = useMediaQuery({ minWidth: 900 });
+  if (netWorkError) {
+    return (
+    <Redirect to = "home" />
+    );
+  }
   return (
     <>
       <div className="overlay"></div>
@@ -32,7 +38,6 @@ const Home = props => {
               Enter
             </button>
           </a>
-          <div className = {netWorkError ? 'none' : ''}>
 
           <a href="#sign-in">
             <button className="sign-buttons" type="button" onClick={() => handleSignOut()}>
@@ -41,7 +46,7 @@ const Home = props => {
           </a>
           </div>
         </div>
-        </div>
+
     </>
   );
 };
