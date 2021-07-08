@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
 const Home = props => {
-  const { handleSignOut } = props;
+  const { handleSignOut, netWorkError } = props;
   const isNotMobile = useMediaQuery({ minWidth: 900 });
   return (
     <>
@@ -32,11 +32,14 @@ const Home = props => {
               Enter
             </button>
           </a>
+          <div className = {netWorkError ? 'none' : ''}>
+
           <a href="#sign-in">
             <button className="sign-buttons" type="button" onClick={() => handleSignOut()}>
               Sign Out
             </button>
           </a>
+          </div>
         </div>
         </div>
     </>

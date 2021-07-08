@@ -21,7 +21,6 @@ export default class App extends React.Component {
       isAuthorizing: false,
       isLoading: true,
       user: null,
-      pastBets: [],
       userId: null,
       tokenAmount: '',
       networkError: false,
@@ -29,9 +28,9 @@ export default class App extends React.Component {
     };
 
     this.handleTokenChange = this.handleTokenChange.bind(this);
-    this.handlePastBets = this.handlePastBets.bind(this);
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
+    this.handleNetworkError = this.handleNetworkError.bind(this);
   }
 
   componentDidMount() {
@@ -43,26 +42,13 @@ export default class App extends React.Component {
     });
     const token = window.localStorage.getItem('react-context-jwt');
     const user = token ? decodeToken(token) : null;
-    this.setState({ user, isAuthorizing: false });
-    this.getPastBets();
+    this.setState({ user, isAuthorizing: false, isLoading: false });
   }
 
-  getPastBets() {
-    const userId = {
-      userId: this.state.userId
-    };
-    axios
-      .get('/api/user-profile/past-bets', { params: userId })
-      .then(response => {
-        const userBets = response.data;
-        this.setState({
-          pastBets: userBets,
-          isLoading: false
-        });
-      }).catch(err => {
-        this.setState({ networkError: true });
-        console.error(err);
-      });
+  handleNetworkError(boolean) {
+    if (boolean) {
+      this.setState({ networkError: true });
+    }
   }
 
   handleSignIn(result) {
@@ -70,7 +56,6 @@ export default class App extends React.Component {
     window.localStorage.setItem('react-context-jwt', token);
     const { userId, tokenAmount } = user;
     this.setState({ user, userId, tokenAmount });
-    this.getPastBets();
   }
 
   handleSignOut() {
@@ -110,9 +95,9 @@ export default class App extends React.Component {
   }
 
   renderPage() {
-    const { pastBets } = this.state;
+    const { isLoading, userId } = this.state;
     const { path } = this.state.route;
-    const { handlePastBets, handleTokenChange, handleSignOut } = this;
+    const { handlePastBets, handleTokenChange, handleSignOut, handleNetworkError } = this;
     if (path === '') {
       return <Auth />;
     }
@@ -125,13 +110,14 @@ export default class App extends React.Component {
           <FixturesContainer
             handleTokenChange={handleTokenChange}
             handlePastBets={handlePastBets}
+            handleNetworkError = {handleNetworkError}
           />
 
         </>
       );
     }
     if (path === 'home') {
-      return <Home handleSignOut={handleSignOut}/>;
+      return <Home handleSignOut={handleSignOut} handleNetworkError={handleNetworkError}/>;
     }
 
     if (path === 'profile') {
@@ -139,10 +125,12 @@ export default class App extends React.Component {
         <>
 
           <Profile
-            pastBets={pastBets}
+            userId ={userId}
+            handleNetworkError= {handleNetworkError}
+            isLoading = {isLoading}
           />
 
-          <PastBets pastBets={pastBets} handlePastBets={handlePastBets} />
+          <PastBets handlePastBets={handlePastBets} handleNetworkError = {handleNetworkError} />
 
         </>
       );
