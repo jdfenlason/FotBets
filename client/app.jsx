@@ -31,6 +31,7 @@ export default class App extends React.Component {
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
     this.handleNetworkError = this.handleNetworkError.bind(this);
+    this.getTokenAmount = this.getTokenAmount.bind(this);
   }
 
   componentDidMount() {
@@ -42,7 +43,19 @@ export default class App extends React.Component {
     });
     const token = window.localStorage.getItem('react-context-jwt');
     const user = token ? decodeToken(token) : null;
-    this.setState({ user, isAuthorizing: false, isLoading: false });
+    this.setState({ user, userId: user.userId, isAuthorizing: false });
+    this.getTokenAmount(user);
+  }
+
+  getTokenAmount(user) {
+    const { userId } = user;
+    axios.get('/api/user-profile', { params: { userId } }).then(response => {
+      const getTokenAmount = response.data.tokenAmount;
+      this.setState({ tokenAmount: getTokenAmount, isLoading: false });
+    }).catch(err => {
+      this.setState({ isLoading: false, networkError: true });
+      console.error(err);
+    });
   }
 
   handleNetworkError(boolean) {
@@ -54,8 +67,9 @@ export default class App extends React.Component {
   handleSignIn(result) {
     const { user, token } = result;
     window.localStorage.setItem('react-context-jwt', token);
-    const { userId, tokenAmount } = user;
-    this.setState({ user, userId, tokenAmount });
+    const { userId } = user;
+    this.setState({ user, userId });
+    this.getTokenAmount(user);
   }
 
   handleSignOut() {
@@ -77,11 +91,11 @@ export default class App extends React.Component {
   }
 
   handleTokenChange(wagerAmounts) {
-    const { tokenAmount } = this.state.user;
+    const { tokenAmount, userId } = this.state;
     const currentTokenAmount = tokenAmount;
     const changeTokenAmount = currentTokenAmount - wagerAmounts;
     const wager = {
-      userId: this.state.userId,
+      userId: userId,
       changeTokenAmount: changeTokenAmount
     };
     axios.patch('/api/token-amount', { params: wager }).then(response => {
@@ -130,7 +144,7 @@ export default class App extends React.Component {
             isLoading = {isLoading}
           />
 
-          <PastBets handlePastBets={handlePastBets} handleNetworkError = {handleNetworkError} />
+          <PastBets handlePastBets={handlePastBets} handleNetworkError = {handleNetworkError} userId= {userId} />
 
         </>
       );
@@ -149,7 +163,7 @@ export default class App extends React.Component {
     if (isAuthorizing) return null;
     if (isLoading) return <Loading/>;
     if (networkError) return <Error/>;
-    const { user, route } = this.state;
+    const { user, route, tokenAmount } = this.state;
     const { handleSignIn, handleSignOut, handlePastBets, handleTokenChange } = this;
     const contextValue = { user, route, handleSignIn, handleSignOut, handlePastBets, handleTokenChange };
     return (
@@ -157,7 +171,9 @@ export default class App extends React.Component {
         <>
         <div className ="container">
         <div className="header">
-            <Header value = {contextValue} />
+            <Header value = {contextValue}
+                    tokenAmount= {tokenAmount}
+            />
           </div>
             <div className="main">{this.renderPage()}</div>
 
