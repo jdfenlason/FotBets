@@ -11,7 +11,6 @@ import Profile from './pages/user-profile';
 import PastBets from './pages/past-bets';
 import Header from './pages/header';
 import Footer from './pages/footer';
-import Error from './components/error';
 import FixturesContainer from './components/fixtures-container';
 import { format } from 'date-fns';
 export default class App extends React.Component {
@@ -30,7 +29,6 @@ export default class App extends React.Component {
     this.handleTokenChange = this.handleTokenChange.bind(this);
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
-    this.handleNetworkError = this.handleNetworkError.bind(this);
     this.getTokenAmount = this.getTokenAmount.bind(this);
   }
 
@@ -61,12 +59,6 @@ export default class App extends React.Component {
       this.setState({ isLoading: false, networkError: true });
       console.error(err);
     });
-  }
-
-  handleNetworkError(boolean) {
-    if (boolean) {
-      this.setState({ networkError: true });
-    }
   }
 
   handleSignIn(result) {
@@ -116,7 +108,7 @@ export default class App extends React.Component {
   renderPage() {
     const { isLoading, userId } = this.state;
     const { path } = this.state.route;
-    const { handlePastBets, handleTokenChange, handleSignOut, handleNetworkError } = this;
+    const { handlePastBets, handleTokenChange, handleSignOut } = this;
     if (path === '') {
       return <Auth />;
     }
@@ -129,14 +121,13 @@ export default class App extends React.Component {
           <FixturesContainer
             handleTokenChange={handleTokenChange}
             handlePastBets={handlePastBets}
-            handleNetworkError = {handleNetworkError}
           />
 
         </>
       );
     }
     if (path === 'home') {
-      return <Home handleSignOut={handleSignOut} handleNetworkError={handleNetworkError}/>;
+      return <Home handleSignOut={handleSignOut} />;
     }
 
     if (path === 'profile') {
@@ -145,11 +136,11 @@ export default class App extends React.Component {
 
           <Profile
             userId ={userId}
-            handleNetworkError= {handleNetworkError}
+
             isLoading = {isLoading}
           />
 
-          <PastBets handlePastBets={handlePastBets} handleNetworkError = {handleNetworkError} userId= {userId} />
+          <PastBets handlePastBets={handlePastBets} userId= {userId} />
 
         </>
       );
@@ -164,10 +155,9 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { isAuthorizing, isLoading, networkError } = this.state;
+    const { isAuthorizing, isLoading } = this.state;
     if (isAuthorizing) return null;
     if (isLoading) return <Loading/>;
-    if (networkError) return <Error/>;
     const { user, route, tokenAmount } = this.state;
     const { handleSignIn, handleSignOut, handlePastBets, handleTokenChange } = this;
     const contextValue = { user, route, handleSignIn, handleSignOut, handlePastBets, handleTokenChange };

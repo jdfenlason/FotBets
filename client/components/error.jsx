@@ -1,6 +1,5 @@
 import React from 'react';
 import Home from '../pages/home';
-
 export default class Error extends React.Component {
   constructor(props) {
     super(props);
@@ -20,7 +19,7 @@ export default class Error extends React.Component {
   render() {
     const { isClicked, netWorkError } = this.state;
     if (isClicked) {
-      return <Home netWorkError = {netWorkError}/>;
+      return <Home netWorkError = {netWorkError} />;
     }
     return <div className="error-box" onClick={this.handleClick}>
       <div className="network-error">
