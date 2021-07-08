@@ -5,7 +5,8 @@ export default class Error extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isClicked: false
+      isClicked: false,
+      netWorkError: true
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -17,9 +18,9 @@ export default class Error extends React.Component {
   }
 
   render() {
-    const { isClicked } = this.state;
+    const { isClicked, netWorkError } = this.state;
     if (isClicked) {
-      return <Home />;
+      return <Home netWorkError = {netWorkError}/>;
     }
     return <div className="error-box" onClick={this.handleClick}>
       <div className="network-error">

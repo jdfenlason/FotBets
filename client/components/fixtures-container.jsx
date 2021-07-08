@@ -124,6 +124,9 @@ export default class FixturesContainer extends React.Component {
           isLoading: false
         });
       }
+    }).catch(err => {
+      this.setState({ networkError: true });
+      console.error(err);
     });
   }
 
@@ -221,7 +224,10 @@ export default class FixturesContainer extends React.Component {
     handlePastBets(newWager);
     const newArray = this.state.matchesBetOn.slice();
     newArray.push(this.state.activeId);
-    axios.post('/api/wager-input', { newWager });
+    axios.post('/api/wager-input', { newWager }).catch(err => {
+      this.setState({ networkError: true });
+      console.error(err);
+    });
     this.setState({
       wagerAmount: '',
       checkProfit: false,
@@ -305,7 +311,9 @@ export default class FixturesContainer extends React.Component {
     if (networkError) {
       return <Error/>;
     }
-    if (!dayOfFixtures.length) {
+    if (isLoading) {
+      return <Loading/>;
+    } else if (!dayOfFixtures.length && !isLoading) {
       return (
         <>
           <DateStrip
@@ -351,6 +359,7 @@ export default class FixturesContainer extends React.Component {
           today={today}
           pastResults= {pastResults}
           userTokens = {userTokens}
+          isLoading = {isLoading}
         />
   </>
         );

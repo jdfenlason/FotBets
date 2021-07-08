@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import Error from './error';
 import { checkPassword } from '../lib';
 export default class AuthForm extends React.Component {
   constructor(props) {
@@ -12,6 +13,7 @@ export default class AuthForm extends React.Component {
       errorUser: '',
       errorReq: '',
       errorLogin: '',
+      networkError: false,
       script: ''
     };
     this.handleChange = this.handleChange.bind(this);
@@ -98,6 +100,9 @@ export default class AuthForm extends React.Component {
           this.setState({ errorLogin: 'Invalid Login Credentials' });
         }
       }
+    }).catch(err => {
+      this.setState({ networkError: true });
+      console.error(err);
     });
   }
 
@@ -152,11 +157,15 @@ export default class AuthForm extends React.Component {
 
     const { action } = this.props;
     const { handleChange, handleSubmit } = this;
-    const { errorLogin, usernameIcon, passwordIcon, errorUser, errorReq } = this.state;
+    const { errorLogin, usernameIcon, passwordIcon, errorUser, errorReq, networkError } = this.state;
+    if (networkError) {
+      return <Error/>;
+    }
     const submitButtonText = action === 'sign-up'
       ? 'Register'
       : 'Log In';
     return (
+
       <>
       <form onSubmit={handleSubmit}>
         <div >

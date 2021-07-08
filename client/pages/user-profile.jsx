@@ -14,24 +14,26 @@ export default class Profile extends React.Component {
   }
 
   componentDidMount() {
+    const { handleNetworkError } = this.props;
     const { username, userId, tokenAmount } = this.context.user;
     axios.get('/api/leaderboard/rank', { params: { username, userId, tokenAmount } }).then(response => {
       const { rank } = response.data[0];
       this.setState({ rank, isLoading: false });
     }).catch(err => {
+      this.setState({ isLoading: false, networkError: true });
+      handleNetworkError(true);
       console.error(err);
-      this.setState({ networkError: true, isLoading: false });
     });
   }
 
   render() {
     const { username, tokenAmount } = this.context.user;
     const { rank, isLoading, networkError } = this.state;
-    if (isLoading) {
-      <Loading/>;
-    }
     if (networkError) {
-      <Error/>;
+      return <Error/>;
+    }
+    if (isLoading) {
+      return <Loading/>;
     }
     return (
     <div className="row column-full center">

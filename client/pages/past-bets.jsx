@@ -1,9 +1,43 @@
 import React from 'react';
+import Loading from '../components/loading';
 import { formatPastResult } from '../lib';
-const PastBets = props => {
-  const { pastBets } = props;
+import axios from 'axios';
+import Error from '../components/error';
+export default class PastBets extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+      pastBets: [],
+      networkError: false
+    };
+  }
 
-  return (
+  componentDidMount(props) {
+    const { userId } = this.props;
+    axios
+      .get('/api/user-profile/past-bets', { params: userId })
+      .then(response => {
+        const userBets = response.data;
+        this.setState({
+          pastBets: userBets,
+          isLoading: false
+        });
+      }).catch(err => {
+        this.setState({ networkError: true });
+        console.error(err);
+      });
+  }
+
+  render(props) {
+    const { isLoading, pastBets, networkError } = this.state;
+    if (isLoading) {
+      return <Loading/>;
+    }
+    if (networkError) {
+      return <Error/>;
+    }
+    return (
     <>
       <div className="central-heading">
         <h2>Latest Bets</h2>
@@ -56,6 +90,6 @@ const PastBets = props => {
         );
       })}
     </>
-  );
-};
-export default PastBets;
+    );
+  }
+}

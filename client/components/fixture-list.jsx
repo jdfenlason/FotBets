@@ -3,6 +3,7 @@ import FixtureDetails from './fixture-details';
 import Fixture from './fixture';
 import WagerDetails from './wager-details';
 import SubmitWager from './submit-wager';
+import Loading from './loading';
 import { useMediaQuery } from 'react-responsive';
 const FixtureList = props => {
   const isNotMobile = useMediaQuery({ minWidth: 900 });
@@ -28,9 +29,14 @@ const FixtureList = props => {
     addWagerTeam,
     matchesBetOn,
     pastResults,
-    fixtures
+    fixtures,
+    isLoading
   } = props;
-  if (!teamDetails || !teamDetails.length) {
+  if (isLoading) {
+    return <Loading/>;
+  } else
+
+  if ((!isLoading && !teamDetails) || (!isLoading && !teamDetails.length)) {
     return (
       <>
         {fixtures.map(fixtures => {
@@ -56,7 +62,7 @@ const FixtureList = props => {
       </>
     );
   }
-  if (teamDetails.length && !isNotMobile) {
+  if (teamDetails.length && !isNotMobile && !isLoading) {
     return (
       <>
         {fixtures.map(fixtures => {
@@ -112,7 +118,7 @@ const FixtureList = props => {
       </>
     );
   }
-  if (isNotMobile) {
+  if (isNotMobile && !isLoading) {
     return (
       <>
         <div className={activeId ? 'columns-count' : ''}>
