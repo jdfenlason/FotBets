@@ -159,14 +159,14 @@ app.post('/api/bet-validation', (req, res, next) => {
               insert into "pastResults" ("date", "leagueId", "yesterdayGames")
               values ($1, $2, $3)
               returning *`;
-        return db.query(sql, params).then(result => {
+        db.query(sql, params).then(result => {
           const sql = `
                 select  "yesterdayGames"
                 From "pastResults"
                 where "date" = $1
                 And "leagueId" = $2`;
           const params = [yesterday, leagueId];
-          return db.query(sql, params).then(result => {
+          db.query(sql, params).then(result => {
             const betValidation = getPastResultsWinners(
               result.rows[0].yesterdayGames
             );
@@ -182,7 +182,7 @@ app.post('/api/bet-validation', (req, res, next) => {
                 yesterday,
                 leagueId
               ];
-              return db.query(sql, params).then(result => {
+              db.query(sql, params).then(result => {
                 const sql = `
                       update "wagerInputs"
                       Set "betResult" = "betValidation"."betResult",
@@ -193,7 +193,7 @@ app.post('/api/bet-validation', (req, res, next) => {
                       returning "wagerInputs"."betResult"`;
                 const betEvaluated = true;
                 const params = [betEvaluated];
-                return db.query(sql, params).then(result => {
+                db.query(sql, params).then(result => {
                   const sql = `
  update "users"
   SET "tokenAmount" = "v"."amountProfit"
@@ -213,7 +213,7 @@ app.post('/api/bet-validation', (req, res, next) => {
                       ;
                   const betResult = true;
                   const params = [betResult, yesterday];
-                  return db
+                  db
                     .query(sql, params)
                     .then(result => {
                       return res.json(result.rows);

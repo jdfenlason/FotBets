@@ -5,6 +5,8 @@ const FixtureDetails = props => {
   const { activeId } = props;
   const { name, round, logo } = props.fixtures.league;
   const { id, venue, referee, date } = props.fixtures.fixture;
+  const tbdRef = 'TBD';
+
   return (
     <div
       className={activeId === id ? '' : 'hidden'}
@@ -34,7 +36,7 @@ const FixtureDetails = props => {
               </div>
               <div className="location column-half ref">
                 <h3>Referee:</h3>
-                <h5 className="sub-head">{referee}</h5>
+                <h5 className="sub-head">{(!referee) ? tbdRef : referee }</h5>
               </div>
             </div>
           </div>
@@ -43,4 +45,5 @@ const FixtureDetails = props => {
     </div>
   );
 };
+
 export default FixtureDetails;
