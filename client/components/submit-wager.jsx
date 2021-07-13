@@ -14,35 +14,33 @@ const SubmitWager = props => {
     matchesBetOn,
     userTokens,
     fixtures,
-    // today
+    today
   } = props;
 
-  // const todayUnix = getUnixTime(today);
-  // const fixtureUnix = fixtures.fixture.timestamp;
-  // const checkTime = todayUnix > fixtureUnix;
+  const todayUnix = getUnixTime(today);
+  const fixtureUnix = fixtures.fixture.timestamp;
+  const checkTime = todayUnix > fixtureUnix;
   const checkBet = matchesBetOn.includes(activeId);
   const value = wagerAmount;
   const active = activeId === fixtures.fixture.id;
   const showWagerLogo =
     betTeamId === fixtures.teams.home.id.toString() ||
     betTeamId === fixtures.teams.away.id.toString();
-  // return
-  // checkTime
-  //   ? (
-  //   <div className={active ? '' : 'none'}>
-  //     <div className={checkBet ? 'none' : ''}>
-  //       <div className="row column-full center">
-  //         <div className="outer-card column-full">
-  //           <div className="match-card row center">
-  //             <h3>This fixture has already started</h3>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  //     )
-    // :
-  return (
+  return checkTime
+    ? (
+    <div className={active ? '' : 'none'}>
+      <div className={checkBet ? 'none' : ''}>
+        <div className="row column-full center">
+          <div className="outer-card column-full">
+            <div className="match-card row center">
+              <h3>This fixture has already started</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      )
+    : (
     <>
       <div className={active ? '' : 'none'}>
         <div className={checkBet ? 'none' : ''}>
@@ -101,7 +99,7 @@ const SubmitWager = props => {
         </div>
       </div>
     </>
-  );
+      );
 };
 
 export default SubmitWager;
