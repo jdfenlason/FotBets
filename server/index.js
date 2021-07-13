@@ -117,6 +117,28 @@ app.get('/api/past-results', (req, res, next) => {
   }).catch(err => next(err));
 });
 
+app.post('/api/past-results', (req, res, next) => {
+  const leagueId = 255;
+  const { yesterday } = req.body;
+  const formatToday = getDateForResults();
+  const sql = `
+        select  "yesterdayGames"
+        From "pastResults"
+        where "date" = $1
+        And "leagueId" = $2
+  `;
+  const params = [yesterday, leagueId];
+  db.query(sql, params).then(result => {
+    if (result.rows.length) {
+      return res.json(result.rows[0]);
+    }
+    Promise.all([
+      getPastResults(leagueId, yesterday),
+      getPastResults(leagueId, formatToday)
+    ]);
+  }).catch(err => next(err));
+});
+
 function postMatchWinners(yesterday, leagueId) {
   const sql = `
                 select  "yesterdayGames"

@@ -28,14 +28,13 @@ const FixtureList = props => {
     betId,
     addWagerTeam,
     matchesBetOn,
-    pastResults,
     fixtures,
     isLoading
   } = props;
+
   if (isLoading) {
     return <Loading/>;
-  } else
-
+  }
   if ((!isLoading && !teamDetails) || (!isLoading && !teamDetails.length)) {
     return (
       <>
@@ -54,7 +53,7 @@ const FixtureList = props => {
                   handleId(event);
                 }}
                 fixtures={fixtures}
-                pastResults={pastResults}
+
               />
             </div>
           );
@@ -74,7 +73,7 @@ const FixtureList = props => {
               <div onClick={() => {
                 handleId(event);
               }} >
-              <Fixture fixtures={fixtures} pastResults={pastResults} onClick={() => {
+              <Fixture fixtures={fixtures} onClick={() => {
                 handleId(event);
               }}/>
               </div>
