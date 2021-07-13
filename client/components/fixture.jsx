@@ -5,6 +5,18 @@ const Fixture = props => {
   const isNotMobile = useMediaQuery({ minWidth: 900 });
   const { fixture, score } = props.fixtures;
   const { home, away } = props.fixtures.teams;
+  let homeWinner;
+  let awayWinner;
+  if (home.winner && !away.winner) {
+    homeWinner = 'Won';
+    awayWinner = 'Lost';
+  } if (away.winner && !home.winner) {
+    awayWinner = 'Won';
+    homeWinner = 'Lost';
+  } else if (!away.winner && !home.winner) {
+    awayWinner = 'Pending';
+    homeWinner = 'Pending';
+  }
   return (
     <div className="row center fixture-card" >
       <div className= {!isNotMobile ? 'outer-card shadow column-full' : 'outer-card shadow column-75' }id={fixture.id}>
@@ -21,9 +33,8 @@ const Fixture = props => {
             <h4>{home.name}</h4>
             {
               score.fulltime.home !== null
-
 }
-            <h2>{score.fulltime.home}</h2>
+            <h2 className = {homeWinner}>{score.fulltime.home}</h2>
           </div>
           <div className="kick-off-container" id={fixture.id}>
             <h3>Kick-Off</h3>
@@ -45,7 +56,7 @@ const Fixture = props => {
               score.fulltime.away !== null
 
 }
-            <h2>{score.fulltime.away}</h2>
+            <h2 className = {awayWinner}>{score.fulltime.away}</h2>
           </div>
         </div>
       </div>
