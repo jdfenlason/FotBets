@@ -98,7 +98,8 @@ export default class FixturesContainer extends React.Component {
       const pastResults = response.data.yesterdayGames;
       if (!pastResults || !pastResults[0].length) {
         this.setState({
-          dayOfFixtures: []
+          dayOfFixtures: [],
+          isLoading: false
         });
         return;
       }
@@ -145,6 +146,7 @@ export default class FixturesContainer extends React.Component {
         selectedDay: dateString
       });
       this.getDayBeforeScores(formatSelected);
+      return;
     }
     const dayOfFixtures = fixtures.filter(fixtures => {
       const zonedDate = utcToZonedTime(fixtures.fixture.date, zone);
@@ -153,17 +155,17 @@ export default class FixturesContainer extends React.Component {
     });
     this.setState({
       dayOfFixtures: dayOfFixtures,
-      isLoading: false,
       selectedDay: dateString,
-      pastResults: [],
-      activeId: ''
+      activeId: '',
+      isLoading: false
     });
   }
 
   handleDateClick(event, sendDate) {
     const id = event.target.closest('div').id;
     this.setState({
-      selectedDay: id
+      selectedDay: id,
+      isLoading: true
     });
     this.changeDate(id);
   }
@@ -371,7 +373,7 @@ export default class FixturesContainer extends React.Component {
           teamLogo={teamLogo}
           handleSubmit={handleSubmit}
           today={today}
-
+          selectedDay = {selectedDay}
           userTokens = {userTokens}
           isLoading = {isLoading}
         />
