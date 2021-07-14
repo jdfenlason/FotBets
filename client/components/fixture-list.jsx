@@ -178,6 +178,7 @@ const FixtureList = props => {
                     handleSubmit={handleSubmit}
                     fixtures={fixtures}
                     today= {today}
+                    selectedDay = {selectedDay}
                   />
                 </div>
               );
