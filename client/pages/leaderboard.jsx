@@ -57,7 +57,7 @@ export default class Leaderboard extends React.Component {
                       return (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{username}</td>
+                          <td>{username.toUpperCase()}</td>
                           <td>{tokenAmount.toLocaleString()}</td>
                         </tr>
                       );

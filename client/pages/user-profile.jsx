@@ -51,7 +51,7 @@ export default class Profile extends React.Component {
       <div className="outer-card column-full">
         <div className="match-card row center">
           <div>
-            <h1>{username}</h1>
+            <h1>{username.toUpperCase()}</h1>
           </div>
           <div className = "token-amount-container">
           <h3>Your current Token amount is:</h3>
