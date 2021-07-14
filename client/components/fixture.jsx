@@ -8,14 +8,14 @@ const Fixture = props => {
   let homeWinner;
   let awayWinner;
   if (home.winner && !away.winner) {
-    homeWinner = 'Won';
-    awayWinner = 'Lost';
+    homeWinner = 'sub-head Won';
+    awayWinner = 'sub-head ';
   } if (away.winner && !home.winner) {
-    awayWinner = 'Won';
-    homeWinner = 'Lost';
+    awayWinner = 'sub-head Won';
+    homeWinner = 'sub-head ';
   } else if (!away.winner && !home.winner) {
-    awayWinner = 'Pending';
-    homeWinner = 'Pending';
+    awayWinner = 'sub-head Pending';
+    homeWinner = 'sub-head Pending';
   }
   return (
     <div className="row center fixture-card" >
@@ -30,7 +30,7 @@ const Fixture = props => {
                 alt="home-team-logo"
                 />
             </div>
-            <h4>{home.name}</h4>
+            <h4 className="head lg">{home.name}</h4>
             {
               score.fulltime.home !== null
 }
@@ -38,7 +38,7 @@ const Fixture = props => {
           </div>
           <div className="kick-off-container" id={fixture.id}>
             <h3>Kick-Off</h3>
-            <h4 className="kick-off-time">
+            <h4 className="kick-off-time head">
               {formatTime(fixture.timestamp)}
             </h4>
           </div>
@@ -51,7 +51,7 @@ const Fixture = props => {
               alt="away-team-logo"
               />
               </div>
-            <h4>{away.name}</h4>
+            <h4 className = "head lg">{away.name}</h4>
              {
               score.fulltime.away !== null
 

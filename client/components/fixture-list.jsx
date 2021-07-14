@@ -29,6 +29,7 @@ const FixtureList = props => {
     addWagerTeam,
     matchesBetOn,
     fixtures,
+    selectedDay,
     isLoading
   } = props;
 
@@ -94,6 +95,7 @@ const FixtureList = props => {
                 addWagerTeam={addWagerTeam}
                 matchesBetOn={matchesBetOn}
                 betTeamId={betTeamId}
+                selectedDay= {selectedDay}
               />
 
               <SubmitWager
@@ -110,6 +112,7 @@ const FixtureList = props => {
                 handleSubmit={handleSubmit}
                 fixtures={fixtures}
                 today ={today}
+                selectedDay = {selectedDay}
                 />
             </div>
           );
