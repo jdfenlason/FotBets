@@ -113,8 +113,26 @@ app.get('/api/past-results', (req, res, next) => {
   `;
   const params = [leagueId, dateString, utcDateFix];
   db.query(sql, params).then(result => {
-    return res.json(result.rows[0]);
-  }).catch(err => next(err));
+    if (result.rows.length) {
+      return res.json(result.rows[0]);
+    }
+    Promise.all([
+      getPastResults(leagueId, dateString),
+      getPastResults(leagueId, utcDateFix)
+    ]).then(pastResults => {
+      const jsonPastResults = JSON.stringify(pastResults);
+      const params = [dateString, leagueId, jsonPastResults];
+      const sql = `
+              insert into "pastResults" ("date", "leagueId", "yesterdayGames")
+              values ($1, $2, $3)
+              returning *`;
+      db.query(sql, params).then(result => {
+        return res.json(result.rows[0]);
+      })
+        .catch(err => next(err));
+    });
+  })
+    .catch(err => next(err));
 });
 
 app.post('/api/past-results', (req, res, next) => {
