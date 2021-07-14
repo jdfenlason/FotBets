@@ -72,7 +72,7 @@ const WagerDetails = props => {
                   <h4 className="sub-head">{awayOdds}</h4>
                 </div>
               </div>
-              <h2 className={!checkBet ? 'hidden' : 'text-center'}>
+              <h2 className={!checkBet ? 'none' : 'text-center'}>
                 You have an active wager for this fixture
               </h2>
             </div>
