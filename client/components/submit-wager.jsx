@@ -1,5 +1,5 @@
 import React from 'react';
-import { getUnixTime } from 'date-fns';
+import { getUnixTime, isPast, isToday, parseISO } from 'date-fns';
 const SubmitWager = props => {
   const {
     checkProfit,
@@ -14,7 +14,8 @@ const SubmitWager = props => {
     matchesBetOn,
     userTokens,
     fixtures,
-    today
+    today,
+    selectedDay
   } = props;
 
   const todayUnix = getUnixTime(today);
@@ -26,8 +27,16 @@ const SubmitWager = props => {
   const showWagerLogo =
     betTeamId === fixtures.teams.home.id.toString() ||
     betTeamId === fixtures.teams.away.id.toString();
-  return checkTime
-    ? (
+  const isInPast = isPast(parseISO(selectedDay));
+  const isNotToday = !isToday(parseISO(selectedDay));
+  let checkDay;
+  if (isInPast && isNotToday) {
+    checkDay = true;
+  }
+  return checkDay
+    ? null
+    : checkTime
+      ? (
     <div className={active ? '' : 'none'}>
       <div className={checkBet ? 'none' : ''}>
         <div className="row column-full center">
@@ -39,8 +48,8 @@ const SubmitWager = props => {
         </div>
       </div>
     </div>
-      )
-    : (
+        )
+      : (
     <>
       <div className={active ? '' : 'none'}>
         <div className={checkBet ? 'none' : ''}>
@@ -99,7 +108,7 @@ const SubmitWager = props => {
         </div>
       </div>
     </>
-      );
+        );
 };
 
 export default SubmitWager;

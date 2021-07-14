@@ -32,7 +32,6 @@ export default class FixturesContainer extends React.Component {
       script: '',
       homeOdds: '',
       awayOdds: '',
-      pastResults: [],
       dayOfFixtures: [],
       networkError: false
     };
@@ -91,12 +90,16 @@ export default class FixturesContainer extends React.Component {
   }
 
   getDayBeforeScores(dateString) {
+    this.setState({
+      isLoading: true
+    });
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     axios.get('/api/past-results', { params: { dateString } }).then(response => {
       const pastResults = response.data.yesterdayGames;
       if (!pastResults || !pastResults[0].length) {
         this.setState({
-          pastResults: []
+          dayOfFixtures: [],
+          isLoading: false
         });
         return;
       }
@@ -110,7 +113,7 @@ export default class FixturesContainer extends React.Component {
           return formatUTCDate === dateString;
         });
         this.setState({
-          pastResults: pastFixtures,
+          dayOfFixtures: pastFixtures,
           isLoading: false
         });
       } else {
@@ -120,7 +123,7 @@ export default class FixturesContainer extends React.Component {
           return formatUTCDate === dateString;
         });
         this.setState({
-          pastResults: pastFixtures,
+          dayOfFixtures: pastFixtures,
           isLoading: false
         });
       }
@@ -143,6 +146,7 @@ export default class FixturesContainer extends React.Component {
         selectedDay: dateString
       });
       this.getDayBeforeScores(formatSelected);
+      return;
     }
     const dayOfFixtures = fixtures.filter(fixtures => {
       const zonedDate = utcToZonedTime(fixtures.fixture.date, zone);
@@ -151,16 +155,17 @@ export default class FixturesContainer extends React.Component {
     });
     this.setState({
       dayOfFixtures: dayOfFixtures,
-      isLoading: false,
       selectedDay: dateString,
-      activeId: ''
+      activeId: '',
+      isLoading: false
     });
   }
 
   handleDateClick(event, sendDate) {
     const id = event.target.closest('div').id;
     this.setState({
-      selectedDay: id
+      selectedDay: id,
+      isLoading: true
     });
     this.changeDate(id);
   }
@@ -221,7 +226,6 @@ export default class FixturesContainer extends React.Component {
       selectedDay: selectedDay,
       betEvaluated: false
     };
-    // handlePastBets(newWager);
     const newArray = this.state.matchesBetOn.slice();
     newArray.push(this.state.activeId);
     axios.post('/api/wager-input', { newWager }).catch(err => {
@@ -245,10 +249,23 @@ export default class FixturesContainer extends React.Component {
   }
 
   getTeamDetails(id) {
-    const newArray = this.state.fixtures.filter(fixtures => {
-      return fixtures.fixture.id === id;
-    });
+    const { selectedDay } = this.state;
+    const isInPast = isPast(parseISO(selectedDay));
+    const isNotToday = !isToday(parseISO(selectedDay));
+    let newArray;
+    if (isInPast && isNotToday) {
+      newArray = this.state.dayOfFixtures.filter(fixtures => {
+        return fixtures.fixture.id === id;
+      });
+
+    } else {
+      newArray = this.state.fixtures.filter(fixtures => {
+        return fixtures.fixture.id === id;
+      });
+
+    }
     const { fixture, league, teams } = newArray[0];
+
     const teamId = {
       fixtureId: fixture.id,
       leagueId: league.id,
@@ -294,7 +311,6 @@ export default class FixturesContainer extends React.Component {
       script,
       today,
       selectedDay,
-      pastResults,
       networkError,
       formatDay
     } = this.state;
@@ -357,7 +373,7 @@ export default class FixturesContainer extends React.Component {
           teamLogo={teamLogo}
           handleSubmit={handleSubmit}
           today={today}
-          pastResults= {pastResults}
+          selectedDay = {selectedDay}
           userTokens = {userTokens}
           isLoading = {isLoading}
         />
