@@ -25,7 +25,7 @@ app.post('/api/auth/sign-up', (req, res, next) => {
   const { username, password } = req.body;
   const tokenAmount = 2000;
   if (!username || !password) {
-    throw new ClientError(400, 'username and password are required fields');
+    throw new ClientError(400, 'Username and password are required fields');
   }
   argon2
     .hash(password)
@@ -54,7 +54,7 @@ app.post('/api/auth/sign-up', (req, res, next) => {
 app.post('/api/auth/sign-in', (req, res, next) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    throw new ClientError(401, 'invalid login');
+    throw new ClientError(401, 'Invalid login');
   }
   const sql = `
     select "userId",
@@ -68,12 +68,12 @@ app.post('/api/auth/sign-in', (req, res, next) => {
     .then(result => {
       const [user] = result.rows;
       if (!user) {
-        throw new ClientError(401, 'invalid login');
+        throw new ClientError(401, 'Invalid login');
       }
       const { userId, hashedPassword, tokenAmount } = user;
       return argon2.verify(hashedPassword, password).then(isMatching => {
         if (!isMatching) {
-          throw new ClientError(401, 'invalid login');
+          throw new ClientError(401, 'Invalid login');
         }
         const payload = { userId, username, tokenAmount };
         const token = jwt.sign(payload, process.env.TOKEN_SECRET);
@@ -226,6 +226,7 @@ app.post('/api/bet-validation', (req, res, next) => {
             db
               .query(sql, params)
               .then(result => {
+                return res.json(result.rows);
               });
           });
         });
