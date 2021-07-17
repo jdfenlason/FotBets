@@ -231,7 +231,6 @@ app.post('/api/bet-validation', (req, res, next) => {
           });
         });
       });
-    return res.json(result.rows);
   })
     .catch(err => next(err));
 });

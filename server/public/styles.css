@@ -688,3 +688,7 @@ label {
 .head {
   font-family: "Abhaya Libre", serif;
 }
+
+.flex-end {
+  justify-content: flex-end;
+}
