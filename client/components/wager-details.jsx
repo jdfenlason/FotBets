@@ -3,7 +3,10 @@ import Loading from './loading';
 import TeamResults from './team-results';
 import { teamResultsFormat } from '../lib';
 import { isToday, isPast, parseISO } from 'date-fns';
+import { useMediaQuery } from 'react-responsive';
+
 const WagerDetails = props => {
+  const adjustTitle = useMediaQuery({ maxWidth: 510 });
   const { activeId, homeOdds, awayOdds, matchesBetOn, addWagerTeam, betTeamId, selectedDay } = props;
   const { id } = props.fixtures.fixture;
   const { home, away } = props.fixtures.teams;
@@ -30,7 +33,7 @@ const WagerDetails = props => {
 
               <h3 className = {!checkDay ? 'lg' : 'hidden'}>Pick a Team:</h3>
               <div className="row column-full">
-                <div className="location column-half margin-bottom">
+                <div className={adjustTitle ? 'location column-half margin-bottom flex-end' : 'location column-half margin-bottom'}>
                   <h4 className ="head lg">{home.name}</h4>
 
                   <div className={!checkBet || checkDay ? 'logo-button' : ''}>
@@ -50,7 +53,7 @@ const WagerDetails = props => {
                   <h3 className = "head lg">Odds:</h3>
                   <h4 className="sub-head">{homeOdds}</h4>
                 </div>
-                <div className="location column-half margin-bottom">
+                <div className={adjustTitle ? 'location column-half margin-bottom flex-end' : 'location column-half margin-bottom'}>
                   <h4 className = "head lg">{away.name}</h4>
                   <div className={!checkBet ? 'logo-button' : ''}>
                         <div className = {betTeamId === away.id.toString() && !checkDay ? 'active logo-button' : ''}>
@@ -72,7 +75,7 @@ const WagerDetails = props => {
                   <h4 className="sub-head">{awayOdds}</h4>
                 </div>
               </div>
-              <h2 className={!checkBet ? 'hidden' : 'text-center'}>
+              <h2 className={!checkBet ? 'none' : 'text-center'}>
                 You have an active wager for this fixture
               </h2>
             </div>

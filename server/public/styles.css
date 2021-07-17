@@ -274,15 +274,15 @@ body {
 
 .enter-button {
   z-index: 10;
-  padding: 0.5rem;
-  margin: 0.5rem;
+  padding: 1rem;
+  margin: 0.6rem;
   background-color: transparent;
-  font-size: 0.7em;
+  font-size: 0.85em;
   text-decoration: none;
   color: #f8f8f8;
   border: #f8f8f8 2px solid;
   border-radius: 0.4rem;
-  width: 6rem;
+  width: 7.3rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -687,4 +687,8 @@ label {
 
 .head {
   font-family: "Abhaya Libre", serif;
+}
+
+.flex-end {
+  justify-content: flex-end;
 }
