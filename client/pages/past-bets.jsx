@@ -38,6 +38,15 @@ export default class PastBets extends React.Component {
     if (networkError) {
       return <Error/>;
     }
+    if (!pastBets.length) {
+      return (
+        <>
+        <div className = "central-heading">
+          <h2>You Have No Current Bets</h2>
+        </div>
+        </>
+      );
+    }
     return (
     <>
       <div className="central-heading">
@@ -94,4 +103,5 @@ export default class PastBets extends React.Component {
     );
   }
 }
+
 PastBets.contextType = AppContext;
