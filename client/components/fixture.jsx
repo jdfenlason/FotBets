@@ -3,6 +3,7 @@ import { formatTime } from '../lib';
 import { useMediaQuery } from 'react-responsive';
 const Fixture = props => {
   const isNotMobile = useMediaQuery({ minWidth: 900 });
+  // const adjustTitle = useMediaQuery({ maxWidth: 510 });
   const { fixture, score } = props.fixtures;
   const { home, away } = props.fixtures.teams;
   let homeWinner;

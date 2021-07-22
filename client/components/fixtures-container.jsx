@@ -81,9 +81,14 @@ export default class FixturesContainer extends React.Component {
       this.setState({ networkError: true });
       console.error(err);
     });
-    const { yesterday } = this.state;
-    axios.get('/api/bet-validation', { params: { yesterday } }).then(response => {
-
+    const { betValidation } = this.context;
+    axios.get('/api/bet-validation').then(response => {
+      if (response.data.yesterdayGames) {
+        return;
+      }
+      const betTokens = response.data[0].tokenAmount;
+      betValidation(betTokens);
+      this.setState({ isLoading: false });
     }).catch(err => {
       this.setState({ networkError: true });
 
