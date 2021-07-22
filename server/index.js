@@ -120,7 +120,8 @@ app.get('/api/past-results', (req, res, next) => {
       getPastResults(leagueId, dateString),
       getPastResults(leagueId, utcDateFix)
     ]).then(pastResults => {
-      const jsonPastResults = JSON.stringify(pastResults);
+      const flatPastResults = pastResults.flat();
+      const jsonPastResults = JSON.stringify(flatPastResults);
       const params = [dateString, leagueId, jsonPastResults];
       const sql = `
               insert into "pastResults" ("date", "leagueId", "yesterdayGames")
@@ -128,9 +129,8 @@ app.get('/api/past-results', (req, res, next) => {
               returning *`;
       db.query(sql, params).then(result => {
         return res.json(result.rows[0]);
-      })
-        .catch(err => next(err));
-    });
+      }).catch(err => next(err));
+    }).catch(err => next(err));
   })
     .catch(err => next(err));
 });
@@ -148,7 +148,6 @@ function postMatchWinners(yesterday, leagueId) {
     );
     return betValidation.forEach(betValidations => {
       const { fixtureId, winningTeamId, betResult } = betValidations;
-
       const sql = `
                       insert into "betValidation" ("fixtureId", "winningTeamId", "betResult", "date", "leagueId")
                       values($1, $2, $3, $4, $5)`;
@@ -166,10 +165,9 @@ function postMatchWinners(yesterday, leagueId) {
   });
 }
 
-app.post('/api/bet-validation', (req, res, next) => {
+app.get('/api/bet-validation', (req, res, next) => {
   const leagueId = 255;
-  const { yesterday } = req.body;
-  const formatToday = getDateForResults();
+  const { formatToday, yesterday } = getDateForResults();
   const sql = `
         select  "yesterdayGames"
         From "pastResults"
@@ -177,24 +175,26 @@ app.post('/api/bet-validation', (req, res, next) => {
         And "leagueId" = $2
   `;
   const params = [yesterday, leagueId];
-  db.query(sql, params).then(result => {
+  return db.query(sql, params).then(result => {
     if (result.rows.length) {
       return res.json(result.rows[0]);
     }
-    Promise.all([
+    return Promise.all([
       getPastResults(leagueId, yesterday),
       getPastResults(leagueId, formatToday)
     ])
       .then(pastResults => {
-        const jsonPastResults = JSON.stringify(pastResults);
-        const params = [yesterday, leagueId, jsonPastResults];
+        const flatPastResults = pastResults.flat();
+        const jsonPastResults = JSON.stringify(flatPastResults);
         const sql = `
-              insert into "pastResults" ("date", "leagueId", "yesterdayGames")
-              values ($1, $2, $3)
-              returning *`;
-        db.query(sql, params).then(result => {
-          postMatchWinners(yesterday, leagueId);
-          const sql = `
+        insert into "pastResults" ("date", "leagueId", "yesterdayGames")
+        values ($1, $2, $3)
+        returning *`;
+        const params = [yesterday, leagueId, jsonPastResults];
+        return db.query(sql, params)
+          .then(result => {
+            postMatchWinners(yesterday, leagueId);
+            const sql = `
                       update "wagerInputs"
                       Set "betResult" = "betValidation"."betResult",
                       "betEvaluated" = $1
@@ -202,10 +202,11 @@ app.post('/api/bet-validation', (req, res, next) => {
                       Where "wagerInputs"."fixtureId" = "betValidation"."fixtureId"
                       AND "wagerInputs"."betTeamId" = "betValidation"."winningTeamId"
                       returning "wagerInputs"."betResult"`;
-          const betEvaluated = true;
-          const params = [betEvaluated];
-          db.query(sql, params).then(result => {
-            const sql = `
+            const betEvaluated = true;
+            const params = [betEvaluated];
+            return db.query(sql, params)
+              .then(result => {
+                const sql = `
  update "users"
   SET "tokenAmount" = "tokenAmount" + "v"."amountProfit"
   FROM "wagerInputs", (
@@ -219,18 +220,18 @@ app.post('/api/bet-validation', (req, res, next) => {
     ) "v"
     where "users"."userId" = "v"."idUser"
     returning "users"."tokenAmount", "v"."idUser", "v"."amountProfit", "wagerInputs"."profitAmount"
-    `
-                      ;
-            const betResult = true;
-            const params = [betResult, yesterday];
-            db
-              .query(sql, params)
-              .then(result => {
-                return res.json(result.rows);
+    `;
+                const betResult = true;
+                const params = [betResult, yesterday];
+                return db.query(sql, params)
+                  .then(result => {
+                    return res.json(result.rows);
+                  });
               });
-          });
-        });
-      });
+          })
+          .catch(err => next(err));
+      })
+      .catch(err => next(err));
   })
     .catch(err => next(err));
 });
@@ -363,7 +364,6 @@ app.get('/api/wager-input', (req, res, next) => {
       const gamesBetOn = dbresult.map(fixturesId => {
         return fixturesId.fixtureId;
       });
-
       res.json(gamesBetOn);
     })
     .catch(err => next(err));
@@ -461,8 +461,10 @@ function getPastResultsWinners(pastFixtures) {
 }
 function getDateForResults() {
   const today = new Date();
+  const subDay = dateFns.subDays(today, 1);
+  const yesterday = dateFns.format(subDay, 'yyyy-MM-dd');
   const formatToday = dateFns.format(today, 'yyyy-MM-dd');
-  return formatToday;
+  return { formatToday, yesterday };
 }
 
 function getNewWeek() {

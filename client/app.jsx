@@ -30,6 +30,7 @@ export default class App extends React.Component {
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
     this.getTokenAmount = this.getTokenAmount.bind(this);
+    this.betValidation = this.betValidation.bind(this);
   }
 
   componentDidMount() {
@@ -85,6 +86,10 @@ export default class App extends React.Component {
     this.setState({
       pastBets: newArray
     });
+  }
+
+  betValidation(betTokens) {
+    this.setState({ tokenAmount: betTokens });
   }
 
   handleTokenChange(wagerAmounts) {
@@ -159,8 +164,8 @@ export default class App extends React.Component {
     if (isAuthorizing) return null;
     if (isLoading) return <Loading/>;
     const { user, route, tokenAmount } = this.state;
-    const { handleSignIn, handleSignOut, handlePastBets, handleTokenChange } = this;
-    const contextValue = { user, route, handleSignIn, handleSignOut, handlePastBets, handleTokenChange };
+    const { handleSignIn, handleSignOut, handlePastBets, handleTokenChange, betValidation } = this;
+    const contextValue = { user, route, handleSignIn, handleSignOut, handlePastBets, handleTokenChange, betValidation };
     return (
       <AppContext.Provider value={contextValue}>
         <>

@@ -81,8 +81,16 @@ export default class FixturesContainer extends React.Component {
       this.setState({ networkError: true });
       console.error(err);
     });
-    const { yesterday } = this.state;
-    axios.post('/api/bet-validation', { yesterday }).catch(err => {
+    const { betValidation } = this.context;
+    axios.get('/api/bet-validation').then(response => {
+      if (response.data.yesterdayGames || !response.data.length) {
+        return;
+      } else {
+        const betTokens = response.data[0].tokenAmount;
+        betValidation(betTokens);
+      }
+      this.setState({ isLoading: false });
+    }).catch(err => {
       this.setState({ networkError: true });
       console.error(err);
     });
@@ -96,24 +104,9 @@ export default class FixturesContainer extends React.Component {
     const zone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     axios.get('/api/past-results', { params: { dateString } }).then(response => {
       const pastResults = response.data.yesterdayGames;
-      if (!pastResults || !pastResults[0].length) {
+      if (!pastResults) {
         this.setState({
           dayOfFixtures: [],
-          isLoading: false
-        });
-        return;
-      }
-      if (pastResults[0].length >= 1) {
-        const singleArrayFixtures = pastResults.reduce((utcFirstDay, utcSecondDay) => {
-          return utcFirstDay.concat(utcSecondDay);
-        });
-        const pastFixtures = singleArrayFixtures.filter(fixtures => {
-          const zonedDate = utcToZonedTime(fixtures.fixture.date, zone);
-          const formatUTCDate = format(zonedDate, 'yyyy-MM-dd');
-          return formatUTCDate === dateString;
-        });
-        this.setState({
-          dayOfFixtures: pastFixtures,
           isLoading: false
         });
       } else {
