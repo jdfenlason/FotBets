@@ -14,10 +14,4 @@ values ('admin', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWH
        ('Cosmo', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 2000),
        ('Elmo', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 2050),
        ('Phil', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1020),
-       ('Tommy', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1001);
-
-insert into "wagerInputs" ("userId", "fixtureId", "wagerAmount", "profitAmount", "betTeamId", "teamLogo", "betResult", "date", "createdAt", "betEvaluated")
-values ('2', '695768', '100', '400', '3987', 'https://media.api-sports.io/football/teams/9030.png', 'true', '2021-07-18', '2021-07-15T15:24:18.178884Z', 'false' );
-
--- insert into "betValidation" ("date", "leagueId", "fixtureId", "betResult", "winningTeamId" )
--- values ('2021-07-18', '255', '695768', 'true', '3987')
+       ('Tommy', '$argon2i$v=19$m=4096,t=3,p=1$hGbWC2fc6DqqoK+hxRoEcg$C7GxIzxuWHI3RPt/b4ThE+umNnsYLqqlaY1iG12p69A', 1001)

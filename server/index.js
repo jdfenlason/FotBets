@@ -166,10 +166,7 @@ function postMatchWinners(yesterday, leagueId) {
 
 app.get('/api/bet-validation', (req, res, next) => {
   const leagueId = 255;
-  // const { formatToday, yesterday } = getDateForResults();
-  const yesterday = '2021-07-18';
-  const formatToday = '2021-07-19';
-
+  const { formatToday, yesterday } = getDateForResults();
   const sql = `
         select  "yesterdayGames"
         From "pastResults"
@@ -236,31 +233,6 @@ app.get('/api/bet-validation', (req, res, next) => {
   })
     .catch(err => next(err));
 });
-
-// app.get('/api/update', (req, res, next) => {
-//   const yesterday = '2021-07-18';
-//   const sql = `
-//  update "users"
-//   SET "tokenAmount" = "tokenAmount" + "v"."amountProfit"
-//   FROM "wagerInputs", (
-//     SELECT "wagerInputs"."userId" as "idUser",
-//     "wagerInputs"."profitAmount" AS "amountProfit"
-//     from "wagerInputs", "users"
-//     where "wagerInputs"."userId" = "users"."userId"
-//     and "betResult" = $1
-//     And "date" = $2
-//     Group by "wagerInputs"."betId"
-//     ) "v"
-//     where "users"."userId" = "v"."idUser"
-//     returning "users"."tokenAmount", "v"."idUser", "v"."amountProfit", "wagerInputs"."profitAmount"
-//     `;
-//   const betResult = true;
-//   const params = [betResult, yesterday];
-//   return db.query(sql, params)
-//     .then(result => {
-//       return res.json(result.rows);
-//     });
-// });
 
 app.get('/api/leaderboard/rank', (req, res, next) => {
   const { tokenAmount } = req.query;
@@ -485,13 +457,13 @@ function getPastResultsWinners(pastFixtures) {
   });
   return mappedResults;
 }
-// function getDateForResults() {
-//   const today = new Date();
-//   const subDay = dateFns.subDays(today, 1);
-//   const yesterday = dateFns.format(subDay, 'yyyy-MM-dd');
-//   const formatToday = dateFns.format(today, 'yyyy-MM-dd');
-//   return { formatToday, yesterday };
-// }
+function getDateForResults() {
+  const today = new Date();
+  const subDay = dateFns.subDays(today, 1);
+  const yesterday = dateFns.format(subDay, 'yyyy-MM-dd');
+  const formatToday = dateFns.format(today, 'yyyy-MM-dd');
+  return { formatToday, yesterday };
+}
 
 function getNewWeek() {
   const today = new Date();
