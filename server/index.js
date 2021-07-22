@@ -120,7 +120,8 @@ app.get('/api/past-results', (req, res, next) => {
       getPastResults(leagueId, dateString),
       getPastResults(leagueId, utcDateFix)
     ]).then(pastResults => {
-      const jsonPastResults = JSON.stringify(pastResults);
+      const flatPastResults = pastResults.flat();
+      const jsonPastResults = JSON.stringify(flatPastResults);
       const params = [dateString, leagueId, jsonPastResults];
       const sql = `
               insert into "pastResults" ("date", "leagueId", "yesterdayGames")
@@ -183,7 +184,8 @@ app.get('/api/bet-validation', (req, res, next) => {
       getPastResults(leagueId, formatToday)
     ])
       .then(pastResults => {
-        const jsonPastResults = JSON.stringify(pastResults);
+        const flatPastResults = pastResults.flat();
+        const jsonPastResults = JSON.stringify(flatPastResults);
         const sql = `
         insert into "pastResults" ("date", "leagueId", "yesterdayGames")
         values ($1, $2, $3)
