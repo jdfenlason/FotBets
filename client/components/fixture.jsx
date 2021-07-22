@@ -3,7 +3,6 @@ import { formatTime } from '../lib';
 import { useMediaQuery } from 'react-responsive';
 const Fixture = props => {
   const isNotMobile = useMediaQuery({ minWidth: 900 });
-  // const adjustTitle = useMediaQuery({ maxWidth: 510 });
   const { fixture, score } = props.fixtures;
   const { home, away } = props.fixtures.teams;
   let homeWinner;
@@ -22,7 +21,7 @@ const Fixture = props => {
     <div className="row center fixture-card" >
       <div className= {!isNotMobile ? 'outer-card shadow column-full' : 'outer-card shadow column-75' }id={fixture.id}>
         <div className="inner-card column-full" id = {fixture.id}>
-          <div className="team-container"id={fixture.id} >
+          <div className="team-container flex-end"id={fixture.id} >
             <div className="image-container" id={fixture.id} >
               <img
               id={fixture.id}
@@ -43,7 +42,7 @@ const Fixture = props => {
               {formatTime(fixture.timestamp)}
             </h4>
           </div>
-          <div className="team-container" id={fixture.id}>
+          <div className="team-container flex-end" id={fixture.id}>
             <div className="image-container" id={fixture.id}>
             <img
               className="team-logo"
