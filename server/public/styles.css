@@ -79,6 +79,7 @@
 
 .shadow {
   box-shadow: 0 5px #1b1b1b;
+  transition: box-shadow 0.5s ease-in-out;
 }
 
 .shadow:hover {
