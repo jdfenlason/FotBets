@@ -20,9 +20,10 @@ FotBets is a mobile app for fans of football(soccer) who want to play in an inte
 - User can see their profile 
 - User can see their current rank on the Leaderboard
 - User can look at their recent bets wagered 
-
-# Planned Features 
 - Users can sign in and sign out 
+- Users can view past scores 
+
+# Planned Features  
 - Users can create their own league to play against each other 
 - Users can communicate with one another in their league via chat 
 - Users can view current live scores for games that are happening currently 
